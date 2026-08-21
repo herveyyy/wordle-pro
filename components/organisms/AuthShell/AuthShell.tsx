@@ -16,7 +16,7 @@ export function AuthShell({ title, description, children }: AuthShellProps) {
     <div className="relative h-screen w-screen h-[100dvh] max-h-[100dvh] overflow-hidden bg-surface flex items-center justify-center p-4 sm:p-6 font-(family-name:--font-comic-relief) select-none">
       <FuturisticBackdrop />
 
-      <main className="futuristic-frame relative z-10 w-full max-w-md rounded-3xl border border-primary/20 bg-surface-container-low/95 p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
+      <main className="comic-card relative z-10 w-full max-w-md rounded-3xl bg-surface-container-low/98 p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
         <div className="mb-6 text-center">
           <Link href="/" className="inline-flex items-center gap-1.5 mb-4 group">
             <div className="flex gap-1">

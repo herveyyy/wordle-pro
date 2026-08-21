@@ -88,7 +88,7 @@ export function InstallLanding() {
         </div>
 
         {/* Feature Highlights Card */}
-        <div className="futuristic-frame rounded-3xl border border-primary/20 bg-surface-container-low/95 p-6 shadow-xl backdrop-blur-xl space-y-4">
+        <div className="comic-card rounded-3xl bg-surface-container-low/98 p-6 shadow-xl backdrop-blur-xl space-y-4">
           <div className="flex items-center gap-3 border-b border-primary/10 pb-3">
             <div className="flex size-10 items-center justify-center rounded-xl bg-primary/15 font-display text-lg font-bold text-primary">
               W

@@ -6,7 +6,7 @@ export function WordleHeroPreview() {
   const [activeTab, setActiveTab] = useState<"game" | "room">("game");
 
   return (
-    <div className="futuristic-frame relative w-full overflow-hidden rounded-3xl border border-primary/20 bg-surface-container-low/95 p-6 shadow-2xl backdrop-blur-xl md:p-8">
+    <div className="comic-card relative w-full overflow-hidden rounded-3xl bg-surface-container-low/98 p-5 sm:p-7 shadow-2xl backdrop-blur-xl md:p-8">
       {/* Header Bar */}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-primary/10 pb-4">
         <div className="flex items-center gap-3">

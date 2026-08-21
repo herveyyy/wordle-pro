@@ -250,10 +250,10 @@ export function WordleLanding({ session }: WordleLandingProps) {
         {/* Modal 3: Game Features & WebRTC Rules */}
         {activeModal === "features" ? (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md animate-in fade-in duration-150">
-            <div className="futuristic-frame relative w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-3xl border border-primary/20 bg-surface-container-low/95 p-6 shadow-2xl backdrop-blur-xl">
-              <div className="mb-4 flex items-center justify-between border-b border-primary/10 pb-3">
+            <div className="comic-card relative w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-3xl bg-surface-container-low/98 p-6 shadow-2xl backdrop-blur-xl">
+              <div className="mb-4 flex items-center justify-between border-b-2 border-primary/20 pb-3">
                 <div>
-                  <h3 className="font-display text-lg font-bold text-on-surface">
+                  <h3 className="font-display text-lg font-extrabold text-on-surface">
                     Wordle PRO Engine Features
                   </h3>
                   <p className="text-[11px] text-on-surface-muted">
@@ -269,30 +269,30 @@ export function WordleLanding({ session }: WordleLandingProps) {
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2 text-xs">
-                <div className="rounded-2xl bg-surface-container-high/40 p-3.5">
+                <div className="rounded-2xl border-2 border-primary/20 bg-surface-container-high/60 p-3.5 shadow-xs">
                   <span className="text-xl block mb-1">🌐</span>
-                  <h4 className="font-display font-bold text-primary">WebRTC P2P DataChannels</h4>
+                  <h4 className="font-display font-extrabold text-primary">WebRTC P2P DataChannels</h4>
                   <p className="mt-1 text-on-surface-muted">
                     Direct peer-to-peer data sync ensures real-time guess tile updates with zero latency.
                   </p>
                 </div>
-                <div className="rounded-2xl bg-surface-container-high/40 p-3.5">
+                <div className="rounded-2xl border-2 border-secondary/20 bg-surface-container-high/60 p-3.5 shadow-xs">
                   <span className="text-xl block mb-1">🤖</span>
-                  <h4 className="font-display font-bold text-secondary">Bot AI Limits & Options</h4>
+                  <h4 className="font-display font-extrabold text-secondary">Bot AI Limits & Options</h4>
                   <p className="mt-1 text-on-surface-muted">
                     Configure 0 to 4 bots, or set Bot Difficulty to Off for 100% human-only matches.
                   </p>
                 </div>
-                <div className="rounded-2xl bg-surface-container-high/40 p-3.5">
+                <div className="rounded-2xl border-2 border-emerald-500/20 bg-surface-container-high/60 p-3.5 shadow-xs">
                   <span className="text-xl block mb-1">🔒</span>
-                  <h4 className="font-display font-bold text-emerald-700">Anti-Cheat Secret Words</h4>
+                  <h4 className="font-display font-extrabold text-emerald-600 dark:text-emerald-400">Anti-Cheat Secret Words</h4>
                   <p className="mt-1 text-on-surface-muted">
                     Opponent guesses broadcast colored tile statuses only (🟩 🟨 ⬛), never revealing letters.
                   </p>
                 </div>
-                <div className="rounded-2xl bg-surface-container-high/40 p-3.5">
+                <div className="rounded-2xl border-2 border-purple-500/20 bg-surface-container-high/60 p-3.5 shadow-xs">
                   <span className="text-xl block mb-1">🎲</span>
-                  <h4 className="font-display font-bold text-primary">Synchronized Room Seeds</h4>
+                  <h4 className="font-display font-extrabold text-purple-600 dark:text-purple-400">Synchronized Room Seeds</h4>
                   <p className="mt-1 text-on-surface-muted">
                     All players in the same room receive the exact same target word and letter sequence.
                   </p>
@@ -305,7 +305,7 @@ export function WordleLanding({ session }: WordleLandingProps) {
         {/* Modal 4: Install PWA */}
         {activeModal === "pwa" ? (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md animate-in fade-in duration-150">
-            <div className="futuristic-frame relative w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-3xl border border-primary/20 bg-surface-container-low/95 p-6 shadow-2xl backdrop-blur-xl">
+            <div className="comic-card relative w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-3xl bg-surface-container-low/98 p-6 shadow-2xl backdrop-blur-xl">
               <button
                 onClick={() => setActiveModal(null)}
                 className="absolute top-3 right-3 z-20 flex size-7 items-center justify-center rounded-full bg-surface-container-high text-xs font-bold text-on-surface hover:bg-surface-container-highest"

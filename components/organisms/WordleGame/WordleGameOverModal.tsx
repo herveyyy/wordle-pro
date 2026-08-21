@@ -33,7 +33,7 @@ export function WordleGameOverModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="futuristic-frame w-full max-w-lg overflow-hidden rounded-3xl border border-primary/30 bg-surface-container-lowest/95 p-6 sm:p-8 shadow-2xl backdrop-blur-2xl text-center">
+      <div className="comic-card w-full max-w-lg overflow-hidden rounded-3xl bg-surface-container-lowest/98 p-6 sm:p-8 shadow-2xl backdrop-blur-2xl text-center">
         {/* Banner */}
         <div className="mb-4">
           <span className="text-4xl sm:text-5xl block mb-2">

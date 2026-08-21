@@ -65,7 +65,6 @@ export function WordleSplashScreen({
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="pulsing-orb-1 absolute -top-20 left-1/3 size-80 rounded-full bg-primary/30 blur-[80px]" />
         <div className="pulsing-orb-2 absolute -bottom-20 right-1/3 size-80 rounded-full bg-secondary/30 blur-[80px]" />
-        <div className="futuristic-dots absolute inset-0 opacity-20" />
       </div>
 
       {/* Top Banner */}

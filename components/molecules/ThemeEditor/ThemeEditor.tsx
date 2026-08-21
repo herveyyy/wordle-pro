@@ -29,7 +29,7 @@ export function ThemeEditor() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md animate-in fade-in duration-150">
-      <div className="futuristic-frame w-[360px] sm:w-[420px] max-h-[85vh] overflow-hidden rounded-3xl border border-primary/30 bg-surface-container-lowest/95 p-6 shadow-2xl backdrop-blur-2xl flex flex-col">
+      <div className="comic-card w-[360px] sm:w-[420px] max-h-[85vh] overflow-hidden rounded-3xl bg-surface-container-lowest/98 p-6 shadow-2xl backdrop-blur-2xl flex flex-col">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between border-b border-primary/10 pb-3 shrink-0">
           <div className="flex items-center gap-2">

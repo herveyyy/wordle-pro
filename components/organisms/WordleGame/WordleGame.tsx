@@ -92,7 +92,7 @@ export function WordleGame({
           </div>
 
           {/* Center Play Area (Board + Keyboard) */}
-          <main className="futuristic-frame flex flex-1 flex-col items-center justify-between rounded-2xl sm:rounded-3xl border border-primary/20 bg-surface-container-low/95 p-3 sm:p-4 shadow-xl backdrop-blur-xl overflow-hidden h-full">
+          <main className="comic-card flex flex-1 flex-col items-center justify-between rounded-2xl sm:rounded-3xl bg-surface-container-low/98 p-3 sm:p-4 shadow-xl backdrop-blur-xl overflow-hidden h-full">
             {/* Wordle Letter Grid */}
             <div className="w-full flex-1 flex items-center justify-center my-auto">
               <WordleGrid
