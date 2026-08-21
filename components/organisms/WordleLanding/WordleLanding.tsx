@@ -109,52 +109,52 @@ export function WordleLanding({ session }: WordleLandingProps) {
         <main className="relative z-10 mx-auto w-full max-w-7xl flex-1 grid items-center gap-6 lg:grid-cols-[1.1fr_0.9fr] py-2 overflow-hidden">
           {/* Left Column: Hero Callout & Modal Menu */}
           <div className="space-y-3 sm:space-y-4">
-            <div className="neo-badge bg-yellow-300 text-black text-xs font-extrabold rotate-[-1deg]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-secondary/25 bg-secondary/10 px-3 py-0.5 text-[11px] font-bold uppercase tracking-wider text-secondary">
               <span>🔥 Fair WebRTC Multiplayer Battle</span>
             </div>
 
-            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.08] tracking-tight text-black dark:text-white">
+            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.08] tracking-tight text-on-surface">
               Guess Words. <br />
-              <span className="inline-block bg-emerald-300 text-black px-2 py-0.5 border-2 border-black shadow-[3px_3px_0px_#000] rotate-1">
+              <span className="text-primary underline decoration-secondary decoration-wavy decoration-2">
                 Custom Rooms.
               </span>{" "}
               <br />
               Battle Friends & Bots.
             </h1>
 
-            <p className="max-w-md text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed">
+            <p className="max-w-md text-xs sm:text-sm text-on-surface-muted leading-relaxed">
               Real-time WebRTC peer-to-peer guess sync, 4 to 8 letters, turn timers, customizable bot AI limits, and infinite seeded rounds.
             </p>
 
             {/* Quick Game Mode Badges */}
-            <div className="flex flex-wrap gap-2 text-xs font-extrabold">
-              <span className="neo-badge bg-cyan-300 text-black">
+            <div className="flex flex-wrap gap-1.5 text-[11px] font-bold">
+              <span className="rounded-lg bg-surface-container-high px-2.5 py-1 text-primary">
                 🌐 WebRTC P2P
               </span>
-              <span className="neo-badge bg-amber-300 text-black">
+              <span className="rounded-lg bg-surface-container-high px-2.5 py-1 text-secondary">
                 🤖 Bot Limits
               </span>
-              <span className="neo-badge bg-emerald-300 text-black">
+              <span className="rounded-lg bg-surface-container-high px-2.5 py-1 text-emerald-700">
                 🔠 4-8 Letters
               </span>
-              <span className="neo-badge bg-pink-300 text-black">
+              <span className="rounded-lg bg-surface-container-high px-2.5 py-1 text-primary">
                 🔑 Passkeys
               </span>
             </div>
 
             {/* Main Action Triggers */}
-            <div className="flex flex-wrap items-center gap-3 pt-2">
+            <div className="flex flex-wrap items-center gap-2.5 pt-1">
               {session ? (
                 <Link
                   href="/play"
-                  className="neo-btn-primary px-6 py-3 text-xs sm:text-sm font-extrabold shadow-[4px_4px_0px_#000]"
+                  className={`${primaryBtnClass} px-6 py-2.5 text-xs sm:text-sm font-bold shadow-md shadow-primary/20 hover:scale-105`}
                 >
                   🎮 Quick Match / Enter Lobby →
                 </Link>
               ) : (
                 <Link
                   href="/sign-in?callbackURL=/play"
-                  className="neo-btn-primary px-6 py-3 text-xs sm:text-sm font-extrabold shadow-[4px_4px_0px_#000]"
+                  className={`${primaryBtnClass} px-6 py-2.5 text-xs sm:text-sm font-bold shadow-md shadow-primary/20 hover:scale-105`}
                 >
                   🔒 Sign In with Discord to Play →
                 </Link>
@@ -163,7 +163,7 @@ export function WordleLanding({ session }: WordleLandingProps) {
               <button
                 type="button"
                 onClick={() => setActiveModal("join")}
-                className="neo-btn-secondary px-5 py-3 text-xs sm:text-sm font-extrabold shadow-[4px_4px_0px_#000]"
+                className={`${secondaryBtnClass} px-4 py-2.5 text-xs font-bold`}
               >
                 🔑 Join Room
               </button>
@@ -171,7 +171,7 @@ export function WordleLanding({ session }: WordleLandingProps) {
               <button
                 type="button"
                 onClick={() => setActiveModal("builder")}
-                className="neo-btn-cyan px-5 py-3 text-xs sm:text-sm font-extrabold shadow-[4px_4px_0px_#000]"
+                className="rounded-2xl bg-surface-container-high px-4 py-2.5 text-xs font-bold text-on-surface hover:bg-surface-container-highest transition-all"
               >
                 ⚙️ Custom Room & Bots
               </button>
