@@ -7,54 +7,54 @@
   --font-comic-relief: "Comic Relief", system-ui, sans-serif;
 
   /* Layer 0 — canvas */
-  --surface: #f6fafa;
-  --on-surface: #181c1d;
+  --surface: #f0fdf4;
+  --on-surface: #0f172a;
 
   /* Surface hierarchy */
-  --surface-container-low: #f0f4f4;
+  --surface-container-low: #ffffff;
   --surface-container-lowest: #ffffff;
-  --surface-container-high: #e8ecec;
-  --surface-container-highest: #dee4e4;
-  --surface-bright: #f6fafa;
-  --surface-variant: #dce4e4;
+  --surface-container-high: #e2e8f0;
+  --surface-container-highest: #cbd5e1;
+  --surface-bright: #ffffff;
+  --surface-variant: #e0f2fe;
 
   /* Brand */
-  --primary: #0a5c66;
-  --primary-container: #0d8494;
+  --primary: #10b981;
+  --primary-container: #059669;
   --on-primary: #ffffff;
-  --secondary: #c76a1a;
-  --secondary-container: #f4dcc8;
+  --secondary: #f59e0b;
+  --secondary-container: #d97706;
   --on-secondary: #ffffff;
-  --tertiary: #004f4f;
+  --tertiary: #8b5cf6;
 
   /* Glow & Pulsing Light Engine */
   --glow-1: #10b981;
-  --glow-2: #f59e0b;
-  --glow-3: #0a5c66;
-  --glow-opacity: 0.55;
-  --pulse-duration: 4s;
+  --glow-2: #8b5cf6;
+  --glow-3: #f59e0b;
+  --glow-opacity: 0.75;
+  --pulse-duration: 3.5s;
 
   /* Utility */
-  --outline-variant: #bfc8cd;
-  --on-surface-muted: #5c6568;
+  --outline-variant: #94a3b8;
+  --on-surface-muted: #475569;
 
-  --shadow-bloom: 0 12px 32px rgb(24 28 29 / 4%);
+  --shadow-bloom: 0 12px 32px rgb(16 185 129 / 15%);
 }
 
 html.dark,
 html[data-mode="dark"] {
   color-scheme: dark;
-  --surface: #0a0e14;
-  --on-surface: #f3f4f6;
-  --surface-container-low: #111827;
-  --surface-container-lowest: #0b0f19;
-  --surface-container-high: #1f2937;
-  --surface-container-highest: #374151;
-  --surface-bright: #1f2937;
-  --surface-variant: #1e293b;
-  --outline-variant: #374151;
-  --on-surface-muted: #9ca3af;
-  --shadow-bloom: 0 16px 40px rgb(0 0 0 / 40%);
+  --surface: #080d1a;
+  --on-surface: #f8fafc;
+  --surface-container-low: #0f172a;
+  --surface-container-lowest: #020617;
+  --surface-container-high: #1e293b;
+  --surface-container-highest: #334155;
+  --surface-bright: #1e293b;
+  --surface-variant: #1e1b4b;
+  --outline-variant: #475569;
+  --on-surface-muted: #94a3b8;
+  --shadow-bloom: 0 16px 40px rgb(16 185 129 / 25%);
 }
 
 html[data-mode="oled"] {
@@ -155,31 +155,75 @@ html {
   opacity: 0.35;
 }
 
-.futuristic-frame {
+/* Comic Arcade Design System */
+.comic-card {
   position: relative;
+  border-width: 2.5px;
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--primary) 40%, rgba(255, 255, 255, 0.15));
+  box-shadow: 0 8px 0 color-mix(in srgb, var(--primary) 25%, rgba(0, 0, 0, 0.4));
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.futuristic-frame::before,
-.futuristic-frame::after {
-  content: "";
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  pointer-events: none;
+.comic-btn-primary {
+  background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  border: 2px solid #34d399;
+  box-shadow: 0 4px 0 #047857;
+  font-weight: 800;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+}
+.comic-btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 #047857;
+}
+.comic-btn-primary:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #047857;
 }
 
-.futuristic-frame::before {
-  top: 12px;
-  left: 12px;
-  border-top: 2px solid color-mix(in srgb, var(--primary) 45%, transparent);
-  border-left: 2px solid color-mix(in srgb, var(--primary) 45%, transparent);
+.comic-btn-secondary {
+  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+  color: #ffffff;
+  border: 2px solid #fbbf24;
+  box-shadow: 0 4px 0 #b45309;
+  font-weight: 800;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+}
+.comic-btn-secondary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 #b45309;
+}
+.comic-btn-secondary:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #b45309;
 }
 
-.futuristic-frame::after {
-  right: 12px;
-  bottom: 12px;
-  border-right: 2px solid color-mix(in srgb, var(--primary-container) 45%, transparent);
-  border-bottom: 2px solid color-mix(in srgb, var(--primary-container) 45%, transparent);
+.comic-btn-pill {
+  background: color-mix(in srgb, var(--surface-container-high) 90%, transparent);
+  color: var(--on-surface);
+  border: 2px solid color-mix(in srgb, var(--outline-variant) 40%, transparent);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--outline-variant) 30%, rgba(0,0,0,0.3));
+  transition: all 0.12s ease;
+}
+.comic-btn-pill:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 var(--primary-container);
+}
+.comic-btn-pill:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--primary-container);
+}
+
+.comic-btn-pill-active {
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-container) 100%) !important;
+  color: #ffffff !important;
+  border-color: #34d399 !important;
+  box-shadow: 0 4px 0 var(--primary-container) !important;
+  transform: scale(1.04);
 }
 
 /* Pulsing Light & Floating Blurred Orbs Keyframes */

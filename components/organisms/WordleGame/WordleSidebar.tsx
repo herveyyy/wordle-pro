@@ -30,7 +30,7 @@ export function WordleSidebar({
   };
 
   return (
-    <aside className="futuristic-frame flex w-full h-full flex-col justify-between rounded-2xl sm:rounded-3xl border border-primary/20 bg-surface-container-low/95 p-3.5 sm:p-4 shadow-xl backdrop-blur-xl shrink-0 overflow-hidden">
+    <aside className="comic-card flex w-full h-full flex-col justify-between rounded-2xl sm:rounded-3xl bg-surface-container-low/98 p-3.5 sm:p-4 shadow-xl backdrop-blur-xl shrink-0 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-primary/10 pb-2.5 shrink-0">
         <div className="flex items-center gap-2">
@@ -46,17 +46,27 @@ export function WordleSidebar({
 
       {/* Players List with Smooth Scroll */}
       <div className="flex-1 space-y-2.5 overflow-y-auto pr-1 my-2">
-        {players.map((player) => {
+        {players.map((player, pIdx) => {
           const isYou = player.id === currentPlayerId;
           const cleanName = player.name.replace(/\s*\(You\)/gi, "").trim();
+
+          const PLAYER_COLORS = [
+            { border: "border-emerald-500/50", bg: "bg-emerald-500/10", ring: "ring-emerald-500/40", text: "text-emerald-500" },
+            { border: "border-cyan-500/40", bg: "bg-cyan-500/10", ring: "ring-cyan-500/40", text: "text-cyan-500" },
+            { border: "border-purple-500/40", bg: "bg-purple-500/10", ring: "ring-purple-500/40", text: "text-purple-500" },
+            { border: "border-amber-500/40", bg: "bg-amber-500/10", ring: "ring-amber-500/40", text: "text-amber-500" },
+            { border: "border-rose-500/40", bg: "bg-rose-500/10", ring: "ring-rose-500/40", text: "text-rose-500" },
+          ];
+
+          const colorTheme = PLAYER_COLORS[pIdx % PLAYER_COLORS.length];
 
           return (
             <div
               key={player.id}
               className={`rounded-2xl border p-2.5 sm:p-3 transition-all ${
                 isYou
-                  ? "border-primary/50 bg-primary/10 shadow-xs"
-                  : "border-primary/15 bg-surface-container-high/40"
+                  ? "border-emerald-500/60 bg-emerald-500/10 shadow-sm shadow-emerald-500/15"
+                  : `${colorTheme.border} ${colorTheme.bg}`
               }`}
             >
               {/* Player Header */}
@@ -66,12 +76,12 @@ export function WordleSidebar({
                     <img
                       src={player.avatar}
                       alt={cleanName}
-                      className="size-7 shrink-0 rounded-xl object-cover ring-1 ring-primary/30 shadow-xs"
+                      className={`size-7 shrink-0 rounded-xl object-cover ring-2 ${colorTheme.ring} shadow-xs`}
                       width={28}
                       height={28}
                     />
                   ) : (
-                    <div className="flex size-7 shrink-0 items-center justify-center rounded-xl bg-primary/20 font-display text-xs font-bold text-primary">
+                    <div className={`flex size-7 shrink-0 items-center justify-center rounded-xl ${colorTheme.bg} font-display text-xs font-bold ${colorTheme.text} ring-1 ${colorTheme.ring}`}>
                       {cleanName[0]?.toUpperCase() || "P"}
                     </div>
                   )}
@@ -89,7 +99,7 @@ export function WordleSidebar({
 
                 {/* Score & Round Wins */}
                 <div className="text-right shrink-0">
-                  <span className="block text-xs font-extrabold text-primary">
+                  <span className={`block text-xs font-extrabold ${colorTheme.text}`}>
                     {player.score} pts
                   </span>
                   <span className="block text-[10px] font-bold text-secondary">

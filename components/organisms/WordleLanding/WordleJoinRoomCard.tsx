@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useButtonStyles } from "@/components/atoms/Button/button.hooks";
 
 interface WordleJoinRoomCardProps {
   isAuthenticated?: boolean;
@@ -12,7 +11,6 @@ export function WordleJoinRoomCard({ isAuthenticated = false }: WordleJoinRoomCa
   const [roomId, setRoomId] = useState("");
   const [passkey, setPasskey] = useState("");
   const router = useRouter();
-  const primaryBtnClass = useButtonStyles("primary");
 
   const handleJoin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,17 +31,17 @@ export function WordleJoinRoomCard({ isAuthenticated = false }: WordleJoinRoomCa
   };
 
   return (
-    <div className="futuristic-frame relative w-full overflow-hidden rounded-3xl border border-primary/20 bg-surface-container-low/95 p-6 shadow-xl backdrop-blur-xl md:p-8">
+    <div className="comic-card relative w-full overflow-hidden rounded-3xl bg-surface-container-low/98 p-6 shadow-2xl backdrop-blur-xl md:p-8">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <span className="text-xs font-bold uppercase tracking-widest text-secondary">
-            Multiplayer Match
+          <span className="inline-block rounded-lg bg-secondary/20 px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wider text-secondary">
+            🔑 Multiplayer Match
           </span>
-          <h3 className="font-display text-xl sm:text-2xl font-bold text-on-surface">
+          <h3 className="font-display text-xl sm:text-2xl font-extrabold text-on-surface mt-1">
             Join Existing Room
           </h3>
         </div>
-        <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+        <span className="rounded-full border-2 border-emerald-500/30 bg-emerald-500/15 px-3.5 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400">
           {isAuthenticated ? "✓ Verified Gamer" : "🔒 Sign In Required"}
         </span>
       </div>
@@ -52,9 +50,9 @@ export function WordleJoinRoomCard({ isAuthenticated = false }: WordleJoinRoomCa
         Have a room code or passkey from a friend or Discord server? Enter it below to jump directly into their match.
       </p>
 
-      <form onSubmit={handleJoin} className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+      <form onSubmit={handleJoin} className="grid gap-3.5 sm:grid-cols-[1fr_1fr_auto]">
         <div>
-          <label className="text-[11px] font-bold uppercase tracking-wider text-on-surface-muted block mb-1">
+          <label className="text-[11px] font-extrabold uppercase tracking-wider text-on-surface-muted block mb-1">
             Room Code
           </label>
           <input
@@ -62,12 +60,12 @@ export function WordleJoinRoomCard({ isAuthenticated = false }: WordleJoinRoomCa
             placeholder="e.g. PRO-892"
             value={roomId}
             onChange={(e) => setRoomId(e.target.value.toUpperCase())}
-            className="w-full rounded-2xl border border-primary/20 bg-surface-container-lowest px-4 py-3 font-mono text-sm font-bold uppercase text-on-surface placeholder:text-on-surface-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/40"
+            className="w-full rounded-2xl border-2 border-primary/30 bg-surface-container-lowest px-4 py-3 font-mono text-sm font-extrabold uppercase text-on-surface placeholder:text-on-surface-muted/50 focus:outline-none focus:border-primary shadow-xs"
           />
         </div>
 
         <div>
-          <label className="text-[11px] font-bold uppercase tracking-wider text-on-surface-muted block mb-1">
+          <label className="text-[11px] font-extrabold uppercase tracking-wider text-on-surface-muted block mb-1">
             Passkey (Optional)
           </label>
           <input
@@ -75,16 +73,16 @@ export function WordleJoinRoomCard({ isAuthenticated = false }: WordleJoinRoomCa
             placeholder="e.g. SECRET"
             value={passkey}
             onChange={(e) => setPasskey(e.target.value.toUpperCase())}
-            className="w-full rounded-2xl border border-primary/20 bg-surface-container-lowest px-4 py-3 font-mono text-sm font-bold uppercase text-primary placeholder:text-on-surface-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/40"
+            className="w-full rounded-2xl border-2 border-secondary/30 bg-surface-container-lowest px-4 py-3 font-mono text-sm font-extrabold uppercase text-secondary placeholder:text-on-surface-muted/50 focus:outline-none focus:border-secondary shadow-xs"
           />
         </div>
 
         <div className="flex items-end">
           <button
             type="submit"
-            className={`${primaryBtnClass} w-full sm:w-auto px-7 py-3 text-sm font-bold shadow-md`}
+            className="comic-btn-primary w-full sm:w-auto px-7 py-3 text-xs sm:text-sm font-extrabold rounded-2xl"
           >
-            {isAuthenticated ? "Join Room →" : "🔒 Sign In & Join →"}
+            {isAuthenticated ? "🚀 Join Room →" : "🔒 Sign In & Join →"}
           </button>
         </div>
       </form>

@@ -318,38 +318,45 @@ export function useWordleGame(
       const upperKey = key.toUpperCase();
 
       if (upperKey === "BACKSPACE") {
-        if (currentLetterIndex > 0) {
+        const activeRow = userGuesses[currentGuessIndex];
+        const lettersCount = activeRow?.letters?.length || 0;
+        if (lettersCount > 0) {
           setUserGuesses((prev) => {
             const next = [...prev];
-            const activeRow = { ...next[currentGuessIndex] };
-            const newLetters = [...activeRow.letters];
-            newLetters.pop();
-            activeRow.letters = newLetters;
-            next[currentGuessIndex] = activeRow;
+            const row = { ...next[currentGuessIndex] };
+            row.letters = row.letters.slice(0, -1);
+            next[currentGuessIndex] = row;
             return next;
           });
-          setCurrentLetterIndex((prev) => prev - 1);
+          setCurrentLetterIndex(lettersCount - 1);
         }
         return;
       }
 
       if (upperKey === "ENTER") {
         const activeRow = userGuesses[currentGuessIndex];
-        if (!activeRow || activeRow.letters.length < config.wordLength) {
-          triggerRowShake(`Word must be ${config.wordLength} letters`);
+        const lettersCount = activeRow?.letters?.length || 0;
+
+        if (lettersCount === 0) {
+          triggerRowShake("Enter a word first!");
           return;
         }
 
-        const guessWord = activeRow.letters.join("").toUpperCase();
+        if (lettersCount < config.wordLength) {
+          triggerRowShake(`Word must be ${config.wordLength} letters (${lettersCount}/${config.wordLength})`);
+          return;
+        }
 
-        // Validate word in open dictionary
-        const valid = await isValidWord(guessWord);
+        const guessWord = activeRow.letters.slice(0, config.wordLength).join("").toUpperCase();
+
+        // Validate word synchronously (0ms lag)
+        const valid = isValidWord(guessWord);
         if (!valid) {
           triggerRowShake("Not in valid dictionary");
           return;
         }
 
-        // Evaluate guess
+        // Evaluate guess colors
         const statuses = evaluateWordleGuess(guessWord, targetWord);
 
         // Broadcast guess via WebRTC P2P DataChannel (NO letters revealed, only colors)
@@ -359,6 +366,7 @@ export function useWordleGame(
             roomId: config.roomId,
             senderId: "user-1",
             senderName: `${playerName} (You)`,
+            senderAvatar: playerAvatar,
             round: currentRound,
             guessStatuses: statuses,
           });
@@ -383,7 +391,7 @@ export function useWordleGame(
 
         // Update User Guesses row
         const updatedRow: GuessRow = {
-          letters: activeRow.letters,
+          letters: activeRow.letters.slice(0, config.wordLength),
           statuses,
           isSubmitted: true,
         };
@@ -421,20 +429,23 @@ export function useWordleGame(
               roomId: config.roomId,
               senderId: "user-1",
               senderName: `${playerName} (You)`,
+              senderAvatar: playerAvatar,
               round: currentRound,
               score: roundPoints,
               solvedInRow: guessNumber,
             });
           }
 
-          const def = await getWordDefinition(targetWord);
-          setTargetDefinition(def);
+          getWordDefinition(targetWord).then((def) => {
+            setTargetDefinition(def);
+          });
           setGameStatus(
             currentRound >= config.totalRounds ? "match_finished" : "round_won"
           );
         } else if (guessNumber >= config.maxChances) {
-          const def = await getWordDefinition(targetWord);
-          setTargetDefinition(def);
+          getWordDefinition(targetWord).then((def) => {
+            setTargetDefinition(def);
+          });
           setGameStatus(
             currentRound >= config.totalRounds ? "match_finished" : "round_lost"
           );
@@ -446,18 +457,19 @@ export function useWordleGame(
         return;
       }
 
-      // Alphabet key
+      // Alphabet key input
       if (/^[A-Z]$/.test(upperKey)) {
-        if (currentLetterIndex < config.wordLength) {
+        const activeRow = userGuesses[currentGuessIndex];
+        const lettersCount = activeRow?.letters?.length || 0;
+        if (lettersCount < config.wordLength) {
           setUserGuesses((prev) => {
             const next = [...prev];
-            const activeRow = { ...next[currentGuessIndex] };
-            const newLetters = [...activeRow.letters, upperKey];
-            activeRow.letters = newLetters;
-            next[currentGuessIndex] = activeRow;
+            const row = { ...next[currentGuessIndex] };
+            row.letters = [...row.letters, upperKey];
+            next[currentGuessIndex] = row;
             return next;
           });
-          setCurrentLetterIndex((prev) => prev + 1);
+          setCurrentLetterIndex(lettersCount + 1);
         }
       }
     },

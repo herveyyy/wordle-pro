@@ -34,7 +34,7 @@ export function WordleToolbar({
   const isLowTime = config.timeLimitSeconds > 0 && timeLeft <= 10;
 
   return (
-    <header className="futuristic-frame flex w-full items-center justify-between gap-2 rounded-2xl border border-primary/20 bg-surface-container-low/95 px-3 py-2 sm:px-4 sm:py-3 shadow-md backdrop-blur-xl shrink-0">
+    <header className="comic-card flex w-full items-center justify-between gap-2 rounded-2xl bg-surface-container-low/98 px-3 py-2 sm:px-4 sm:py-3 shadow-md backdrop-blur-xl shrink-0">
       {/* Left: Brand & Room Tag */}
       <div className="flex items-center gap-2">
         <button
@@ -93,7 +93,7 @@ export function WordleToolbar({
           <button
             type="button"
             onClick={onTogglePlayers}
-            className="lg:hidden rounded-xl bg-surface-container-high px-2.5 py-1 text-xs font-bold text-primary hover:bg-surface-container-highest transition-colors flex items-center gap-1"
+            className="lg:hidden rounded-xl bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/25 transition-colors flex items-center gap-1 shadow-xs"
             title="View Players"
           >
             <span>👥</span>
@@ -104,16 +104,17 @@ export function WordleToolbar({
         <button
           type="button"
           onClick={onOpenSettings}
-          className="rounded-xl bg-surface-container-high px-2.5 py-1 text-xs font-bold text-on-surface hover:bg-surface-container-highest transition-colors"
-          title="Room Rules & Settings"
+          className="flex items-center gap-1.5 rounded-xl border border-primary/30 bg-surface-container-high px-2.5 py-1 text-xs font-bold text-primary hover:border-primary hover:bg-surface-container-highest transition-all shadow-xs"
+          title="Settings & Visual Themes"
         >
-          ⚙️
+          <span>⚙️</span>
+          <span className="hidden sm:inline">Settings</span>
         </button>
 
         <button
           type="button"
           onClick={onNewGame}
-          className="rounded-xl bg-primary px-3 py-1 text-xs font-bold text-on-primary hover:bg-primary-container shadow-sm transition-all"
+          className="rounded-xl bg-primary px-3 py-1 text-xs font-bold text-on-primary hover:bg-primary-container shadow-md shadow-primary/20 transition-all active:scale-95"
         >
           🔄 <span className="hidden sm:inline">Reset</span>
         </button>

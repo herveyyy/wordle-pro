@@ -186,13 +186,25 @@ export function WordleLanding({ session }: WordleLandingProps) {
 
         {/* Bottom Status Bar */}
         <footer className="relative z-10 mx-auto w-full max-w-7xl flex flex-wrap items-center justify-between gap-3 border-t border-primary/10 pt-2 text-[11px] text-on-surface-muted">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  window.dispatchEvent(new CustomEvent("open-theme-studio"));
+                }
+              }}
+              className="flex items-center gap-1 hover:text-primary transition-colors font-bold text-primary"
+            >
+              <span>🎨</span>
+              <span>Theme & Glow Studio</span>
+            </button>
             <button
               type="button"
               onClick={() => setActiveModal("features")}
               className="hover:text-primary transition-colors font-bold"
             >
-              ✨ Highlights & WebRTC Rules
+              ✨ Highlights & WebRTC
             </button>
             <button
               type="button"
