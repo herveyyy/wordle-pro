@@ -11,6 +11,7 @@ async function SignUpContent({ searchParams }: SignUpPageProps) {
   if (params.callbackURL) url.searchParams.set("callbackURL", params.callbackURL);
   if (params.error) url.searchParams.set("error", params.error);
   redirect(url.pathname + url.search);
+  return null;
 }
 
 export default function SignUpPage({ searchParams }: SignUpPageProps) {
@@ -20,5 +21,6 @@ export default function SignUpPage({ searchParams }: SignUpPageProps) {
     </Suspense>
   );
 }
+
 
 
