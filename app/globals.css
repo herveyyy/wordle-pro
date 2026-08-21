@@ -25,70 +25,76 @@
   /* Font */
   --font-comic-relief: "Comic Relief", system-ui, sans-serif;
 
-  /* Layer 0 — Light Mode Surface */
-  --surface: #f0fdf4;
-  --on-surface: #0f172a;
+  /* Papercut / Colored Brutalism Light Canvas */
+  --surface: #fefce8; /* Soft warm paper tone */
+  --on-surface: #000000;
 
-  /* Surface hierarchy (Crisp, High-Contrast Light Mode) */
+  /* Card & Surface Layers */
   --surface-container-low: #ffffff;
   --surface-container-lowest: #ffffff;
-  --surface-container-high: #f1f5f9;
-  --surface-container-highest: #e2e8f0;
+  --surface-container-high: #fef08a; /* Light pastel yellow */
+  --surface-container-highest: #fed7aa; /* Light pastel orange */
   --surface-bright: #ffffff;
-  --surface-variant: #e0f2fe;
+  --surface-variant: #bae6fd;
 
-  /* Brand Colors */
+  /* Brutalist Saturated Color Tokens */
   --primary: #10b981;
   --primary-container: #059669;
-  --on-primary: #ffffff;
-  --secondary: #f59e0b;
+  --on-primary: #000000;
+  --secondary: #fbbf24;
   --secondary-container: #d97706;
-  --on-secondary: #ffffff;
-  --tertiary: #8b5cf6;
+  --on-secondary: #000000;
+  --tertiary: #c084fc;
 
-  /* Glow & Pulsing Light Engine */
-  --glow-1: #10b981;
-  --glow-2: #8b5cf6;
-  --glow-3: #f59e0b;
-  --glow-opacity: 0.55;
-  --pulse-duration: 3.5s;
+  /* Border & Shadow Tokens */
+  --neo-border: #000000;
+  --neo-shadow: #000000;
+  --outline-variant: #000000;
+  --on-surface-muted: #374151;
 
-  /* Utility */
-  --outline-variant: #cbd5e1;
-  --on-surface-muted: #475569;
-
-  --shadow-bloom: 0 12px 32px rgb(16 185 129 / 15%);
+  /* Glow Engine */
+  --glow-1: #22c55e;
+  --glow-2: #f59e0b;
+  --glow-3: #a855f7;
+  --glow-opacity: 0.35;
+  --pulse-duration: 4s;
 }
 
 html.dark,
 html[data-mode="dark"] {
   color-scheme: dark;
-  --surface: #090d16;
-  --on-surface: #f8fafc;
-  --surface-container-low: #0f172a;
-  --surface-container-lowest: #0b1120;
-  --surface-container-high: #1e293b;
-  --surface-container-highest: #334155;
-  --surface-bright: #1e293b;
+  --surface: #0f172a; /* Deep midnight canvas */
+  --on-surface: #ffffff;
+
+  --surface-container-low: #1e293b;
+  --surface-container-lowest: #0f172a;
+  --surface-container-high: #334155;
+  --surface-container-highest: #475569;
+  --surface-bright: #334155;
   --surface-variant: #1e1b4b;
-  --outline-variant: #475569;
-  --on-surface-muted: #94a3b8;
-  --shadow-bloom: 0 16px 40px rgb(16 185 129 / 25%);
+
+  --neo-border: #ffffff;
+  --neo-shadow: #000000;
+  --outline-variant: #64748b;
+  --on-surface-muted: #cbd5e1;
 }
 
 html[data-mode="oled"] {
   color-scheme: dark;
   --surface: #000000;
   --on-surface: #ffffff;
-  --surface-container-low: #080808;
+
+  --surface-container-low: #111111;
   --surface-container-lowest: #000000;
-  --surface-container-high: #141414;
-  --surface-container-highest: #242424;
-  --surface-bright: #181818;
-  --surface-variant: #121212;
-  --outline-variant: #282828;
-  --on-surface-muted: #a1a1aa;
-  --shadow-bloom: 0 16px 40px rgb(0 0 0 / 70%);
+  --surface-container-high: #222222;
+  --surface-container-highest: #333333;
+  --surface-bright: #222222;
+  --surface-variant: #111111;
+
+  --neo-border: #ffffff;
+  --neo-shadow: #22c55e;
+  --outline-variant: #444444;
+  --on-surface-muted: #d4d4d8;
 }
 
 html,
@@ -107,7 +113,7 @@ body {
   background: var(--surface);
   color: var(--on-surface);
   font-family: var(--font-comic-relief);
-  transition: background-color 0.25s ease, color 0.25s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
@@ -125,173 +131,154 @@ select,
   user-select: none;
 }
 
-.comic-relief-regular {
-  font-family: "Comic Relief", system-ui;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.comic-relief-bold {
-  font-family: "Comic Relief", system-ui;
-  font-weight: 700;
-  font-style: normal;
-}
-
 .font-display {
   font-family: var(--font-comic-relief);
 }
 
-.btn-primary-gradient {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-container) 100%);
-}
+/* =========================================================
+   PAPERCUT & COLORED NEO-BRUTALISM SYSTEM
+========================================================= */
 
-.glass-panel {
-  background: color-mix(in srgb, var(--surface-container-lowest) 92%, transparent);
-  backdrop-filter: blur(20px);
-}
-
-.ghost-border {
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--outline-variant) 30%, transparent);
-}
-
-.input-glow:focus {
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 45%, transparent);
-}
-
-/* Comic Arcade Design System */
-.comic-card {
+/* Papercut Card Base */
+.neo-card {
   position: relative;
-  border-width: 2.5px;
-  border-style: solid;
-  border-color: color-mix(in srgb, var(--primary) 40%, var(--outline-variant));
-  box-shadow: 0 8px 0 color-mix(in srgb, var(--primary) 25%, rgba(0, 0, 0, 0.2));
-  background-color: var(--surface-container-lowest);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  background-color: var(--surface-container-low);
+  border: 3px solid var(--neo-border, #000000);
+  border-radius: 1.25rem;
+  box-shadow: 5px 5px 0px var(--neo-shadow, #000000);
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.comic-btn-primary {
-  background: linear-gradient(180deg, #10b981 0%, #059669 100%);
-  color: #ffffff;
-  border: 2px solid #34d399;
-  box-shadow: 0 4px 0 #047857;
+/* Interactive Papercut Button — Primary (Vibrant Emerald / Green) */
+.neo-btn-primary {
+  background-color: #22c55e;
+  color: #000000;
+  border: 3px solid #000000;
+  border-radius: 1rem;
   font-weight: 800;
-  transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+  box-shadow: 4px 4px 0px #000000;
+  transition: all 0.1s ease;
 }
-.comic-btn-primary:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
-  box-shadow: 0 5px 0 #047857;
+.neo-btn-primary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #000000;
+  background-color: #4ade80;
 }
-.comic-btn-primary:active {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 #047857;
+.neo-btn-primary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000000;
 }
 
-.comic-btn-secondary {
-  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
-  color: #ffffff;
-  border: 2px solid #fbbf24;
-  box-shadow: 0 4px 0 #b45309;
+/* Interactive Papercut Button — Secondary (Vibrant Yellow / Gold) */
+.neo-btn-secondary {
+  background-color: #facc15;
+  color: #000000;
+  border: 3px solid #000000;
+  border-radius: 1rem;
   font-weight: 800;
-  transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+  box-shadow: 4px 4px 0px #000000;
+  transition: all 0.1s ease;
 }
-.comic-btn-secondary:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
-  box-shadow: 0 5px 0 #b45309;
+.neo-btn-secondary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #000000;
+  background-color: #fde047;
 }
-.comic-btn-secondary:active {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 #b45309;
+.neo-btn-secondary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000000;
 }
 
-.comic-btn-pill {
-  background: var(--surface-container-high);
+/* Interactive Papercut Button — Cyan Accent */
+.neo-btn-cyan {
+  background-color: #38bdf8;
+  color: #000000;
+  border: 3px solid #000000;
+  border-radius: 1rem;
+  font-weight: 800;
+  box-shadow: 4px 4px 0px #000000;
+  transition: all 0.1s ease;
+}
+.neo-btn-cyan:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #000000;
+  background-color: #7dd3fc;
+}
+.neo-btn-cyan:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+/* Interactive Papercut Button — Pink / Rose Accent */
+.neo-btn-pink {
+  background-color: #f472b6;
+  color: #000000;
+  border: 3px solid #000000;
+  border-radius: 1rem;
+  font-weight: 800;
+  box-shadow: 4px 4px 0px #000000;
+  transition: all 0.1s ease;
+}
+.neo-btn-pink:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #000000;
+  background-color: #f9a8d4;
+}
+.neo-btn-pink:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+/* Papercut Pill Selector Option */
+.neo-btn-pill {
+  background-color: var(--surface-container-high);
   color: var(--on-surface);
-  border: 2px solid var(--outline-variant);
-  box-shadow: 0 3px 0 color-mix(in srgb, var(--outline-variant) 60%, rgba(0,0,0,0.15));
-  transition: all 0.12s ease;
+  border: 2.5px solid var(--neo-border, #000000);
+  border-radius: 0.85rem;
+  box-shadow: 3px 3px 0px var(--neo-shadow, #000000);
+  font-weight: 800;
+  transition: all 0.1s ease;
 }
-.comic-btn-pill:hover {
-  border-color: var(--primary);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 0 color-mix(in srgb, var(--primary) 50%, transparent);
+.neo-btn-pill:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px var(--neo-shadow, #000000);
+  background-color: var(--surface-container-highest);
 }
-.comic-btn-pill:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 var(--primary);
-}
-
-.comic-btn-pill-active {
-  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-container) 100%) !important;
-  color: #ffffff !important;
-  border-color: #34d399 !important;
-  box-shadow: 0 4px 0 var(--primary-container) !important;
-  transform: scale(1.04);
+.neo-btn-pill:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--neo-shadow, #000000);
 }
 
-/* Pulsing Light & Floating Blurred Orbs Keyframes */
-@keyframes orb-float-1 {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  33% {
-    transform: translate(30px, -40px) scale(1.08);
-  }
-  66% {
-    transform: translate(-25px, 25px) scale(0.95);
-  }
+.neo-btn-pill-active {
+  background-color: #22c55e !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+  box-shadow: 4px 4px 0px #000000 !important;
+  transform: translate(-1px, -1px) scale(1.03);
 }
 
-@keyframes orb-float-2 {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  33% {
-    transform: translate(-35px, 30px) scale(1.05);
-  }
-  66% {
-    transform: translate(20px, -35px) scale(0.92);
-  }
+/* Papercut Sticker Badge */
+.neo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  font-weight: 800;
+  border: 2px solid #000000;
+  border-radius: 0.75rem;
+  box-shadow: 2px 2px 0px #000000;
 }
 
-@keyframes orb-float-3 {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(25px, -20px) scale(1.06);
-  }
-}
-
-.pulsing-orb-1 {
-  animation: orb-float-1 var(--pulse-duration, 4s) ease-in-out infinite;
-  opacity: var(--glow-opacity, 0.7);
-}
-
-.pulsing-orb-2 {
-  animation: orb-float-2 calc(var(--pulse-duration, 4s) * 1.25) ease-in-out infinite;
-  opacity: var(--glow-opacity, 0.7);
-}
-
-.pulsing-orb-3 {
-  animation: orb-float-3 calc(var(--pulse-duration, 4s) * 1.5) ease-in-out infinite;
-  opacity: var(--glow-opacity, 0.7);
-}
-
-/* Fast Micro-Animation Keyframes for Letter Input & Submit */
+/* Micro-Animation Keyframes for Letter Input & Submit */
 @keyframes tile-pop {
   0% {
-    transform: scale(0.8);
-    opacity: 0.6;
+    transform: scale(0.85);
   }
-  40% {
-    transform: scale(1.15);
-    opacity: 1;
+  50% {
+    transform: scale(1.15) rotate(-2deg);
   }
   100% {
-    transform: scale(1);
-    opacity: 1;
+    transform: scale(1) rotate(0deg);
   }
 }
 
@@ -312,15 +299,15 @@ select,
     transform: translateX(0);
   }
   20%, 60% {
-    transform: translateX(-8px);
+    transform: translateX(-8px) rotate(-1deg);
   }
   40%, 80% {
-    transform: translateX(8px);
+    transform: translateX(8px) rotate(1deg);
   }
 }
 
 .animate-tile-pop {
-  animation: tile-pop 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: tile-pop 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 .animate-tile-flip {
@@ -332,15 +319,15 @@ select,
   animation: row-shake 0.35s ease-in-out forwards;
 }
 
-/* Custom Sleek Scrollbar */
+/* Custom Papercut Scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--primary) 40%, transparent) transparent;
+  scrollbar-color: #000000 transparent;
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
@@ -348,10 +335,11 @@ select,
 }
 
 ::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--primary) 45%, transparent);
+  background: #000000;
   border-radius: 9999px;
+  border: 1.5px solid #ffffff;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  background: #22c55e;
 }

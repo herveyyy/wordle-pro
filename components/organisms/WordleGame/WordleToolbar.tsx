@@ -35,51 +35,51 @@ export function WordleToolbar({
   const isLowTime = config.timeLimitSeconds > 0 && timeLeft <= 10;
 
   return (
-    <header className="comic-card flex w-full items-center justify-between gap-2 rounded-2xl bg-surface-container-low/98 px-3 py-2 sm:px-4 sm:py-3 shadow-md backdrop-blur-xl shrink-0">
+    <header className="neo-card flex w-full items-center justify-between gap-2 px-3 py-2 sm:px-4 sm:py-2.5 shrink-0 bg-white dark:bg-slate-900 border-3 border-black dark:border-white shadow-[4px_4px_0px_#000000] dark:shadow-[4px_4px_0px_#ffffff]">
       {/* Left: Brand & Room Tag */}
       <div className="flex items-center gap-2">
         <Link
           href="/"
           onClick={onExit}
-          className="flex items-center gap-1.5 rounded-xl border border-primary/30 bg-surface-container-high px-3 py-1.5 text-xs font-bold text-on-surface-muted hover:text-primary hover:border-primary transition-all shadow-xs"
+          className="neo-btn-pill flex items-center gap-1.5 px-3 py-1 text-xs font-extrabold"
           title="Exit to Main Lobby"
         >
           <span>←</span>
-          <span className="font-extrabold">Lobby</span>
+          <span>Lobby</span>
         </Link>
 
-        <div className="flex items-center gap-1.5 rounded-xl bg-surface-container-high px-2.5 py-1 text-xs font-semibold text-primary">
+        <div className="neo-badge bg-cyan-300 text-black text-xs font-extrabold">
           <span>{config.isPrivate ? "🔒" : "🌐"}</span>
-          <span className="font-mono font-bold">#{config.roomId}</span>
+          <span className="font-mono">#{config.roomId}</span>
           {config.passkey ? (
-            <span className="hidden sm:inline-block rounded bg-primary/15 px-1.5 py-0.2 text-[10px] font-mono text-primary font-bold">
-              KEY: {config.passkey}
+            <span className="hidden sm:inline-block bg-black text-white px-1.5 py-0.2 text-[10px] font-mono rounded-md">
+              {config.passkey}
             </span>
           ) : null}
         </div>
       </div>
 
       {/* Middle: Game Specs & Round Stats */}
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         {/* Round Badge */}
-        <div className="flex items-center gap-1 rounded-xl bg-surface-container-highest/60 px-2.5 py-1 text-xs font-bold text-on-surface">
-          <span className="text-on-surface-muted">R:</span>
-          <span className="font-display text-primary">
+        <div className="neo-badge bg-yellow-300 text-black text-xs font-extrabold">
+          <span>R:</span>
+          <span>
             {currentRound}/{config.totalRounds}
           </span>
         </div>
 
         {/* Word Length (Desktop/Tablet) */}
-        <div className="hidden md:flex items-center gap-1 rounded-xl bg-surface-container-highest/60 px-2.5 py-1 text-xs font-bold text-secondary">
+        <div className="hidden md:flex neo-badge bg-pink-300 text-black text-xs font-extrabold">
           <span>🔤 {config.wordLength}L</span>
         </div>
 
         {/* Countdown Timer */}
         <div
-          className={`flex items-center gap-1.5 rounded-xl px-2.5 py-1 text-xs font-mono font-extrabold transition-all ${
+          className={`neo-badge text-xs font-mono font-extrabold transition-all ${
             isLowTime
-              ? "bg-red-500 text-white animate-pulse shadow-sm shadow-red-500/40 scale-105"
-              : "bg-surface-container-highest text-on-surface"
+              ? "bg-red-500 text-white animate-pulse shadow-[2px_2px_0px_#000000]"
+              : "bg-white dark:bg-slate-800 text-black dark:text-white"
           }`}
         >
           <span>⏱️</span>
@@ -94,7 +94,7 @@ export function WordleToolbar({
           <button
             type="button"
             onClick={onTogglePlayers}
-            className="lg:hidden rounded-xl bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/25 transition-colors flex items-center gap-1 shadow-xs"
+            className="lg:hidden neo-badge bg-emerald-300 text-black px-2.5 py-1 text-xs font-extrabold flex items-center gap-1"
             title="View Players"
           >
             <span>👥</span>
@@ -105,8 +105,8 @@ export function WordleToolbar({
         <button
           type="button"
           onClick={onOpenSettings}
-          className="flex items-center gap-1.5 rounded-xl border border-primary/30 bg-surface-container-high px-2.5 py-1 text-xs font-bold text-primary hover:border-primary hover:bg-surface-container-highest transition-all shadow-xs"
-          title="Settings & Visual Themes"
+          className="neo-btn-secondary flex items-center gap-1 px-3 py-1 text-xs font-extrabold"
+          title="Settings & Themes"
         >
           <span>⚙️</span>
           <span className="hidden sm:inline">Settings</span>
@@ -115,7 +115,7 @@ export function WordleToolbar({
         <button
           type="button"
           onClick={onNewGame}
-          className="rounded-xl bg-primary px-3 py-1 text-xs font-bold text-on-primary hover:bg-primary-container shadow-md shadow-primary/20 transition-all active:scale-95"
+          className="neo-btn-primary px-3 py-1 text-xs font-extrabold"
         >
           🔄 <span className="hidden sm:inline">Reset</span>
         </button>

@@ -28,45 +28,45 @@ export function ThemeEditor() {
   if (!isMounted || !isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md animate-in fade-in duration-150">
-      <div className="comic-card w-[360px] sm:w-[420px] max-h-[85vh] overflow-hidden rounded-3xl bg-surface-container-lowest/98 p-6 shadow-2xl backdrop-blur-2xl flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm animate-in fade-in duration-150">
+      <div className="neo-card w-[360px] sm:w-[420px] max-h-[85vh] overflow-hidden bg-white dark:bg-slate-900 border-3 border-black dark:border-white shadow-[6px_6px_0px_#000000] dark:shadow-[6px_6px_0px_#ffffff] p-5 sm:p-6 flex flex-col">
         {/* Header */}
-        <div className="mb-4 flex items-center justify-between border-b border-primary/10 pb-3 shrink-0">
+        <div className="mb-4 flex items-center justify-between border-b-2 border-black dark:border-white pb-3 shrink-0">
           <div className="flex items-center gap-2">
-            <span className="text-lg">🎨</span>
+            <span className="text-xl">🎨</span>
             <div>
-              <h3 className="font-display text-base font-bold text-on-surface">
+              <h3 className="font-display text-base font-extrabold text-black dark:text-white">
                 Theme & Glow Studio
               </h3>
-              <p className="text-[11px] text-on-surface-muted">
-                Custom neon colors & pulsing ambient lights
+              <p className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
+                Custom papercut colors & ambient lighting
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={resetTheme}
-              className="rounded-lg bg-surface-container-high px-2.5 py-1 text-[11px] font-semibold text-on-surface-muted hover:text-primary transition-colors"
+              className="neo-btn-pill px-2.5 py-1 text-[11px] font-extrabold"
               title="Reset to defaults"
             >
               Reset
             </button>
             <button
               onClick={() => setIsOpen(false)}
-              className="flex size-7 items-center justify-center rounded-full bg-surface-container-high text-xs font-bold text-on-surface-muted hover:text-on-surface transition-colors"
+              className="neo-btn-pink size-8 flex items-center justify-center text-sm font-extrabold"
             >
               ✕
             </button>
           </div>
         </div>
 
-        <div className="flex-1 space-y-4 overflow-y-auto pr-1">
+        <div className="flex-1 space-y-3.5 overflow-y-auto pr-1">
           {/* 1. Mode Selector */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-on-surface-muted">
+          <div className="space-y-1 rounded-2xl border-2 border-black dark:border-white bg-slate-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
+            <label className="text-xs font-extrabold uppercase text-black dark:text-white block">
               Display Mode
             </label>
-            <div className="grid grid-cols-3 gap-1.5 rounded-2xl bg-surface-container-high/60 p-1.5">
+            <div className="grid grid-cols-3 gap-2 pt-1">
               {[
                 { id: "light", label: "☀️ Light" },
                 { id: "dark", label: "🌙 Dark" },
@@ -75,10 +75,8 @@ export function ThemeEditor() {
                 <button
                   key={m.id}
                   onClick={() => setMode(m.id as ThemeMode)}
-                  className={`rounded-xl py-1.5 text-xs font-bold transition-all ${
-                    config.mode === m.id
-                      ? "bg-primary text-on-primary shadow-xs"
-                      : "text-on-surface-muted hover:text-on-surface"
+                  className={`neo-btn-pill py-2 text-xs font-extrabold ${
+                    config.mode === m.id ? "neo-btn-pill-active" : ""
                   }`}
                 >
                   {m.label}
@@ -88,37 +86,37 @@ export function ThemeEditor() {
           </div>
 
           {/* 2. Preset Themes */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-on-surface-muted">
+          <div className="space-y-1 rounded-2xl border-2 border-black dark:border-white bg-slate-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
+            <label className="text-xs font-extrabold uppercase text-black dark:text-white block">
               Vibrant Presets
             </label>
-            <div className="grid grid-cols-1 gap-1.5">
+            <div className="grid grid-cols-1 gap-1.5 pt-1">
               {Object.values(THEME_PRESETS).map((p) => (
                 <button
                   key={p.id}
                   onClick={() => setPreset(p.id)}
-                  className={`flex items-center justify-between rounded-2xl p-2.5 text-xs font-bold transition-all border ${
+                  className={`neo-btn-pill flex items-center justify-between p-2.5 text-xs font-extrabold ${
                     config.preset === p.id && !config.customPrimary
-                      ? "border-primary bg-primary/10 shadow-xs"
-                      : "border-transparent bg-surface-container-high/40 hover:bg-surface-container-high/80 text-on-surface"
+                      ? "neo-btn-pill-active"
+                      : ""
                   }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <div className="flex gap-1">
                       <span
-                        className="size-4 rounded-full shadow-xs"
+                        className="size-4 rounded-full border border-black shadow-xs"
                         style={{ backgroundColor: p.primary }}
                       />
                       <span
-                        className="size-4 rounded-full shadow-xs"
+                        className="size-4 rounded-full border border-black shadow-xs"
                         style={{ backgroundColor: p.secondary }}
                       />
                     </div>
-                    <span className="font-semibold text-on-surface">{p.name}</span>
+                    <span>{p.name}</span>
                   </div>
 
                   {config.preset === p.id && !config.customPrimary ? (
-                    <span className="text-[11px] font-extrabold text-primary">Active ✓</span>
+                    <span className="neo-badge bg-white text-black text-[10px] py-0.5">Active ✓</span>
                   ) : null}
                 </button>
               ))}
@@ -126,15 +124,13 @@ export function ThemeEditor() {
           </div>
 
           {/* 3. Custom Color Hex */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-on-surface-muted">
-              Custom Neon Colors
+          <div className="space-y-1 rounded-2xl border-2 border-black dark:border-white bg-slate-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
+            <label className="text-xs font-extrabold uppercase text-black dark:text-white block">
+              Custom Papercut Colors
             </label>
-            <div className="grid grid-cols-2 gap-2 rounded-2xl bg-surface-container-high/40 p-2.5">
-              <div>
-                <span className="text-[10px] font-semibold text-on-surface-muted block mb-1">
-                  Primary Neon
-                </span>
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <div className="rounded-xl border-2 border-black bg-white p-2 text-black shadow-[2px_2px_0px_#000]">
+                <span className="text-[10px] font-bold block mb-1">Primary Color</span>
                 <div className="flex items-center gap-2">
                   <input
                     type="color"
@@ -145,18 +141,16 @@ export function ThemeEditor() {
                         config.customSecondary || THEME_PRESETS[config.preset].secondary
                       )
                     }
-                    className="size-7 cursor-pointer rounded-lg border-0 bg-transparent p-0"
+                    className="size-7 cursor-pointer rounded-lg border-2 border-black p-0"
                   />
-                  <span className="font-mono text-xs font-semibold text-on-surface">
+                  <span className="font-mono text-xs font-extrabold">
                     {config.customPrimary || THEME_PRESETS[config.preset].primary}
                   </span>
                 </div>
               </div>
 
-              <div>
-                <span className="text-[10px] font-semibold text-on-surface-muted block mb-1">
-                  Accent Glow
-                </span>
+              <div className="rounded-xl border-2 border-black bg-white p-2 text-black shadow-[2px_2px_0px_#000]">
+                <span className="text-[10px] font-bold block mb-1">Accent Color</span>
                 <div className="flex items-center gap-2">
                   <input
                     type="color"
@@ -167,9 +161,9 @@ export function ThemeEditor() {
                         e.target.value
                       )
                     }
-                    className="size-7 cursor-pointer rounded-lg border-0 bg-transparent p-0"
+                    className="size-7 cursor-pointer rounded-lg border-2 border-black p-0"
                   />
-                  <span className="font-mono text-xs font-semibold text-on-surface">
+                  <span className="font-mono text-xs font-extrabold">
                     {config.customSecondary || THEME_PRESETS[config.preset].secondary}
                   </span>
                 </div>
@@ -178,58 +172,25 @@ export function ThemeEditor() {
           </div>
 
           {/* 4. Pulsing Light Glow Intensity */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-xs">
-              <label className="font-bold uppercase tracking-wider text-on-surface-muted">
-                Pulsing Light Glow
-              </label>
-              <span className="font-bold text-primary capitalize">{config.glowIntensity}</span>
+          <div className="space-y-1 rounded-2xl border-2 border-black dark:border-white bg-slate-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
+            <div className="flex items-center justify-between text-xs font-extrabold text-black dark:text-white">
+              <span>Pulsing Light Glow</span>
+              <span className="neo-badge bg-yellow-300 text-black text-[10px] py-0.5 capitalize">{config.glowIntensity}</span>
             </div>
-            <div className="grid grid-cols-3 gap-1 rounded-2xl bg-surface-container-high/60 p-1">
+            <div className="grid grid-cols-3 gap-2 pt-1">
               {[
                 { id: "low", label: "Subtle" },
                 { id: "medium", label: "Vibrant" },
-                { id: "high", label: "Hyper Glow" },
+                { id: "high", label: "Hyper" },
               ].map((g) => (
                 <button
                   key={g.id}
                   onClick={() => setGlowIntensity(g.id as GlowIntensity)}
-                  className={`rounded-xl py-1.5 text-xs font-bold transition-all ${
-                    config.glowIntensity === g.id
-                      ? "bg-primary text-on-primary shadow-xs"
-                      : "text-on-surface-muted hover:text-on-surface"
+                  className={`neo-btn-pill py-1.5 text-xs font-extrabold ${
+                    config.glowIntensity === g.id ? "neo-btn-pill-active" : ""
                   }`}
                 >
                   {g.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* 5. Light Pulse Speed */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-xs">
-              <label className="font-bold uppercase tracking-wider text-on-surface-muted">
-                Light Pulse Speed
-              </label>
-              <span className="font-bold text-secondary capitalize">{config.pulseSpeed}</span>
-            </div>
-            <div className="grid grid-cols-3 gap-1 rounded-2xl bg-surface-container-high/60 p-1">
-              {[
-                { id: "slow", label: "Chill (8s)" },
-                { id: "normal", label: "Smooth (4s)" },
-                { id: "fast", label: "Fast (2s)" },
-              ].map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => setPulseSpeed(s.id as PulseSpeed)}
-                  className={`rounded-xl py-1.5 text-xs font-bold transition-all ${
-                    config.pulseSpeed === s.id
-                      ? "bg-secondary text-on-secondary shadow-xs"
-                      : "text-on-surface-muted hover:text-on-surface"
-                  }`}
-                >
-                  {s.label}
                 </button>
               ))}
             </div>

@@ -3,22 +3,24 @@
 import React, { useState } from "react";
 import { RoomConfig } from "@/lib/entities/wordle.type";
 import { useThemeEditor } from "@/components/molecules/ThemeEditor/themeEditor.hooks";
-import { THEME_PRESETS, ThemeMode, GlowIntensity, PulseSpeed } from "@/components/molecules/ThemeEditor/themeEditor.types";
+import { THEME_PRESETS, ThemePreset, ThemeMode, GlowIntensity, PulseSpeed } from "@/components/molecules/ThemeEditor/themeEditor.types";
 
 interface WordleLobbyModalProps {
-  currentConfig: RoomConfig;
   isOpen: boolean;
   onClose: () => void;
+  currentConfig: RoomConfig;
   onApplyConfig: (config: RoomConfig) => void;
 }
 
 export function WordleLobbyModal({
-  currentConfig,
   isOpen,
   onClose,
+  currentConfig,
   onApplyConfig,
 }: WordleLobbyModalProps) {
   const [activeTab, setActiveTab] = useState<"match" | "theme">("match");
+
+  // Match Config state
   const [wordLength, setWordLength] = useState<number>(currentConfig.wordLength);
   const [maxChances, setMaxChances] = useState<number>(currentConfig.maxChances);
   const [timeLimitSeconds, setTimeLimitSeconds] = useState<number>(
@@ -32,6 +34,7 @@ export function WordleLobbyModal({
   const [isPrivate, setIsPrivate] = useState<boolean>(currentConfig.isPrivate);
   const [passkey, setPasskey] = useState<string>(currentConfig.passkey || "PRO777");
 
+  // Theme Studio hooks
   const {
     config: themeConfig,
     setPreset,
@@ -61,36 +64,34 @@ export function WordleLobbyModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 sm:p-4 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="comic-card w-full max-w-lg overflow-hidden rounded-3xl bg-surface-container-lowest/98 p-5 sm:p-7 shadow-2xl backdrop-blur-2xl max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 sm:p-4 backdrop-blur-sm animate-in fade-in duration-150">
+      <div className="neo-card w-full max-w-lg bg-white dark:bg-slate-900 border-3 border-black dark:border-white shadow-[6px_6px_0px_#000000] dark:shadow-[6px_6px_0px_#ffffff] p-5 sm:p-7 max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="mb-4 flex items-center justify-between border-b-2 border-primary/20 pb-3 shrink-0">
+        <div className="mb-4 flex items-center justify-between border-b-2 border-black dark:border-white pb-3 shrink-0">
           <div>
-            <h3 className="font-display text-lg sm:text-xl font-extrabold text-on-surface">
+            <h3 className="font-display text-lg sm:text-xl font-extrabold text-black dark:text-white">
               Game & Room Settings
             </h3>
-            <p className="text-[11px] sm:text-xs text-on-surface-muted">
+            <p className="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300">
               Configure battle rules, bot AI, and visual colors
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="flex size-7 sm:size-8 items-center justify-center rounded-full bg-surface-container-high text-xs sm:text-sm font-bold text-on-surface-muted hover:text-on-surface"
+            className="neo-btn-pink size-8 flex items-center justify-center text-sm font-extrabold"
           >
             ✕
           </button>
         </div>
 
         {/* Tab Switcher */}
-        <div className="grid grid-cols-2 gap-1.5 rounded-2xl bg-surface-container-high/60 p-1 mb-4 shrink-0">
+        <div className="grid grid-cols-2 gap-2 mb-4 shrink-0">
           <button
             type="button"
             onClick={() => setActiveTab("match")}
-            className={`rounded-xl py-1.5 text-xs font-bold transition-all ${
-              activeTab === "match"
-                ? "bg-primary text-on-primary shadow-xs"
-                : "text-on-surface-muted hover:text-on-surface"
+            className={`neo-btn-pill py-2 text-xs font-extrabold transition-all ${
+              activeTab === "match" ? "neo-btn-pill-active" : ""
             }`}
           >
             ⚙️ Match & Bots
@@ -98,10 +99,8 @@ export function WordleLobbyModal({
           <button
             type="button"
             onClick={() => setActiveTab("theme")}
-            className={`rounded-xl py-1.5 text-xs font-bold transition-all ${
-              activeTab === "theme"
-                ? "bg-secondary text-on-secondary shadow-xs"
-                : "text-on-surface-muted hover:text-on-surface"
+            className={`neo-btn-pill py-2 text-xs font-extrabold transition-all ${
+              activeTab === "theme" ? "neo-btn-pill-active" : ""
             }`}
           >
             🎨 Colors & Theme
@@ -113,21 +112,19 @@ export function WordleLobbyModal({
           {activeTab === "match" ? (
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* 1. Word Length */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs font-bold">
-                  <span className="text-on-surface-muted">Word Length</span>
-                  <span className="text-primary">{wordLength} Letters</span>
+              <div className="space-y-1.5 rounded-2xl border-2 border-black dark:border-white bg-yellow-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
+                <div className="flex justify-between text-xs font-extrabold text-black dark:text-white">
+                  <span>🔤 Word Length</span>
+                  <span className="neo-badge bg-emerald-300 text-black text-[11px] py-0.5">{wordLength} Letters</span>
                 </div>
-                <div className="grid grid-cols-5 gap-1">
+                <div className="grid grid-cols-5 gap-1.5 pt-1">
                   {[4, 5, 6, 7, 8].map((l) => (
                     <button
                       key={l}
                       type="button"
                       onClick={() => setWordLength(l)}
-                      className={`rounded-xl py-1.5 text-xs font-bold transition-all ${
-                        wordLength === l
-                          ? "bg-primary text-on-primary shadow-xs scale-105"
-                          : "bg-surface-container-high text-on-surface-muted hover:text-primary"
+                      className={`neo-btn-pill py-1.5 text-xs font-extrabold ${
+                        wordLength === l ? "neo-btn-pill-active" : ""
                       }`}
                     >
                       {l}
@@ -137,21 +134,19 @@ export function WordleLobbyModal({
               </div>
 
               {/* 2. Max Chances */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs font-bold">
-                  <span className="text-on-surface-muted">Guess Chances</span>
-                  <span className="text-secondary">{maxChances} Tries</span>
+              <div className="space-y-1.5 rounded-2xl border-2 border-black dark:border-white bg-pink-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
+                <div className="flex justify-between text-xs font-extrabold text-black dark:text-white">
+                  <span>🎯 Guess Chances</span>
+                  <span className="neo-badge bg-pink-300 text-black text-[11px] py-0.5">{maxChances} Tries</span>
                 </div>
-                <div className="grid grid-cols-4 gap-1">
+                <div className="grid grid-cols-4 gap-1.5 pt-1">
                   {[4, 6, 8, 10].map((c) => (
                     <button
                       key={c}
                       type="button"
                       onClick={() => setMaxChances(c)}
-                      className={`rounded-xl py-1.5 text-xs font-bold transition-all ${
-                        maxChances === c
-                          ? "bg-secondary text-on-secondary shadow-xs scale-105"
-                          : "bg-surface-container-high text-on-surface-muted hover:text-secondary"
+                      className={`neo-btn-pill py-1.5 text-xs font-extrabold ${
+                        maxChances === c ? "neo-btn-pill-active" : ""
                       }`}
                     >
                       {c}
@@ -161,14 +156,14 @@ export function WordleLobbyModal({
               </div>
 
               {/* 3. Turn Time Limit */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs font-bold">
-                  <span className="text-on-surface-muted">Turn Timer</span>
-                  <span className="text-primary">
+              <div className="space-y-1.5 rounded-2xl border-2 border-black dark:border-white bg-cyan-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
+                <div className="flex justify-between text-xs font-extrabold text-black dark:text-white">
+                  <span>⏱️ Turn Timer</span>
+                  <span className="neo-badge bg-cyan-300 text-black text-[11px] py-0.5">
                     {timeLimitSeconds === 0 ? "Unlimited" : `${timeLimitSeconds}s`}
                   </span>
                 </div>
-                <div className="grid grid-cols-4 gap-1">
+                <div className="grid grid-cols-4 gap-1.5 pt-1">
                   {[
                     { label: "30s", val: 30 },
                     { label: "60s", val: 60 },
@@ -179,10 +174,8 @@ export function WordleLobbyModal({
                       key={t.label}
                       type="button"
                       onClick={() => setTimeLimitSeconds(t.val)}
-                      className={`rounded-xl py-1.5 text-xs font-bold transition-all ${
-                        timeLimitSeconds === t.val
-                          ? "bg-primary text-on-primary shadow-xs scale-105"
-                          : "bg-surface-container-high text-on-surface-muted hover:text-primary"
+                      className={`neo-btn-pill py-1.5 text-xs font-extrabold ${
+                        timeLimitSeconds === t.val ? "neo-btn-pill-active" : ""
                       }`}
                     >
                       {t.label}
@@ -192,23 +185,21 @@ export function WordleLobbyModal({
               </div>
 
               {/* 4. Total Rounds */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs font-bold">
-                  <span className="text-on-surface-muted">Match Rounds</span>
-                  <span className="text-primary">
+              <div className="space-y-1.5 rounded-2xl border-2 border-black dark:border-white bg-purple-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
+                <div className="flex justify-between text-xs font-extrabold text-black dark:text-white">
+                  <span>🏆 Match Rounds</span>
+                  <span className="neo-badge bg-purple-300 text-black text-[11px] py-0.5">
                     {totalRounds === 1 ? "1 Round" : `Best of ${totalRounds}`}
                   </span>
                 </div>
-                <div className="grid grid-cols-4 gap-1">
+                <div className="grid grid-cols-4 gap-1.5 pt-1">
                   {[1, 3, 5, 10].map((r) => (
                     <button
                       key={r}
                       type="button"
                       onClick={() => setTotalRounds(r)}
-                      className={`rounded-xl py-1.5 text-xs font-bold transition-all ${
-                        totalRounds === r
-                          ? "bg-primary text-on-primary shadow-xs scale-105"
-                          : "bg-surface-container-high text-on-surface-muted hover:text-primary"
+                      className={`neo-btn-pill py-1.5 text-xs font-extrabold ${
+                        totalRounds === r ? "neo-btn-pill-active" : ""
                       }`}
                     >
                       {r}
@@ -218,26 +209,24 @@ export function WordleLobbyModal({
               </div>
 
               {/* 5. Bot Limits & AI Difficulty */}
-              <div className="space-y-2 rounded-2xl bg-surface-container-high/40 p-3">
-                <div className="flex items-center justify-between text-xs font-bold">
-                  <span className="text-on-surface">🤖 Bot AI Competitors</span>
-                  <span className="text-primary font-bold">
+              <div className="space-y-2 rounded-2xl border-2 border-black dark:border-white bg-amber-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
+                <div className="flex items-center justify-between text-xs font-extrabold text-black dark:text-white">
+                  <span>🤖 Bot AI Competitors</span>
+                  <span className="neo-badge bg-amber-300 text-black text-[11px] py-0.5">
                     {botCount === 0 || botDifficulty === "off"
                       ? "0 (P2P Humans Only)"
                       : `${botCount} Bots (${botDifficulty.toUpperCase()})`}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-5 gap-1">
+                <div className="grid grid-cols-5 gap-1.5 pt-1">
                   {[0, 1, 2, 3, 4].map((count) => (
                     <button
                       key={count}
                       type="button"
                       onClick={() => setBotCount(count)}
-                      className={`rounded-xl py-1 text-xs font-bold transition-all ${
-                        botCount === count
-                          ? "bg-primary text-on-primary shadow-xs"
-                          : "bg-surface-container-high text-on-surface-muted hover:text-primary"
+                      className={`neo-btn-pill py-1.5 text-xs font-extrabold ${
+                        botCount === count ? "neo-btn-pill-active" : ""
                       }`}
                     >
                       {count === 0 ? "0 (Off)" : `${count} Bot${count > 1 ? "s" : ""}`}
@@ -246,7 +235,7 @@ export function WordleLobbyModal({
                 </div>
 
                 {botCount > 0 ? (
-                  <div className="grid grid-cols-4 gap-1 pt-1">
+                  <div className="grid grid-cols-4 gap-1.5 pt-1.5">
                     {[
                       { id: "easy", label: "Easy" },
                       { id: "medium", label: "Medium" },
@@ -257,10 +246,8 @@ export function WordleLobbyModal({
                         key={diff.id}
                         type="button"
                         onClick={() => setBotDifficulty(diff.id as any)}
-                        className={`rounded-xl py-1 text-xs font-bold transition-all ${
-                          botDifficulty === diff.id
-                            ? "bg-secondary text-on-secondary shadow-xs"
-                            : "bg-surface-container-high text-on-surface-muted hover:text-secondary"
+                        className={`neo-btn-pill py-1 text-xs font-extrabold ${
+                          botDifficulty === diff.id ? "neo-btn-pill-active" : ""
                         }`}
                       >
                         {diff.label}
@@ -271,16 +258,14 @@ export function WordleLobbyModal({
               </div>
 
               {/* 6. Passkey & Privacy */}
-              <div className="rounded-2xl bg-surface-container-high/40 p-3 space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-on-surface">Passkey Lock</span>
+              <div className="rounded-2xl border-2 border-black dark:border-white bg-slate-50 dark:bg-slate-800/80 p-3 space-y-2 shadow-[2px_2px_0px_#000]">
+                <div className="flex items-center justify-between text-xs font-extrabold text-black dark:text-white">
+                  <span>🔒 Passkey Lock</span>
                   <button
                     type="button"
                     onClick={() => setIsPrivate(!isPrivate)}
-                    className={`rounded-xl px-3 py-1 text-xs font-bold transition-all ${
-                      isPrivate
-                        ? "bg-secondary text-on-secondary"
-                        : "bg-surface-container-high text-on-surface-muted"
+                    className={`neo-btn-pill px-3 py-1 text-xs font-extrabold ${
+                      isPrivate ? "neo-btn-pill-active" : ""
                     }`}
                   >
                     {isPrivate ? "🔒 Enabled" : "🌐 Public"}
@@ -288,43 +273,36 @@ export function WordleLobbyModal({
                 </div>
 
                 {isPrivate ? (
-                  <div className="flex items-center gap-2 text-xs">
-                    <span className="text-on-surface-muted">Passkey:</span>
+                  <div className="flex items-center gap-2 text-xs font-extrabold text-black dark:text-white pt-1">
+                    <span>KEY:</span>
                     <input
                       type="text"
                       value={passkey}
                       onChange={(e) => setPasskey(e.target.value.toUpperCase())}
-                      className="rounded-xl border border-primary/20 bg-surface-container-lowest px-3 py-1 font-mono font-bold uppercase text-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                      className="rounded-xl border-2 border-black bg-white px-3 py-1 font-mono font-extrabold uppercase text-black focus:outline-none shadow-[2px_2px_0px_#000]"
                       maxLength={8}
                     />
                   </div>
                 ) : null}
               </div>
 
-              <div className="flex items-center justify-end gap-2.5 pt-2">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="rounded-2xl bg-surface-container-high px-4 py-2 text-xs font-bold text-on-surface-muted hover:text-on-surface"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="rounded-2xl bg-primary px-5 py-2 font-display text-xs font-bold text-on-primary shadow-md hover:bg-primary-container"
-                >
-                  Apply & Restart Match →
-                </button>
-              </div>
+              {/* Submit CTA */}
+              <button
+                type="submit"
+                className="neo-btn-primary w-full py-3.5 text-sm font-extrabold shadow-[4px_4px_0px_#000]"
+              >
+                💾 Apply Match Rules
+              </button>
             </form>
           ) : (
+            /* Visual Theme Studio inside Settings */
             <div className="space-y-4">
-              {/* Display Mode */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-on-surface-muted">
+              {/* Mode */}
+              <div className="space-y-1.5 rounded-2xl border-2 border-black dark:border-white bg-slate-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
+                <label className="text-xs font-extrabold uppercase text-black dark:text-white block">
                   Display Mode
                 </label>
-                <div className="grid grid-cols-3 gap-1 rounded-2xl bg-surface-container-high/60 p-1">
+                <div className="grid grid-cols-3 gap-2">
                   {[
                     { id: "light", label: "☀️ Light" },
                     { id: "dark", label: "🌙 Dark" },
@@ -334,10 +312,8 @@ export function WordleLobbyModal({
                       key={m.id}
                       type="button"
                       onClick={() => setMode(m.id as ThemeMode)}
-                      className={`rounded-xl py-1.5 text-xs font-bold transition-all ${
-                        themeConfig.mode === m.id
-                          ? "bg-primary text-on-primary shadow-xs"
-                          : "text-on-surface-muted hover:text-on-surface"
+                      className={`neo-btn-pill py-2 text-xs font-extrabold ${
+                        themeConfig.mode === m.id ? "neo-btn-pill-active" : ""
                       }`}
                     >
                       {m.label}
@@ -346,9 +322,9 @@ export function WordleLobbyModal({
                 </div>
               </div>
 
-              {/* Theme Presets */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-on-surface-muted">
+              {/* Presets */}
+              <div className="space-y-1.5 rounded-2xl border-2 border-black dark:border-white bg-slate-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
+                <label className="text-xs font-extrabold uppercase text-black dark:text-white block">
                   Vibrant Presets
                 </label>
                 <div className="grid grid-cols-1 gap-1.5">
@@ -357,132 +333,79 @@ export function WordleLobbyModal({
                       key={p.id}
                       type="button"
                       onClick={() => setPreset(p.id)}
-                      className={`flex items-center justify-between rounded-2xl p-2.5 text-xs font-bold transition-all border ${
+                      className={`neo-btn-pill flex items-center justify-between p-2.5 text-xs font-extrabold ${
                         themeConfig.preset === p.id && !themeConfig.customPrimary
-                          ? "border-primary bg-primary/10 shadow-xs"
-                          : "border-transparent bg-surface-container-high/40 hover:bg-surface-container-high/80 text-on-surface"
+                          ? "neo-btn-pill-active"
+                          : ""
                       }`}
                     >
-                      <div className="flex items-center gap-2.5">
+                      <div className="flex items-center gap-2">
                         <div className="flex gap-1">
                           <span
-                            className="size-4 rounded-full shadow-xs"
+                            className="size-4 rounded-full border border-black shadow-xs"
                             style={{ backgroundColor: p.primary }}
                           />
                           <span
-                            className="size-4 rounded-full shadow-xs"
+                            className="size-4 rounded-full border border-black shadow-xs"
                             style={{ backgroundColor: p.secondary }}
                           />
                         </div>
-                        <span className="font-semibold text-on-surface">{p.name}</span>
+                        <span>{p.name}</span>
                       </div>
-
                       {themeConfig.preset === p.id && !themeConfig.customPrimary ? (
-                        <span className="text-[10px] font-extrabold text-primary">Active ✓</span>
+                        <span className="neo-badge bg-white text-black text-[10px] py-0.5">Active ✓</span>
                       ) : null}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Custom Color Pickers */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-on-surface-muted">
-                  Custom Colors
+              {/* Custom Colors */}
+              <div className="space-y-1.5 rounded-2xl border-2 border-black dark:border-white bg-slate-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
+                <label className="text-xs font-extrabold uppercase text-black dark:text-white block">
+                  Custom Papercut Colors
                 </label>
-                <div className="grid grid-cols-2 gap-2 rounded-2xl bg-surface-container-high/40 p-2.5">
-                  <div>
-                    <span className="text-[10px] font-semibold text-on-surface-muted block mb-1">
-                      Primary Neon
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="color"
-                        value={themeConfig.customPrimary || THEME_PRESETS[themeConfig.preset].primary}
-                        onChange={(e) =>
-                          setCustomColors(
-                            e.target.value,
-                            themeConfig.customSecondary || THEME_PRESETS[themeConfig.preset].secondary
-                          )
-                        }
-                        className="size-7 cursor-pointer rounded-lg border-0 bg-transparent p-0"
-                      />
-                      <span className="font-mono text-xs font-semibold text-on-surface">
-                        {themeConfig.customPrimary || THEME_PRESETS[themeConfig.preset].primary}
-                      </span>
-                    </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="rounded-xl border-2 border-black bg-white p-2 text-black shadow-[2px_2px_0px_#000]">
+                    <span className="text-[10px] font-bold block mb-1">Primary Color</span>
+                    <input
+                      type="color"
+                      value={themeConfig.customPrimary || THEME_PRESETS[themeConfig.preset].primary}
+                      onChange={(e) =>
+                        setCustomColors(
+                          e.target.value,
+                          themeConfig.customSecondary || THEME_PRESETS[themeConfig.preset].secondary
+                        )
+                      }
+                      className="size-7 cursor-pointer rounded-lg border-2 border-black p-0"
+                    />
                   </div>
 
-                  <div>
-                    <span className="text-[10px] font-semibold text-on-surface-muted block mb-1">
-                      Accent Glow
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="color"
-                        value={themeConfig.customSecondary || THEME_PRESETS[themeConfig.preset].secondary}
-                        onChange={(e) =>
-                          setCustomColors(
-                            themeConfig.customPrimary || THEME_PRESETS[themeConfig.preset].primary,
-                            e.target.value
-                          )
-                        }
-                        className="size-7 cursor-pointer rounded-lg border-0 bg-transparent p-0"
-                      />
-                      <span className="font-mono text-xs font-semibold text-on-surface">
-                        {themeConfig.customSecondary || THEME_PRESETS[themeConfig.preset].secondary}
-                      </span>
-                    </div>
+                  <div className="rounded-xl border-2 border-black bg-white p-2 text-black shadow-[2px_2px_0px_#000]">
+                    <span className="text-[10px] font-bold block mb-1">Accent Color</span>
+                    <input
+                      type="color"
+                      value={themeConfig.customSecondary || THEME_PRESETS[themeConfig.preset].secondary}
+                      onChange={(e) =>
+                        setCustomColors(
+                          themeConfig.customPrimary || THEME_PRESETS[themeConfig.preset].primary,
+                          e.target.value
+                        )
+                      }
+                      className="size-7 cursor-pointer rounded-lg border-2 border-black p-0"
+                    />
                   </div>
                 </div>
               </div>
 
-              {/* Pulsing Light Glow */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <label className="font-bold uppercase tracking-wider text-on-surface-muted">
-                    Pulsing Light Glow
-                  </label>
-                  <span className="font-bold text-primary capitalize">{themeConfig.glowIntensity}</span>
-                </div>
-                <div className="grid grid-cols-3 gap-1 rounded-2xl bg-surface-container-high/60 p-1">
-                  {[
-                    { id: "low", label: "Subtle" },
-                    { id: "medium", label: "Vibrant" },
-                    { id: "high", label: "Hyper Glow" },
-                  ].map((g) => (
-                    <button
-                      key={g.id}
-                      type="button"
-                      onClick={() => setGlowIntensity(g.id as GlowIntensity)}
-                      className={`rounded-xl py-1.5 text-xs font-bold transition-all ${
-                        themeConfig.glowIntensity === g.id
-                          ? "bg-primary text-on-primary shadow-xs"
-                          : "text-on-surface-muted hover:text-on-surface"
-                      }`}
-                    >
-                      {g.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-2">
-                <button
-                  type="button"
-                  onClick={resetTheme}
-                  className="rounded-2xl bg-surface-container-high px-4 py-2 text-xs font-bold text-on-surface-muted hover:text-primary"
-                >
-                  Reset Defaults
-                </button>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="rounded-2xl bg-primary px-5 py-2 font-display text-xs font-bold text-on-primary shadow-md"
-                >
-                  Done ✓
-                </button>
-              </div>
+              {/* Reset */}
+              <button
+                type="button"
+                onClick={resetTheme}
+                className="neo-btn-pill w-full py-2.5 text-xs font-extrabold"
+              >
+                🔄 Reset Theme to Defaults
+              </button>
             </div>
           )}
         </div>

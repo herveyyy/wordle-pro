@@ -20,13 +20,13 @@ export function WordleKeyboard({ onKey, keyboardStatus, disabled = false }: Word
     const status = keyboardStatus[key];
     switch (status) {
       case "correct":
-        return "bg-emerald-500 text-white border-emerald-400 shadow-md shadow-emerald-500/30";
+        return "bg-emerald-400 text-black border-2 border-black shadow-[2px_2px_0px_#000000] dark:border-white dark:shadow-[2px_2px_0px_#ffffff]";
       case "present":
-        return "bg-amber-500 text-white border-amber-400 shadow-md shadow-amber-500/30";
+        return "bg-amber-300 text-black border-2 border-black shadow-[2px_2px_0px_#000000] dark:border-white dark:shadow-[2px_2px_0px_#ffffff]";
       case "absent":
-        return "bg-slate-600/70 dark:bg-slate-700/80 text-slate-300 dark:text-slate-400 border-slate-600/50 opacity-60";
+        return "bg-slate-300 dark:bg-slate-700 text-slate-500 dark:text-slate-400 border-2 border-black/50 opacity-60 shadow-none";
       default:
-        return "bg-surface-container-high dark:bg-surface-container-highest/80 hover:bg-surface-container-highest hover:border-primary/50 text-on-surface border border-primary/25 dark:border-primary/35 shadow-xs";
+        return "bg-white dark:bg-slate-800 text-black dark:text-white border-2 border-black dark:border-white shadow-[2.5px_2.5px_0px_#000000] dark:shadow-[2.5px_2.5px_0px_#ffffff] hover:bg-yellow-200 dark:hover:bg-slate-700";
     }
   };
 
@@ -44,7 +44,7 @@ export function WordleKeyboard({ onKey, keyboardStatus, disabled = false }: Word
                 type="button"
                 disabled={disabled}
                 onClick={() => onKey(key)}
-                className={`flex h-10 sm:h-11 md:h-12 items-center justify-center rounded-xl font-display font-bold transition-all active:scale-95 disabled:pointer-events-none disabled:opacity-40 touch-manipulation select-none cursor-pointer ${
+                className={`flex h-10 sm:h-11 md:h-12 items-center justify-center rounded-xl font-display font-extrabold transition-all active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:pointer-events-none disabled:opacity-40 touch-manipulation select-none cursor-pointer ${
                   isSpecial
                     ? "px-3 sm:px-4 text-[11px] sm:text-xs tracking-wider"
                     : "flex-1 text-sm sm:text-base md:text-lg"
