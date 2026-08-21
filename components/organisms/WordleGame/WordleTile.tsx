@@ -31,7 +31,7 @@ export function WordleTile({
       case "absent":
         return "bg-slate-500/80 dark:bg-slate-700 text-slate-100 dark:text-slate-300 border-slate-600 dark:border-slate-600";
       case "tbd":
-        return "border-primary bg-surface-container-highest text-on-surface scale-105 shadow-md shadow-primary/20";
+        return "border-primary bg-surface-container-highest text-on-surface shadow-md shadow-primary/20 animate-tile-pop";
       case "empty":
       default:
         return isCurrent
@@ -55,10 +55,10 @@ export function WordleTile({
 
   return (
     <div
-      className={`flex items-center justify-center font-display font-extrabold uppercase aspect-square shrink-0 select-none transition-all duration-200 ${getResponsiveSize()} ${getStatusStyles()} ${
-        isRevealed ? "animate-in zoom-in-75 duration-300" : ""
+      className={`flex items-center justify-center font-display font-extrabold uppercase aspect-square shrink-0 select-none transition-colors duration-200 ${getResponsiveSize()} ${getStatusStyles()} ${
+        isRevealed ? "animate-tile-flip" : ""
       }`}
-      style={isRevealed ? { transitionDelay: `${delayIndex * 60}ms` } : undefined}
+      style={isRevealed ? { animationDelay: `${delayIndex * 120}ms` } : undefined}
     >
       {letter}
     </div>

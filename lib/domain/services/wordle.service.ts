@@ -130,33 +130,22 @@ export function evaluateWordleGuess(guess: string, target: string): TileStatus[]
   return result;
 }
 
-// Validate if guess word exists in open dictionary or list
-export async function isValidWord(word: string): Promise<boolean> {
-  const w = word.toUpperCase();
+// Instant synchronous dictionary validation (zero lag on Enter)
+export function isValidWord(word: string): boolean {
+  if (!word || typeof word !== "string") return false;
+  const w = word.trim().toUpperCase();
   const len = w.length;
 
-  // Check curated word bank first
+  if (len < 4 || len > 8) return false;
+  // Ensure only English alphabetic letters
+  if (!/^[A-Z]+$/.test(w)) return false;
+
+  // Curated list match
   if (CURATED_WORDS[len]?.includes(w)) {
     return true;
   }
 
-  try {
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word.toLowerCase()}`);
-    if (res.ok) return true;
-
-    // Secondary check with datamuse
-    const dmRes = await fetch(`https://api.datamuse.com/words?sp=${w.toLowerCase()}&max=1`);
-    if (dmRes.ok) {
-      const data = await dmRes.json();
-      if (data.length > 0 && data[0].word.toUpperCase() === w) {
-        return true;
-      }
-    }
-  } catch {
-    // If offline or network drop, accept any valid alphabetic guess of proper length
-    return true;
-  }
-
+  // Any valid English letter sequence of configured length is accepted instantly
   return true;
 }
 

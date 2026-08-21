@@ -28,8 +28,8 @@ export function WordleRow({
 
   return (
     <div
-      className={`flex items-center justify-center ${getGap()} transition-transform ${
-        isShaking ? "animate-bounce duration-150" : ""
+      className={`flex items-center justify-center ${getGap()} ${
+        isShaking ? "animate-row-shake" : ""
       }`}
     >
       {Array.from({ length: wordLength }).map((_, colIndex) => {
