@@ -50,7 +50,7 @@ export function useWordleGame(
   const [currentGuessIndex, setCurrentGuessIndex] = useState<number>(0);
   const [currentLetterIndex, setCurrentLetterIndex] = useState<number>(0);
   const [timeLeft, setTimeLeft] = useState<number>(initialConfig.timeLimitSeconds);
-  const [gameStatus, setGameStatus] = useState<GameState["gameStatus"]>("playing");
+  const [gameStatus, setGameStatus] = useState<GameState["gameStatus"]>("lobby");
   const [players, setPlayers] = useState<PlayerStats[]>(() => {
     const list: PlayerStats[] = [
       {
@@ -116,6 +116,11 @@ export function useWordleGame(
             },
           ];
         });
+      } else if (msg.type === "MATCH_START") {
+        setGameStatus("playing");
+        initRound(1, config, "playing");
+      } else if (msg.type === "HOST_CONFIG_SYNC" && msg.config) {
+        setConfig(msg.config);
       } else if (msg.type === "PEER_GUESS" && msg.guessStatuses) {
         setPlayers((prev) =>
           prev.map((p) => {
@@ -164,7 +169,7 @@ export function useWordleGame(
 
   // Initialize a round with the exact server-side room word or seeded target word
   const initRound = useCallback(
-    async (roundNum: number, currentCfg: RoomConfig) => {
+    async (roundNum: number, currentCfg: RoomConfig, targetStatus: GameState["gameStatus"] = "playing") => {
       let word = initialWords?.[roundNum - 1];
       if (!word || word.length !== currentCfg.wordLength) {
         word = await getRandomWord(currentCfg.wordLength, currentCfg.roomId, roundNum);
@@ -179,7 +184,7 @@ export function useWordleGame(
       setKeyboardStatus({});
       setInvalidWordAlert(undefined);
       setShakeRowIndex(undefined);
-      setGameStatus("playing");
+      setGameStatus(targetStatus);
 
       // Initialize empty guesses rows
       const emptyRows: GuessRow[] = Array.from({ length: currentCfg.maxChances }).map(
@@ -204,10 +209,25 @@ export function useWordleGame(
     []
   );
 
-  // Start fresh game / first round on mount or config change
+  // Start fresh game / setup initial board in lobby state on mount
   useEffect(() => {
-    initRound(1, config);
+    initRound(1, config, "lobby");
   }, [config, initRound]);
+
+  // Host starts the match
+  const startMatch = useCallback(() => {
+    setGameStatus("playing");
+    initRound(1, config, "playing");
+    if (webrtcChannelRef.current) {
+      webrtcChannelRef.current.broadcast({
+        type: "MATCH_START",
+        roomId: config.roomId,
+        senderId: "user-1",
+        senderName: `${playerName} (You)`,
+        round: 1,
+      });
+    }
+  }, [config, initRound, playerName]);
 
   // Turn Countdown Timer
   useEffect(() => {
@@ -593,6 +613,7 @@ export function useWordleGame(
     handleKey,
     nextRound,
     resetMatch,
+    startMatch,
     applyRoomConfig,
   };
 }

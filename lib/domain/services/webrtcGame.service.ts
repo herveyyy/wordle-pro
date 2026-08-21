@@ -5,8 +5,10 @@ import { PlayerStats, TileStatus, RoomConfig } from "@/lib/entities/wordle.type"
 export type WebRtcMessageType =
   | "PEER_JOIN"
   | "PEER_LEAVE"
+  | "PEER_READY"
   | "PEER_GUESS"
   | "PEER_SOLVED"
+  | "MATCH_START"
   | "HOST_NEXT_ROUND"
   | "HOST_RESET_MATCH"
   | "HOST_CONFIG_SYNC";

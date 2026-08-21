@@ -64,33 +64,33 @@ export function WordleLobbyModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 sm:p-4 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="neo-card w-full max-w-lg bg-white dark:bg-slate-900 border-3 border-black dark:border-white shadow-[6px_6px_0px_#000000] dark:shadow-[6px_6px_0px_#ffffff] p-5 sm:p-7 max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-3 sm:p-4 backdrop-blur-sm animate-in fade-in duration-150">
+      <div className="neo-card w-full max-w-lg bg-white dark:bg-slate-900 border-3 border-black dark:border-white shadow-[8px_8px_0px_#000000] dark:shadow-[8px_8px_0px_#ffffff] p-5 sm:p-7 max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="mb-4 flex items-center justify-between border-b-2 border-black dark:border-white pb-3 shrink-0">
+        <div className="mb-4 flex items-center justify-between border-b-3 border-black dark:border-white pb-3 shrink-0">
           <div>
-            <h3 className="font-display text-lg sm:text-xl font-extrabold text-black dark:text-white">
+            <h3 className="font-display text-xl sm:text-2xl font-black text-black dark:text-white">
               Game & Room Settings
             </h3>
-            <p className="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300">
+            <p className="text-xs font-extrabold text-slate-800 dark:text-slate-200 mt-0.5">
               Configure battle rules, bot AI, and visual colors
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="neo-btn-pink size-8 flex items-center justify-center text-sm font-extrabold"
+            className="neo-btn-pink size-9 flex items-center justify-center text-sm font-black"
           >
             ✕
           </button>
         </div>
 
         {/* Tab Switcher */}
-        <div className="grid grid-cols-2 gap-2 mb-4 shrink-0">
+        <div className="grid grid-cols-2 gap-2.5 mb-4 shrink-0">
           <button
             type="button"
             onClick={() => setActiveTab("match")}
-            className={`neo-btn-pill py-2 text-xs font-extrabold transition-all ${
+            className={`neo-btn-pill py-2.5 text-xs font-black transition-all ${
               activeTab === "match" ? "neo-btn-pill-active" : ""
             }`}
           >
@@ -99,7 +99,7 @@ export function WordleLobbyModal({
           <button
             type="button"
             onClick={() => setActiveTab("theme")}
-            className={`neo-btn-pill py-2 text-xs font-extrabold transition-all ${
+            className={`neo-btn-pill py-2.5 text-xs font-black transition-all ${
               activeTab === "theme" ? "neo-btn-pill-active" : ""
             }`}
           >
@@ -108,12 +108,12 @@ export function WordleLobbyModal({
         </div>
 
         {/* Content Tabs */}
-        <div className="flex-1 overflow-y-auto pr-1">
+        <div className="flex-1 overflow-y-auto pr-1 space-y-4">
           {activeTab === "match" ? (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3.5">
               {/* 1. Word Length */}
-              <div className="space-y-1.5 rounded-2xl border-2 border-black dark:border-white bg-yellow-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
-                <div className="flex justify-between text-xs font-extrabold text-black dark:text-white">
+              <div className="space-y-1.5 rounded-2xl border-2.5 border-black dark:border-white bg-yellow-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
+                <div className="flex justify-between text-xs font-black text-black dark:text-white">
                   <span>🔤 Word Length</span>
                   <span className="neo-badge bg-emerald-300 text-black text-[11px] py-0.5">{wordLength} Letters</span>
                 </div>
@@ -123,7 +123,7 @@ export function WordleLobbyModal({
                       key={l}
                       type="button"
                       onClick={() => setWordLength(l)}
-                      className={`neo-btn-pill py-1.5 text-xs font-extrabold ${
+                      className={`neo-btn-pill py-2 text-xs font-black ${
                         wordLength === l ? "neo-btn-pill-active" : ""
                       }`}
                     >
@@ -134,8 +134,8 @@ export function WordleLobbyModal({
               </div>
 
               {/* 2. Max Chances */}
-              <div className="space-y-1.5 rounded-2xl border-2 border-black dark:border-white bg-pink-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
-                <div className="flex justify-between text-xs font-extrabold text-black dark:text-white">
+              <div className="space-y-1.5 rounded-2xl border-2.5 border-black dark:border-white bg-pink-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
+                <div className="flex justify-between text-xs font-black text-black dark:text-white">
                   <span>🎯 Guess Chances</span>
                   <span className="neo-badge bg-pink-300 text-black text-[11px] py-0.5">{maxChances} Tries</span>
                 </div>
@@ -145,7 +145,7 @@ export function WordleLobbyModal({
                       key={c}
                       type="button"
                       onClick={() => setMaxChances(c)}
-                      className={`neo-btn-pill py-1.5 text-xs font-extrabold ${
+                      className={`neo-btn-pill py-2 text-xs font-black ${
                         maxChances === c ? "neo-btn-pill-active" : ""
                       }`}
                     >
@@ -156,8 +156,8 @@ export function WordleLobbyModal({
               </div>
 
               {/* 3. Turn Time Limit */}
-              <div className="space-y-1.5 rounded-2xl border-2 border-black dark:border-white bg-cyan-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
-                <div className="flex justify-between text-xs font-extrabold text-black dark:text-white">
+              <div className="space-y-1.5 rounded-2xl border-2.5 border-black dark:border-white bg-cyan-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
+                <div className="flex justify-between text-xs font-black text-black dark:text-white">
                   <span>⏱️ Turn Timer</span>
                   <span className="neo-badge bg-cyan-300 text-black text-[11px] py-0.5">
                     {timeLimitSeconds === 0 ? "Unlimited" : `${timeLimitSeconds}s`}
@@ -174,7 +174,7 @@ export function WordleLobbyModal({
                       key={t.label}
                       type="button"
                       onClick={() => setTimeLimitSeconds(t.val)}
-                      className={`neo-btn-pill py-1.5 text-xs font-extrabold ${
+                      className={`neo-btn-pill py-2 text-xs font-black ${
                         timeLimitSeconds === t.val ? "neo-btn-pill-active" : ""
                       }`}
                     >
@@ -185,8 +185,8 @@ export function WordleLobbyModal({
               </div>
 
               {/* 4. Total Rounds */}
-              <div className="space-y-1.5 rounded-2xl border-2 border-black dark:border-white bg-purple-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
-                <div className="flex justify-between text-xs font-extrabold text-black dark:text-white">
+              <div className="space-y-1.5 rounded-2xl border-2.5 border-black dark:border-white bg-purple-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
+                <div className="flex justify-between text-xs font-black text-black dark:text-white">
                   <span>🏆 Match Rounds</span>
                   <span className="neo-badge bg-purple-300 text-black text-[11px] py-0.5">
                     {totalRounds === 1 ? "1 Round" : `Best of ${totalRounds}`}
@@ -198,7 +198,7 @@ export function WordleLobbyModal({
                       key={r}
                       type="button"
                       onClick={() => setTotalRounds(r)}
-                      className={`neo-btn-pill py-1.5 text-xs font-extrabold ${
+                      className={`neo-btn-pill py-2 text-xs font-black ${
                         totalRounds === r ? "neo-btn-pill-active" : ""
                       }`}
                     >
@@ -209,8 +209,8 @@ export function WordleLobbyModal({
               </div>
 
               {/* 5. Bot Limits & AI Difficulty */}
-              <div className="space-y-2 rounded-2xl border-2 border-black dark:border-white bg-amber-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
-                <div className="flex items-center justify-between text-xs font-extrabold text-black dark:text-white">
+              <div className="space-y-2 rounded-2xl border-2.5 border-black dark:border-white bg-amber-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
+                <div className="flex items-center justify-between text-xs font-black text-black dark:text-white">
                   <span>🤖 Bot AI Competitors</span>
                   <span className="neo-badge bg-amber-300 text-black text-[11px] py-0.5">
                     {botCount === 0 || botDifficulty === "off"
@@ -225,7 +225,7 @@ export function WordleLobbyModal({
                       key={count}
                       type="button"
                       onClick={() => setBotCount(count)}
-                      className={`neo-btn-pill py-1.5 text-xs font-extrabold ${
+                      className={`neo-btn-pill py-2 text-xs font-black ${
                         botCount === count ? "neo-btn-pill-active" : ""
                       }`}
                     >
@@ -246,7 +246,7 @@ export function WordleLobbyModal({
                         key={diff.id}
                         type="button"
                         onClick={() => setBotDifficulty(diff.id as any)}
-                        className={`neo-btn-pill py-1 text-xs font-extrabold ${
+                        className={`neo-btn-pill py-1.5 text-xs font-black ${
                           botDifficulty === diff.id ? "neo-btn-pill-active" : ""
                         }`}
                       >
@@ -258,13 +258,13 @@ export function WordleLobbyModal({
               </div>
 
               {/* 6. Passkey & Privacy */}
-              <div className="rounded-2xl border-2 border-black dark:border-white bg-slate-50 dark:bg-slate-800/80 p-3 space-y-2 shadow-[2px_2px_0px_#000]">
-                <div className="flex items-center justify-between text-xs font-extrabold text-black dark:text-white">
+              <div className="rounded-2xl border-2.5 border-black dark:border-white bg-slate-100 dark:bg-slate-800 p-3 space-y-2 shadow-[3px_3px_0px_#000]">
+                <div className="flex items-center justify-between text-xs font-black text-black dark:text-white">
                   <span>🔒 Passkey Lock</span>
                   <button
                     type="button"
                     onClick={() => setIsPrivate(!isPrivate)}
-                    className={`neo-btn-pill px-3 py-1 text-xs font-extrabold ${
+                    className={`neo-btn-pill px-3.5 py-1.5 text-xs font-black ${
                       isPrivate ? "neo-btn-pill-active" : ""
                     }`}
                   >
@@ -273,13 +273,13 @@ export function WordleLobbyModal({
                 </div>
 
                 {isPrivate ? (
-                  <div className="flex items-center gap-2 text-xs font-extrabold text-black dark:text-white pt-1">
+                  <div className="flex items-center gap-2 text-xs font-black text-black dark:text-white pt-1">
                     <span>KEY:</span>
                     <input
                       type="text"
                       value={passkey}
                       onChange={(e) => setPasskey(e.target.value.toUpperCase())}
-                      className="rounded-xl border-2 border-black bg-white px-3 py-1 font-mono font-extrabold uppercase text-black focus:outline-none shadow-[2px_2px_0px_#000]"
+                      className="rounded-xl border-2 border-black bg-white px-3 py-1.5 font-mono font-black uppercase text-black focus:outline-none shadow-[2px_2px_0px_#000]"
                       maxLength={8}
                     />
                   </div>
@@ -289,20 +289,20 @@ export function WordleLobbyModal({
               {/* Submit CTA */}
               <button
                 type="submit"
-                className="neo-btn-primary w-full py-3.5 text-sm font-extrabold shadow-[4px_4px_0px_#000]"
+                className="neo-btn-primary w-full py-3.5 text-sm font-black shadow-[4px_4px_0px_#000]"
               >
                 💾 Apply Match Rules
               </button>
             </form>
           ) : (
             /* Visual Theme Studio inside Settings */
-            <div className="space-y-4">
+            <div className="space-y-3.5">
               {/* Mode */}
-              <div className="space-y-1.5 rounded-2xl border-2 border-black dark:border-white bg-slate-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
-                <label className="text-xs font-extrabold uppercase text-black dark:text-white block">
+              <div className="space-y-1.5 rounded-2xl border-2.5 border-black dark:border-white bg-slate-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
+                <label className="text-xs font-black uppercase text-black dark:text-white block">
                   Display Mode
                 </label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-2 pt-1">
                   {[
                     { id: "light", label: "☀️ Light" },
                     { id: "dark", label: "🌙 Dark" },
@@ -312,7 +312,7 @@ export function WordleLobbyModal({
                       key={m.id}
                       type="button"
                       onClick={() => setMode(m.id as ThemeMode)}
-                      className={`neo-btn-pill py-2 text-xs font-extrabold ${
+                      className={`neo-btn-pill py-2 text-xs font-black ${
                         themeConfig.mode === m.id ? "neo-btn-pill-active" : ""
                       }`}
                     >
@@ -323,17 +323,17 @@ export function WordleLobbyModal({
               </div>
 
               {/* Presets */}
-              <div className="space-y-1.5 rounded-2xl border-2 border-black dark:border-white bg-slate-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
-                <label className="text-xs font-extrabold uppercase text-black dark:text-white block">
+              <div className="space-y-1.5 rounded-2xl border-2.5 border-black dark:border-white bg-slate-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
+                <label className="text-xs font-black uppercase text-black dark:text-white block">
                   Vibrant Presets
                 </label>
-                <div className="grid grid-cols-1 gap-1.5">
+                <div className="grid grid-cols-1 gap-1.5 pt-1">
                   {Object.values(THEME_PRESETS).map((p) => (
                     <button
                       key={p.id}
                       type="button"
                       onClick={() => setPreset(p.id)}
-                      className={`neo-btn-pill flex items-center justify-between p-2.5 text-xs font-extrabold ${
+                      className={`neo-btn-pill flex items-center justify-between p-2.5 text-xs font-black ${
                         themeConfig.preset === p.id && !themeConfig.customPrimary
                           ? "neo-btn-pill-active"
                           : ""
@@ -361,12 +361,12 @@ export function WordleLobbyModal({
               </div>
 
               {/* Custom Colors */}
-              <div className="space-y-1.5 rounded-2xl border-2 border-black dark:border-white bg-slate-50 dark:bg-slate-800/80 p-3 shadow-[2px_2px_0px_#000]">
-                <label className="text-xs font-extrabold uppercase text-black dark:text-white block">
+              <div className="space-y-1.5 rounded-2xl border-2.5 border-black dark:border-white bg-slate-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
+                <label className="text-xs font-black uppercase text-black dark:text-white block">
                   Custom Papercut Colors
                 </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="rounded-xl border-2 border-black bg-white p-2 text-black shadow-[2px_2px_0px_#000]">
+                <div className="grid grid-cols-2 gap-2 pt-1">
+                  <div className="rounded-xl border-2 border-black bg-white p-2.5 text-black shadow-[2px_2px_0px_#000]">
                     <span className="text-[10px] font-bold block mb-1">Primary Color</span>
                     <input
                       type="color"
@@ -381,7 +381,7 @@ export function WordleLobbyModal({
                     />
                   </div>
 
-                  <div className="rounded-xl border-2 border-black bg-white p-2 text-black shadow-[2px_2px_0px_#000]">
+                  <div className="rounded-xl border-2 border-black bg-white p-2.5 text-black shadow-[2px_2px_0px_#000]">
                     <span className="text-[10px] font-bold block mb-1">Accent Color</span>
                     <input
                       type="color"
@@ -402,7 +402,7 @@ export function WordleLobbyModal({
               <button
                 type="button"
                 onClick={resetTheme}
-                className="neo-btn-pill w-full py-2.5 text-xs font-extrabold"
+                className="neo-btn-pill w-full py-3 text-xs font-black"
               >
                 🔄 Reset Theme to Defaults
               </button>
