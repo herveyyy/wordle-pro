@@ -1,11 +1,33 @@
 import { generate } from "random-words";
 import * as randomWordsPkg from "random-words";
 import { TileStatus } from "@/lib/entities/wordle.type";
+import bundledWords from "./dictionary.data.json";
 
 const rawWordList: string[] =
   (randomWordsPkg as any).wordList ||
   (randomWordsPkg as any).wordsList ||
   [];
+
+// Global in-memory dictionary Set for instant O(1) synchronous word validation
+export const DICTIONARY_SET = new Set<string>();
+
+// 1. Populate from 15,522 KushCreates official Wordle words
+if (Array.isArray(bundledWords)) {
+  for (const w of bundledWords) {
+    if (typeof w === "string") {
+      DICTIONARY_SET.add(w.toUpperCase());
+    }
+  }
+}
+
+// 2. Populate from random-words word list
+if (typeof rawWordList !== "undefined" && Array.isArray(rawWordList)) {
+  for (const w of rawWordList) {
+    if (typeof w === "string" && w.length >= 4 && w.length <= 8) {
+      DICTIONARY_SET.add(w.toUpperCase());
+    }
+  }
+}
 
 // Built-in curated fallback word bank for instant offline resilience
 const CURATED_WORDS: Record<number, string[]> = {
@@ -23,7 +45,7 @@ const CURATED_WORDS: Record<number, string[]> = {
     "RICE", "MEAT", "MILK", "SALT", "SOUP", "WINE", "BEER", "CAKE",
   ],
   5: [
-    "REACT", "WORLD", "BRAIN", "CLOUD", "DREAM", "FLAME", "GHOST", "HONEY",
+    "EAGLE", "REACT", "WORLD", "BRAIN", "CLOUD", "DREAM", "FLAME", "GHOST", "HONEY",
     "IMAGE", "JUICE", "KNIFE", "LEMON", "MAGIC", "NIGHT", "OCEAN", "PIANO",
     "QUEEN", "RIVER", "STORM", "TIGER", "URBAN", "VOICE", "WATER", "YOUTH",
     "ZEBRA", "SPARK", "PRIDE", "NOBLE", "LIGHT", "QUEST", "POWER", "SPACE",
@@ -68,18 +90,6 @@ const CURATED_WORDS: Record<number, string[]> = {
   ],
 };
 
-// Global in-memory dictionary Set for instant O(1) synchronous word validation
-export const DICTIONARY_SET = new Set<string>();
-
-// Populate from random-words word list
-if (typeof rawWordList !== "undefined" && Array.isArray(rawWordList)) {
-  for (const w of rawWordList) {
-    if (typeof w === "string" && w.length >= 4 && w.length <= 8) {
-      DICTIONARY_SET.add(w.toUpperCase());
-    }
-  }
-}
-
 // Populate from curated dictionaries
 for (const wordList of Object.values(CURATED_WORDS)) {
   for (const w of wordList) {
@@ -119,12 +129,12 @@ export async function fetchWordsForRoom(
   try {
     const res = await fetch(
       `https://random-words-api.kushcreates.com/api?language=en&length=${wordLength}`,
-      { next: { revalidate: 300 } } // Cache for 5 minutes
+      { next: { revalidate: 300 } }
     );
 
     if (res.ok) {
       const body = await res.json();
-      const rawData = Array.isArray(body?.data) ? body.data : Array.isArray(body) ? body : [];
+      const rawData = Array.isArray(body) ? body : Array.isArray(body?.data) ? body.data : [];
 
       const candidateWords: string[] = [];
 
@@ -132,7 +142,6 @@ export async function fetchWordsForRoom(
         const rawWord = typeof item === "string" ? item : item?.word;
         if (typeof rawWord === "string") {
           const clean = rawWord.trim().toUpperCase();
-          // Ensure exact length and purely A-Z letters (no punctuation, hyphens, colons)
           if (clean.length === wordLength && /^[A-Z]+$/.test(clean)) {
             candidateWords.push(clean);
             DICTIONARY_SET.add(clean);
@@ -141,7 +150,6 @@ export async function fetchWordsForRoom(
       }
 
       if (candidateWords.length > 0) {
-        // Shuffle candidates and pick totalRounds
         const shuffled = [...candidateWords].sort(() => Math.random() - 0.5);
         const selected = Array.from(new Set(shuffled)).slice(0, totalRounds);
 
@@ -149,7 +157,6 @@ export async function fetchWordsForRoom(
           return selected;
         }
         if (selected.length > 0) {
-          // Fill remaining from candidates
           while (selected.length < totalRounds) {
             selected.push(candidateWords[Math.floor(Math.random() * candidateWords.length)]);
           }
@@ -158,12 +165,16 @@ export async function fetchWordsForRoom(
       }
     }
   } catch (error) {
-    console.warn("KushCreates API fetch failed, falling back to local word bank:", error);
+    console.warn("KushCreates API fetch failed, using bundled word bank:", error);
   }
 
-  // Fallback to local curated word bank
-  const fallbackList = CURATED_WORDS[wordLength] || CURATED_WORDS[5];
-  const shuffledFallback = [...fallbackList].sort(() => Math.random() - 0.5);
+  // Fallback to bundled word bank for this length
+  const bundledMatching = Array.isArray(bundledWords)
+    ? bundledWords.filter((w) => w.length === wordLength && /^[A-Z]+$/.test(w))
+    : [];
+
+  const sourceList = bundledMatching.length > 0 ? bundledMatching : (CURATED_WORDS[wordLength] || CURATED_WORDS[5]);
+  const shuffledFallback = [...sourceList].sort(() => Math.random() - 0.5);
   return shuffledFallback.slice(0, totalRounds);
 }
 
@@ -171,7 +182,11 @@ export async function fetchWordsForRoom(
 export function getRoomWord(roomId: string, round: number, length: number = 5): string {
   const seedKey = `wordle_pro_room_${roomId.toUpperCase()}_round_${round}_len_${length}`;
 
-  const fallbackList = CURATED_WORDS[length] || CURATED_WORDS[5];
+  const bundledMatching = Array.isArray(bundledWords)
+    ? bundledWords.filter((w) => w.length === length && /^[A-Z]+$/.test(w))
+    : [];
+
+  const fallbackList = bundledMatching.length > 0 ? bundledMatching : (CURATED_WORDS[length] || CURATED_WORDS[5]);
   const seedNum = stringToSeed(seedKey);
   const rng = mulberry32(seedNum);
   const randomIndex = Math.floor(rng() * fallbackList.length);
@@ -222,7 +237,7 @@ export function evaluateWordleGuess(guess: string, target: string): TileStatus[]
   return result;
 }
 
-// Strict instant synchronous dictionary check (only valid words allowed)
+// Synchronous fast check against in-memory dictionary Set
 export function isValidWord(word: string): boolean {
   if (!word || typeof word !== "string") return false;
   const w = word.trim().toUpperCase();
@@ -234,7 +249,41 @@ export function isValidWord(word: string): boolean {
   return DICTIONARY_SET.has(w);
 }
 
-// Fetch dictionary definition for round end recap
+/**
+ * Validate word using Free Dictionary API (https://api.dictionaryapi.dev/api/v2/entries/en/<word>)
+ * Fallback to in-memory set if offline or cached
+ */
+export async function validateWordOnline(word: string): Promise<boolean> {
+  if (!word || typeof word !== "string") return false;
+  const clean = word.trim().toUpperCase();
+  const len = clean.length;
+
+  if (len < 4 || len > 8) return false;
+  if (!/^[A-Z]+$/.test(clean)) return false;
+
+  // 1. Fast path: check in-memory Set (0ms)
+  if (DICTIONARY_SET.has(clean)) {
+    return true;
+  }
+
+  // 2. Free Dictionary API validation (https://api.dictionaryapi.dev/api/v2/entries/en/<word>)
+  try {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${clean.toLowerCase()}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0 && data[0]?.word) {
+        DICTIONARY_SET.add(clean);
+        return true;
+      }
+    }
+  } catch (error) {
+    console.warn("Free Dictionary API check error:", error);
+  }
+
+  return false;
+}
+
+// Fetch dictionary definition using Free Dictionary API
 export async function getWordDefinition(word: string): Promise<string | undefined> {
   try {
     const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word.toLowerCase()}`);

@@ -13,6 +13,7 @@ import {
   getRandomWord,
   evaluateWordleGuess,
   isValidWord,
+  validateWordOnline,
   getWordDefinition,
 } from "@/lib/domain/services/wordle.service";
 import {
@@ -354,8 +355,11 @@ export function useWordleGame(
 
         const guessWord = activeRow.letters.slice(0, config.wordLength).join("").toUpperCase();
 
-        // Validate word synchronously (0ms lag)
-        const valid = isValidWord(guessWord);
+        // Fast check in memory, fallback to Free Dictionary API (https://api.dictionaryapi.dev/api/v2/entries/en/<word>)
+        let valid = isValidWord(guessWord);
+        if (!valid) {
+          valid = await validateWordOnline(guessWord);
+        }
         if (!valid) {
           triggerRowShake("Not in valid dictionary");
           return;
