@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FuturisticBackdrop } from "@/components/molecules/FuturisticBackdrop/FuturisticBackdrop";
 import { WordleHeroPreview } from "./WordleHeroPreview";
 import { WordleRoomCustomizer } from "./WordleRoomCustomizer";
+import { WordleJoinRoomCard } from "./WordleJoinRoomCard";
 import { DiscordButton } from "@/components/atoms/DiscordButton/DiscordButton";
 import { useButtonStyles } from "@/components/atoms/Button/button.hooks";
 import { signOutAction } from "@/lib/domain/actions/auth.actions";
@@ -111,17 +112,26 @@ export function WordleLanding({ session }: WordleLandingProps) {
 
             {/* Primary Action Buttons */}
             <div className="flex flex-wrap items-center gap-4">
-              <Link
-                href="/sign-in"
-                className={`${primaryBtnClass} px-8 py-4 text-base font-bold shadow-lg shadow-primary/20 hover:scale-105`}
-              >
-                {session ? "Enter Game Lobby →" : "Create a Room Now →"}
-              </Link>
+              {session ? (
+                <Link
+                  href="/play"
+                  className={`${primaryBtnClass} px-8 py-4 text-base font-bold shadow-lg shadow-primary/20 hover:scale-105`}
+                >
+                  Create Room / Enter Lobby →
+                </Link>
+              ) : (
+                <Link
+                  href="/sign-in?callbackURL=/play"
+                  className={`${primaryBtnClass} px-8 py-4 text-base font-bold shadow-lg shadow-primary/20 hover:scale-105`}
+                >
+                  🔒 Sign In with Discord to Play →
+                </Link>
+              )}
               <a
-                href="#room-builder"
+                href="#join-room"
                 className={`${secondaryBtnClass} px-7 py-4 text-base font-bold`}
               >
-                Explore Room Rules ↓
+                Join Existing Room ↓
               </a>
             </div>
           </div>
@@ -132,8 +142,13 @@ export function WordleLanding({ session }: WordleLandingProps) {
           </div>
         </section>
 
+        {/* Join Existing Room Section */}
+        <section id="join-room" className="mt-12 lg:mt-16">
+          <WordleJoinRoomCard isAuthenticated={Boolean(session)} />
+        </section>
+
         {/* Room Builder Engine Section */}
-        <section id="room-builder" className="mt-16 lg:mt-24">
+        <section id="room-builder" className="mt-12 lg:mt-16">
           <WordleRoomCustomizer isAuthenticated={Boolean(session)} />
         </section>
 

@@ -159,12 +159,25 @@ export function WordleRoomCustomizer({ isAuthenticated }: { isAuthenticated?: bo
           ) : null}
         </div>
 
-        <Link
-          href="/sign-in"
-          className={`${primaryBtnClass} px-8 py-3 text-sm font-semibold shadow-md`}
-        >
-          {isAuthenticated ? "Launch Room With These Rules →" : "Sign In with Discord to Play →"}
-        </Link>
+        {(() => {
+          const numericTimer = timer === "∞" ? 0 : parseInt(timer, 10);
+          const playUrl = `/play?letters=${letters}&chances=${chances}&timer=${numericTimer}&rounds=${rounds}${
+            isPrivate && passkey ? `&passkey=${encodeURIComponent(passkey)}` : ""
+          }`;
+
+          const targetHref = isAuthenticated
+            ? playUrl
+            : `/sign-in?callbackURL=${encodeURIComponent(playUrl)}`;
+
+          return (
+            <Link
+              href={targetHref}
+              className={`${primaryBtnClass} px-8 py-3 text-sm font-semibold shadow-md`}
+            >
+              {isAuthenticated ? "Launch Room With These Rules →" : "🔒 Sign in to Launch Room →"}
+            </Link>
+          );
+        })()}
       </div>
     </div>
   );
