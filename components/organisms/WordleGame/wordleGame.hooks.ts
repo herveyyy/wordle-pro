@@ -40,8 +40,18 @@ export function useWordleGame(
   initialConfig: RoomConfig = DEFAULT_CONFIG,
   playerName: string = "Alex",
   playerAvatar?: string,
-  initialWords?: string[]
+  initialWords?: string[],
+  playerId?: string,
+  initialIsHost: boolean = true
 ) {
+  const [myPlayerId] = useState<string>(
+    () =>
+      playerId ||
+      (typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `user-${Math.random().toString(36).substring(2, 9)}`)
+  );
+
   const [config, setConfig] = useState<RoomConfig>(initialConfig);
   const [currentRound, setCurrentRound] = useState<number>(1);
   const [targetWord, setTargetWord] = useState<string>("");
@@ -54,14 +64,15 @@ export function useWordleGame(
   const [players, setPlayers] = useState<PlayerStats[]>(() => {
     const list: PlayerStats[] = [
       {
-        id: "user-1",
+        id: myPlayerId,
         name: `${playerName} (You)`,
         avatar: playerAvatar,
         score: 0,
         roundsWon: 0,
         guesses: [],
         hasSolved: false,
-        isHost: true,
+        isHost: initialIsHost,
+        isReady: true,
       },
     ];
 
@@ -89,16 +100,29 @@ export function useWordleGame(
   const botIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const webrtcChannelRef = useRef<WebRtcGameChannel | null>(null);
 
-  // WebRTC P2P Real-Time Data Channel Sync
+  // WebRTC & Cloud Real-Time Channel Sync
   useEffect(() => {
     if (!config.useWebRtc) return;
 
     const channel = new WebRtcGameChannel(config.roomId);
     webrtcChannelRef.current = channel;
 
+    // Register initial local player presence
+    channel.setLocalPlayer({
+      id: myPlayerId,
+      name: `${playerName} (You)`,
+      avatar: playerAvatar,
+      isHost: initialIsHost,
+      isReady: true,
+      score: 0,
+      roundsWon: 0,
+      guesses: [],
+      hasSolved: false,
+    });
+
     // Listen to peer updates in the room
     channel.subscribe((msg: WebRtcGameMessage) => {
-      if (msg.senderId === "user-1") return; // ignore self
+      if (msg.senderId === myPlayerId) return; // ignore self
 
       if (msg.type === "PEER_JOIN") {
         setPlayers((prev) => {
@@ -107,20 +131,69 @@ export function useWordleGame(
             ...prev,
             {
               id: msg.senderId,
-              name: msg.senderName,
+              name: msg.senderName.replace(" (You)", ""),
               avatar: msg.senderAvatar,
               score: 0,
               roundsWon: 0,
               guesses: [],
               hasSolved: false,
+              isReady: true,
             },
           ];
+        });
+      } else if (msg.type === "ROOM_PLAYERS_SYNC" && msg.players) {
+        setPlayers((prev) => {
+          const bots = prev.filter((p) => p.id.startsWith("bot-"));
+          const selfPlayer = prev.find((p) => p.id === myPlayerId) || {
+            id: myPlayerId,
+            name: `${playerName} (You)`,
+            avatar: playerAvatar,
+            score: 0,
+            roundsWon: 0,
+            guesses: [],
+            hasSolved: false,
+            isHost: initialIsHost,
+            isReady: true,
+          };
+
+          const remoteHumans: PlayerStats[] = (msg.players || [])
+            .filter((rp) => rp.id !== myPlayerId)
+            .map((rp) => {
+              const existing = prev.find((p) => p.id === rp.id);
+              return {
+                id: rp.id,
+                name: rp.name.replace(" (You)", ""),
+                avatar: rp.avatar || existing?.avatar,
+                score: rp.score !== undefined ? rp.score : (existing?.score ?? 0),
+                roundsWon: rp.roundsWon !== undefined ? rp.roundsWon : (existing?.roundsWon ?? 0),
+                guesses: rp.guesses && rp.guesses.length > 0 ? rp.guesses : (existing?.guesses ?? []),
+                hasSolved: rp.hasSolved !== undefined ? rp.hasSolved : (existing?.hasSolved ?? false),
+                solvedInRow: rp.solvedInRow !== undefined ? rp.solvedInRow : existing?.solvedInRow,
+                isHost: Boolean(rp.isHost),
+                isReady: rp.isReady ?? true,
+              };
+            });
+
+          return [selfPlayer, ...remoteHumans, ...bots];
         });
       } else if (msg.type === "MATCH_START") {
         setGameStatus("playing");
         initRound(1, config, "playing");
       } else if (msg.type === "HOST_CONFIG_SYNC" && msg.config) {
         setConfig(msg.config);
+      } else if (msg.type === "HOST_NEXT_ROUND" && msg.round) {
+        initRound(msg.round, config, "playing");
+      } else if (msg.type === "HOST_RESET_MATCH") {
+        setPlayers((prev) =>
+          prev.map((p) => ({
+            ...p,
+            score: 0,
+            roundsWon: 0,
+            guesses: [],
+            hasSolved: false,
+          }))
+        );
+        initRound(1, config, "lobby");
       } else if (msg.type === "PEER_GUESS" && msg.guessStatuses) {
         setPlayers((prev) =>
           prev.map((p) => {
@@ -152,12 +225,12 @@ export function useWordleGame(
       }
     });
 
-    // Announce self with Discord avatar
+    // Announce self
     channel.broadcast({
       type: "PEER_JOIN",
       roomId: config.roomId,
-      senderId: "user-1",
-      senderName: `${playerName} (You)`,
+      senderId: myPlayerId,
+      senderName: playerName,
       senderAvatar: playerAvatar,
     });
 
@@ -165,7 +238,7 @@ export function useWordleGame(
       channel.destroy();
       webrtcChannelRef.current = null;
     };
-  }, [config.roomId, config.useWebRtc, playerName, playerAvatar]);
+  }, [config.roomId, config.useWebRtc, playerName, playerAvatar, myPlayerId, initialIsHost]);
 
   // Initialize a round with the exact server-side room word or seeded target word
   const initRound = useCallback(
@@ -222,12 +295,12 @@ export function useWordleGame(
       webrtcChannelRef.current.broadcast({
         type: "MATCH_START",
         roomId: config.roomId,
-        senderId: "user-1",
+        senderId: myPlayerId,
         senderName: `${playerName} (You)`,
         round: 1,
       });
     }
-  }, [config, initRound, playerName]);
+  }, [config, initRound, playerName, myPlayerId]);
 
   // Turn Countdown Timer
   useEffect(() => {
@@ -349,34 +422,27 @@ export function useWordleGame(
         if (lettersCount > 0) {
           setUserGuesses((prev) => {
             const next = [...prev];
-            const row = { ...next[currentGuessIndex] };
-            row.letters = row.letters.slice(0, -1);
-            next[currentGuessIndex] = row;
+            const currentLetters = [...next[currentGuessIndex].letters];
+            currentLetters.pop();
+            next[currentGuessIndex] = {
+              ...next[currentGuessIndex],
+              letters: currentLetters,
+            };
             return next;
           });
           setCurrentLetterIndex(lettersCount - 1);
         }
-        return;
-      }
-
-      if (upperKey === "ENTER") {
+      } else if (upperKey === "ENTER") {
         const activeRow = userGuesses[currentGuessIndex];
-        const lettersCount = activeRow?.letters?.length || 0;
-
-        if (lettersCount === 0) {
-          triggerRowShake("Enter a word first!");
+        if (!activeRow || activeRow.letters.length !== config.wordLength) {
+          triggerRowShake(`Word must be ${config.wordLength} letters`);
           return;
         }
 
-        if (lettersCount < config.wordLength) {
-          triggerRowShake(`Word must be ${config.wordLength} letters (${lettersCount}/${config.wordLength})`);
-          return;
-        }
+        const guessWord = activeRow.letters.join("").toUpperCase();
 
-        const guessWord = activeRow.letters.slice(0, config.wordLength).join("").toUpperCase();
-
-        // Fast check in memory, fallback to Free Dictionary API (https://api.dictionaryapi.dev/api/v2/entries/en/<word>)
-        let valid = isValidWord(guessWord);
+        // Validate dictionary word
+        let valid = isValidWord(guessWord, config.wordLength);
         if (!valid) {
           valid = await validateWordOnline(guessWord);
         }
@@ -387,19 +453,6 @@ export function useWordleGame(
 
         // Evaluate guess colors
         const statuses = evaluateWordleGuess(guessWord, targetWord);
-
-        // Broadcast guess via WebRTC P2P DataChannel (NO letters revealed, only colors)
-        if (webrtcChannelRef.current) {
-          webrtcChannelRef.current.broadcast({
-            type: "PEER_GUESS",
-            roomId: config.roomId,
-            senderId: "user-1",
-            senderName: `${playerName} (You)`,
-            senderAvatar: playerAvatar,
-            round: currentRound,
-            guessStatuses: statuses,
-          });
-        }
 
         // Update keyboard colors
         setKeyboardStatus((prev) => {
@@ -434,16 +487,49 @@ export function useWordleGame(
         const guessNumber = currentGuessIndex + 1;
         const roundPoints = isSolved ? Math.max(100, 250 - (guessNumber - 1) * 35) : 0;
 
+        // Broadcast guess via WebRTC & Cloud Channel
+        if (webrtcChannelRef.current) {
+          webrtcChannelRef.current.broadcast({
+            type: "PEER_GUESS",
+            roomId: config.roomId,
+            senderId: myPlayerId,
+            senderName: `${playerName} (You)`,
+            senderAvatar: playerAvatar,
+            round: currentRound,
+            guessStatuses: statuses,
+          });
+        }
+
         setPlayers((prev) =>
           prev.map((p) => {
-            if (p.id === "user-1") {
+            if (p.id === myPlayerId) {
+              const updatedGuesses = [...p.guesses, statuses];
+              const updatedScore = p.score + roundPoints;
+              const updatedRoundsWon = isSolved ? p.roundsWon + 1 : p.roundsWon;
+
+              // Keep local player state synced to cloud
+              if (webrtcChannelRef.current) {
+                webrtcChannelRef.current.setLocalPlayer({
+                  id: myPlayerId,
+                  name: `${playerName} (You)`,
+                  avatar: playerAvatar,
+                  isHost: p.isHost,
+                  isReady: true,
+                  score: updatedScore,
+                  roundsWon: updatedRoundsWon,
+                  guesses: updatedGuesses,
+                  hasSolved: isSolved,
+                  solvedInRow: isSolved ? guessNumber : undefined,
+                });
+              }
+
               return {
                 ...p,
-                guesses: [...p.guesses, statuses],
+                guesses: updatedGuesses,
                 hasSolved: isSolved,
                 solvedInRow: isSolved ? guessNumber : undefined,
-                score: p.score + roundPoints,
-                roundsWon: isSolved ? p.roundsWon + 1 : p.roundsWon,
+                score: updatedScore,
+                roundsWon: updatedRoundsWon,
               };
             }
             return p;
@@ -451,12 +537,12 @@ export function useWordleGame(
         );
 
         if (isSolved) {
-          // Broadcast solve via WebRTC P2P
+          // Broadcast solve via WebRTC & Cloud
           if (webrtcChannelRef.current) {
             webrtcChannelRef.current.broadcast({
               type: "PEER_SOLVED",
               roomId: config.roomId,
-              senderId: "user-1",
+              senderId: myPlayerId,
               senderName: `${playerName} (You)`,
               senderAvatar: playerAvatar,
               round: currentRound,
@@ -468,34 +554,40 @@ export function useWordleGame(
           getWordDefinition(targetWord).then((def) => {
             setTargetDefinition(def);
           });
-          setGameStatus(
-            currentRound >= config.totalRounds ? "match_finished" : "round_won"
-          );
+
+          if (currentRound >= config.totalRounds) {
+            setGameStatus("match_finished");
+          } else {
+            setGameStatus("round_won");
+          }
         } else if (guessNumber >= config.maxChances) {
+          // Lost this round
           getWordDefinition(targetWord).then((def) => {
             setTargetDefinition(def);
           });
-          setGameStatus(
-            currentRound >= config.totalRounds ? "match_finished" : "round_lost"
-          );
+
+          if (currentRound >= config.totalRounds) {
+            setGameStatus("match_finished");
+          } else {
+            setGameStatus("round_lost");
+          }
         } else {
+          // Next guess row
           setCurrentGuessIndex((prev) => prev + 1);
           setCurrentLetterIndex(0);
         }
-
-        return;
-      }
-
-      // Alphabet key input
-      if (/^[A-Z]$/.test(upperKey)) {
+      } else if (/^[A-Z]$/.test(upperKey)) {
         const activeRow = userGuesses[currentGuessIndex];
         const lettersCount = activeRow?.letters?.length || 0;
         if (lettersCount < config.wordLength) {
           setUserGuesses((prev) => {
             const next = [...prev];
-            const row = { ...next[currentGuessIndex] };
-            row.letters = [...row.letters, upperKey];
-            next[currentGuessIndex] = row;
+            const currentLetters = [...(next[currentGuessIndex]?.letters || [])];
+            currentLetters.push(upperKey);
+            next[currentGuessIndex] = {
+              ...next[currentGuessIndex],
+              letters: currentLetters,
+            };
             return next;
           });
           setCurrentLetterIndex(lettersCount + 1);
@@ -514,6 +606,8 @@ export function useWordleGame(
       targetWord,
       currentRound,
       playerName,
+      playerAvatar,
+      myPlayerId,
       triggerRowShake,
     ]
   );
@@ -540,8 +634,18 @@ export function useWordleGame(
 
   // Advance to next round
   const nextRound = useCallback(() => {
-    initRound(currentRound + 1, config);
-  }, [currentRound, config, initRound]);
+    const nextR = currentRound + 1;
+    initRound(nextR, config);
+    if (webrtcChannelRef.current) {
+      webrtcChannelRef.current.broadcast({
+        type: "HOST_NEXT_ROUND",
+        roomId: config.roomId,
+        senderId: myPlayerId,
+        senderName: `${playerName} (You)`,
+        round: nextR,
+      });
+    }
+  }, [currentRound, config, initRound, myPlayerId, playerName]);
 
   // Restart match from round 1
   const resetMatch = useCallback(() => {
@@ -555,7 +659,16 @@ export function useWordleGame(
       }))
     );
     initRound(1, config);
-  }, [config, initRound]);
+    if (webrtcChannelRef.current) {
+      webrtcChannelRef.current.broadcast({
+        type: "HOST_RESET_MATCH",
+        roomId: config.roomId,
+        senderId: myPlayerId,
+        senderName: `${playerName} (You)`,
+        round: 1,
+      });
+    }
+  }, [config, initRound, myPlayerId, playerName]);
 
   // Apply new room config
   const applyRoomConfig = useCallback(
@@ -585,43 +698,35 @@ export function useWordleGame(
         webrtcChannelRef.current.broadcast({
           type: "HOST_CONFIG_SYNC",
           roomId: newConfig.roomId,
-          senderId: "user-1",
+          senderId: myPlayerId,
           senderName: `${playerName} (You)`,
           config: newConfig,
         });
       }
 
-      // Rebuild player roster based on new botCount & botDifficulty
-      const updatedList: PlayerStats[] = [
-        {
-          id: "user-1",
-          name: `${playerName} (You)`,
-          avatar: playerAvatar,
-          score: 0,
-          roundsWon: 0,
-          guesses: [],
-          hasSolved: false,
-          isHost: true,
-        },
-      ];
+      // Rebuild player roster preserving human players
+      setPlayers((prev) => {
+        const humans = prev.filter((p) => !p.id.startsWith("bot-"));
+        const newBots: PlayerStats[] = [];
 
-      if (newConfig.botDifficulty !== "off" && newConfig.botCount > 0) {
-        for (let i = 0; i < Math.min(4, newConfig.botCount); i++) {
-          updatedList.push({
-            id: `bot-${i + 1}`,
-            name: `${BOT_NAMES[i] || `Bot_${i + 1}`} 🤖`,
-            score: 0,
-            roundsWon: 0,
-            guesses: [],
-            hasSolved: false,
-          });
+        if (newConfig.botDifficulty !== "off" && newConfig.botCount > 0) {
+          for (let i = 0; i < Math.min(4, newConfig.botCount); i++) {
+            newBots.push({
+              id: `bot-${i + 1}`,
+              name: `${BOT_NAMES[i] || `Bot_${i + 1}`} 🤖`,
+              score: 0,
+              roundsWon: 0,
+              guesses: [],
+              hasSolved: false,
+            });
+          }
         }
-      }
+        return [...humans, ...newBots];
+      });
 
-      setPlayers(updatedList);
       initRound(1, newConfig, gameStatus === "lobby" ? "lobby" : "playing");
     },
-    [initRound, playerName, playerAvatar, gameStatus]
+    [initRound, playerName, myPlayerId, gameStatus]
   );
 
   return {
@@ -635,6 +740,7 @@ export function useWordleGame(
     timeLeft,
     gameStatus,
     players,
+    myPlayerId,
     keyboardStatus,
     invalidWordAlert,
     shakeRowIndex,

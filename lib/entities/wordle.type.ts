@@ -16,6 +16,7 @@ export interface PlayerStats {
   name: string;
   avatar?: string;
   isHost?: boolean;
+  isReady?: boolean;
   score: number;
   roundsWon: number;
   guesses: TileStatus[][]; // opponent colored tile matrices without revealing letters

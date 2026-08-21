@@ -17,6 +17,8 @@ interface WordleGameProps {
   initialWords?: string[];
   playerName?: string;
   playerAvatar?: string;
+  playerId?: string;
+  isHost?: boolean;
   onExit?: () => void;
 }
 
@@ -25,6 +27,8 @@ export function WordleGame({
   initialWords,
   playerName = "Alex",
   playerAvatar,
+  playerId,
+  isHost = true,
   onExit = () => {},
 }: WordleGameProps) {
   const {
@@ -38,6 +42,7 @@ export function WordleGame({
     timeLeft,
     gameStatus,
     players,
+    myPlayerId,
     keyboardStatus,
     invalidWordAlert,
     shakeRowIndex,
@@ -48,7 +53,7 @@ export function WordleGame({
     resetMatch,
     startMatch,
     applyRoomConfig,
-  } = useWordleGame(initialConfig, playerName, playerAvatar, initialWords);
+  } = useWordleGame(initialConfig, playerName, playerAvatar, initialWords, playerId, isHost);
 
   const [isMobilePlayersOpen, setIsMobilePlayersOpen] = useState(false);
 
@@ -56,6 +61,8 @@ export function WordleGame({
     gameStatus === "round_won" ||
     gameStatus === "round_lost" ||
     gameStatus === "match_finished";
+
+  const isCurrentHost = players.find((p) => p.id === myPlayerId)?.isHost ?? isHost;
 
   return (
     <div className="relative h-screen w-screen h-[100dvh] max-h-[100dvh] overflow-hidden bg-surface p-2 sm:p-4 md:p-6 font-(family-name:--font-comic-relief) flex flex-col justify-between select-none">
@@ -89,7 +96,7 @@ export function WordleGame({
           <WordleLobbyWaiting
             config={config}
             players={players}
-            isHost={players.find((p) => p.id === "user-1")?.isHost ?? true}
+            isHost={isCurrentHost}
             onStartMatch={startMatch}
             onOpenSettings={() => setIsLobbyModalOpen(true)}
           />
@@ -99,7 +106,7 @@ export function WordleGame({
             <div className="hidden lg:flex w-72 xl:w-80 shrink-0 h-full overflow-hidden">
               <WordleSidebar
                 players={players}
-                currentPlayerId="user-1"
+                currentPlayerId={myPlayerId}
                 wordLength={config.wordLength}
                 maxChances={config.maxChances}
               />
@@ -142,7 +149,7 @@ export function WordleGame({
             </button>
             <WordleSidebar
               players={players}
-              currentPlayerId="user-1"
+              currentPlayerId={myPlayerId}
               wordLength={config.wordLength}
               maxChances={config.maxChances}
             />

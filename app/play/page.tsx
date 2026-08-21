@@ -75,6 +75,7 @@ async function PlayContent({ searchParams }: PlayPageProps) {
 
   const playerName = session.user.name || "Player";
   const playerAvatar = session.user.image || undefined;
+  const isHost = !dbRoom.hostId || dbRoom.hostId === session.user.id;
 
   return (
     <WordleGame
@@ -82,6 +83,8 @@ async function PlayContent({ searchParams }: PlayPageProps) {
       initialWords={roomWords}
       playerName={playerName}
       playerAvatar={playerAvatar}
+      playerId={session.user.id}
+      isHost={isHost}
     />
   );
 }

@@ -105,7 +105,50 @@ export const room = pgTable(
   (table) => [index("room_hostId_idx").on(table.hostId)]
 );
 
+export const roomPlayer = pgTable(
+  "room_player",
+  {
+    id: varchar("id", { length: 128 }).primaryKey(), // `${roomId}_${userId}`
+    roomId: varchar("room_id", { length: 64 }).notNull(),
+    userId: varchar("user_id", { length: 64 }).notNull(),
+    name: varchar("name", { length: 255 }).notNull(),
+    avatar: text("avatar"),
+    isHost: boolean("is_host").notNull().default(false),
+    isReady: boolean("is_ready").notNull().default(true),
+    score: integer("score").notNull().default(0),
+    roundsWon: integer("rounds_won").notNull().default(0),
+    guesses: text("guesses").notNull().default("[]"), // JSON string of TileStatus[][]
+    hasSolved: boolean("has_solved").notNull().default(false),
+    solvedInRow: integer("solved_in_row"),
+    lastActiveAt: timestamp("last_active_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("room_player_roomId_idx").on(table.roomId),
+    index("room_player_lastActive_idx").on(table.lastActiveAt),
+  ]
+);
+
+export const roomEvent = pgTable(
+  "room_event",
+  {
+    id: varchar("id", { length: 64 }).primaryKey(),
+    roomId: varchar("room_id", { length: 64 }).notNull(),
+    senderId: varchar("sender_id", { length: 64 }).notNull(),
+    type: varchar("type", { length: 32 }).notNull(),
+    payload: text("payload"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("room_event_roomId_idx").on(table.roomId),
+    index("room_event_createdAt_idx").on(table.createdAt),
+  ]
+);
+
 export type RoomRow = typeof room.$inferSelect;
 export type RoomInsert = typeof room.$inferInsert;
+export type RoomPlayerRow = typeof roomPlayer.$inferSelect;
+export type RoomPlayerInsert = typeof roomPlayer.$inferInsert;
+export type RoomEventRow = typeof roomEvent.$inferSelect;
+export type RoomEventInsert = typeof roomEvent.$inferInsert;
 
 

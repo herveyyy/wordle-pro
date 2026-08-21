@@ -238,11 +238,12 @@ export function evaluateWordleGuess(guess: string, target: string): TileStatus[]
 }
 
 // Synchronous fast check against in-memory dictionary Set
-export function isValidWord(word: string): boolean {
+export function isValidWord(word: string, length?: number): boolean {
   if (!word || typeof word !== "string") return false;
   const w = word.trim().toUpperCase();
   const len = w.length;
 
+  if (length !== undefined && len !== length) return false;
   if (len < 4 || len > 8) return false;
   if (!/^[A-Z]+$/.test(w)) return false;
 
@@ -253,11 +254,12 @@ export function isValidWord(word: string): boolean {
  * Validate word using Free Dictionary API (https://api.dictionaryapi.dev/api/v2/entries/en/<word>)
  * Fallback to in-memory set if offline or cached
  */
-export async function validateWordOnline(word: string): Promise<boolean> {
+export async function validateWordOnline(word: string, length?: number): Promise<boolean> {
   if (!word || typeof word !== "string") return false;
   const clean = word.trim().toUpperCase();
   const len = clean.length;
 
+  if (length !== undefined && len !== length) return false;
   if (len < 4 || len > 8) return false;
   if (!/^[A-Z]+$/.test(clean)) return false;
 
