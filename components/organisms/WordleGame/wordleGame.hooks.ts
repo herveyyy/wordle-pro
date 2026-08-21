@@ -562,11 +562,41 @@ export function useWordleGame(
     (newConfig: RoomConfig) => {
       setConfig(newConfig);
 
+      // Keep URL search query in sync with new room config and passkey
+      if (typeof window !== "undefined") {
+        const url = new URL(window.location.href);
+        url.searchParams.set("room", newConfig.roomId);
+        url.searchParams.set("letters", String(newConfig.wordLength));
+        url.searchParams.set("chances", String(newConfig.maxChances));
+        url.searchParams.set("timer", String(newConfig.timeLimitSeconds));
+        url.searchParams.set("rounds", String(newConfig.totalRounds));
+        url.searchParams.set("bots", String(newConfig.botCount));
+        url.searchParams.set("diff", newConfig.botDifficulty);
+        if (newConfig.isPrivate && newConfig.passkey) {
+          url.searchParams.set("passkey", newConfig.passkey);
+        } else {
+          url.searchParams.delete("passkey");
+        }
+        window.history.replaceState({}, "", url.toString());
+      }
+
+      // Broadcast updated config to all peers
+      if (webrtcChannelRef.current) {
+        webrtcChannelRef.current.broadcast({
+          type: "HOST_CONFIG_SYNC",
+          roomId: newConfig.roomId,
+          senderId: "user-1",
+          senderName: `${playerName} (You)`,
+          config: newConfig,
+        });
+      }
+
       // Rebuild player roster based on new botCount & botDifficulty
       const updatedList: PlayerStats[] = [
         {
           id: "user-1",
           name: `${playerName} (You)`,
+          avatar: playerAvatar,
           score: 0,
           roundsWon: 0,
           guesses: [],
@@ -589,9 +619,9 @@ export function useWordleGame(
       }
 
       setPlayers(updatedList);
-      initRound(1, newConfig);
+      initRound(1, newConfig, gameStatus === "lobby" ? "lobby" : "playing");
     },
-    [initRound, playerName]
+    [initRound, playerName, playerAvatar, gameStatus]
   );
 
   return {

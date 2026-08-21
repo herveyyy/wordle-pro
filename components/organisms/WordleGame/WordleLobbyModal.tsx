@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { RoomConfig } from "@/lib/entities/wordle.type";
 import { useThemeEditor } from "@/components/molecules/ThemeEditor/themeEditor.hooks";
 import { THEME_PRESETS, ThemePreset, ThemeMode, GlowIntensity, PulseSpeed } from "@/components/molecules/ThemeEditor/themeEditor.types";
@@ -42,6 +42,20 @@ export function WordleLobbyModal({
   const [passkey, setPasskey] = useState<string>(
     currentConfig.passkey || generateRandomPasskey()
   );
+
+  // Sync state whenever modal opens or currentConfig updates
+  useEffect(() => {
+    if (isOpen) {
+      setWordLength(currentConfig.wordLength);
+      setMaxChances(currentConfig.maxChances);
+      setTimeLimitSeconds(currentConfig.timeLimitSeconds);
+      setTotalRounds(currentConfig.totalRounds);
+      setBotCount(currentConfig.botCount ?? 2);
+      setBotDifficulty(currentConfig.botDifficulty ?? "medium");
+      setIsPrivate(currentConfig.isPrivate);
+      setPasskey(currentConfig.passkey || generateRandomPasskey());
+    }
+  }, [isOpen, currentConfig]);
 
   // Theme Studio hooks
   const {
@@ -110,18 +124,16 @@ export function WordleLobbyModal({
           <button
             type="button"
             onClick={() => setActiveTab("match")}
-            className={`neo-btn-pill py-2.5 text-xs font-black transition-all ${
-              activeTab === "match" ? "neo-btn-pill-active" : ""
-            }`}
+            className={`neo-btn-pill py-2.5 text-xs font-black transition-all ${activeTab === "match" ? "neo-btn-pill-active" : ""
+              }`}
           >
             ⚙️ Match & Bots
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("theme")}
-            className={`neo-btn-pill py-2.5 text-xs font-black transition-all ${
-              activeTab === "theme" ? "neo-btn-pill-active" : ""
-            }`}
+            className={`neo-btn-pill py-2.5 text-xs font-black transition-all ${activeTab === "theme" ? "neo-btn-pill-active" : ""
+              }`}
           >
             🎨 Colors & Theme
           </button>
@@ -143,9 +155,8 @@ export function WordleLobbyModal({
                       key={l}
                       type="button"
                       onClick={() => setWordLength(l)}
-                      className={`neo-btn-pill py-2 text-xs font-black ${
-                        wordLength === l ? "neo-btn-pill-active" : ""
-                      }`}
+                      className={`neo-btn-pill py-2 text-xs font-black ${wordLength === l ? "neo-btn-pill-active" : ""
+                        }`}
                     >
                       {l}
                     </button>
@@ -165,9 +176,8 @@ export function WordleLobbyModal({
                       key={c}
                       type="button"
                       onClick={() => setMaxChances(c)}
-                      className={`neo-btn-pill py-2 text-xs font-black ${
-                        maxChances === c ? "neo-btn-pill-active" : ""
-                      }`}
+                      className={`neo-btn-pill py-2 text-xs font-black ${maxChances === c ? "neo-btn-pill-active" : ""
+                        }`}
                     >
                       {c}
                     </button>
@@ -194,9 +204,8 @@ export function WordleLobbyModal({
                       key={t.label}
                       type="button"
                       onClick={() => setTimeLimitSeconds(t.val)}
-                      className={`neo-btn-pill py-2 text-xs font-black ${
-                        timeLimitSeconds === t.val ? "neo-btn-pill-active" : ""
-                      }`}
+                      className={`neo-btn-pill py-2 text-xs font-black ${timeLimitSeconds === t.val ? "neo-btn-pill-active" : ""
+                        }`}
                     >
                       {t.label}
                     </button>
@@ -218,9 +227,8 @@ export function WordleLobbyModal({
                       key={r}
                       type="button"
                       onClick={() => setTotalRounds(r)}
-                      className={`neo-btn-pill py-2 text-xs font-black ${
-                        totalRounds === r ? "neo-btn-pill-active" : ""
-                      }`}
+                      className={`neo-btn-pill py-2 text-xs font-black ${totalRounds === r ? "neo-btn-pill-active" : ""
+                        }`}
                     >
                       {r}
                     </button>
@@ -245,9 +253,8 @@ export function WordleLobbyModal({
                       key={count}
                       type="button"
                       onClick={() => setBotCount(count)}
-                      className={`neo-btn-pill py-2 text-xs font-black ${
-                        botCount === count ? "neo-btn-pill-active" : ""
-                      }`}
+                      className={`neo-btn-pill py-2 text-xs font-black ${botCount === count ? "neo-btn-pill-active" : ""
+                        }`}
                     >
                       {count === 0 ? "0 (Off)" : `${count} Bot${count > 1 ? "s" : ""}`}
                     </button>
@@ -266,9 +273,8 @@ export function WordleLobbyModal({
                         key={diff.id}
                         type="button"
                         onClick={() => setBotDifficulty(diff.id as any)}
-                        className={`neo-btn-pill py-1.5 text-xs font-black ${
-                          botDifficulty === diff.id ? "neo-btn-pill-active" : ""
-                        }`}
+                        className={`neo-btn-pill py-1.5 text-xs font-black ${botDifficulty === diff.id ? "neo-btn-pill-active" : ""
+                          }`}
                       >
                         {diff.label}
                       </button>
@@ -284,9 +290,8 @@ export function WordleLobbyModal({
                   <button
                     type="button"
                     onClick={togglePrivate}
-                    className={`neo-btn-pill px-3.5 py-1.5 text-xs font-black ${
-                      isPrivate ? "neo-btn-pill-active" : ""
-                    }`}
+                    className={`neo-btn-pill px-3.5 py-1.5 text-xs font-black ${isPrivate ? "neo-btn-pill-active" : ""
+                      }`}
                   >
                     {isPrivate ? "🔒 Passkey Required" : "🌐 Open / Public"}
                   </button>
@@ -345,9 +350,8 @@ export function WordleLobbyModal({
                       key={m.id}
                       type="button"
                       onClick={() => setMode(m.id as ThemeMode)}
-                      className={`neo-btn-pill py-2 text-xs font-black ${
-                        themeConfig.mode === m.id ? "neo-btn-pill-active" : ""
-                      }`}
+                      className={`neo-btn-pill py-2 text-xs font-black ${themeConfig.mode === m.id ? "neo-btn-pill-active" : ""
+                        }`}
                     >
                       {m.label}
                     </button>
@@ -366,11 +370,10 @@ export function WordleLobbyModal({
                       key={p.id}
                       type="button"
                       onClick={() => setPreset(p.id)}
-                      className={`neo-btn-pill flex items-center justify-between p-2.5 text-xs font-black ${
-                        themeConfig.preset === p.id && !themeConfig.customPrimary
+                      className={`neo-btn-pill flex items-center justify-between p-2.5 text-xs font-black ${themeConfig.preset === p.id && !themeConfig.customPrimary
                           ? "neo-btn-pill-active"
                           : ""
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-2">
                         <div className="flex gap-1">
