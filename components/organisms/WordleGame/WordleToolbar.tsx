@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { RoomConfig } from "@/lib/entities/wordle.type";
 
 interface WordleToolbarProps {
@@ -37,15 +38,15 @@ export function WordleToolbar({
     <header className="comic-card flex w-full items-center justify-between gap-2 rounded-2xl bg-surface-container-low/98 px-3 py-2 sm:px-4 sm:py-3 shadow-md backdrop-blur-xl shrink-0">
       {/* Left: Brand & Room Tag */}
       <div className="flex items-center gap-2">
-        <button
-          type="button"
+        <Link
+          href="/"
           onClick={onExit}
-          className="flex items-center gap-1 rounded-xl bg-surface-container-high px-2.5 py-1 text-xs font-bold text-on-surface-muted hover:text-primary transition-colors"
+          className="flex items-center gap-1.5 rounded-xl border border-primary/30 bg-surface-container-high px-3 py-1.5 text-xs font-bold text-on-surface-muted hover:text-primary hover:border-primary transition-all shadow-xs"
           title="Exit to Main Lobby"
         >
           <span>←</span>
-          <span className="hidden sm:inline">Lobby</span>
-        </button>
+          <span className="font-extrabold">Lobby</span>
+        </Link>
 
         <div className="flex items-center gap-1.5 rounded-xl bg-surface-container-high px-2.5 py-1 text-xs font-semibold text-primary">
           <span>{config.isPrivate ? "🔒" : "🌐"}</span>
