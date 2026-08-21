@@ -266,18 +266,22 @@ export async function validateWordOnline(word: string): Promise<boolean> {
     return true;
   }
 
-  // 2. Free Dictionary API validation (https://api.dictionaryapi.dev/api/v2/entries/en/<word>)
+  // 2. Free Dictionary API validation
   try {
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${clean.toLowerCase()}`);
+    const url = typeof window !== "undefined"
+      ? `/api/dictionary?word=${encodeURIComponent(clean)}`
+      : `https://api.dictionaryapi.dev/api/v2/entries/en/${clean.toLowerCase()}`;
+
+    const res = await fetch(url);
     if (res.ok) {
       const data = await res.json();
-      if (Array.isArray(data) && data.length > 0 && data[0]?.word) {
+      if (data?.valid === true || (Array.isArray(data) && data.length > 0 && data[0]?.word)) {
         DICTIONARY_SET.add(clean);
         return true;
       }
     }
   } catch (error) {
-    console.warn("Free Dictionary API check error:", error);
+    // Graceful fallback
   }
 
   return false;
@@ -286,9 +290,14 @@ export async function validateWordOnline(word: string): Promise<boolean> {
 // Fetch dictionary definition using Free Dictionary API
 export async function getWordDefinition(word: string): Promise<string | undefined> {
   try {
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word.toLowerCase()}`);
+    const url = typeof window !== "undefined"
+      ? `/api/dictionary?word=${encodeURIComponent(word)}`
+      : `https://api.dictionaryapi.dev/api/v2/entries/en/${word.toLowerCase()}`;
+
+    const res = await fetch(url);
     if (res.ok) {
       const data = await res.json();
+      if (data?.definition) return data.definition;
       const firstMeaning = data[0]?.meanings?.[0]?.definitions?.[0]?.definition;
       if (firstMeaning) {
         return firstMeaning;
