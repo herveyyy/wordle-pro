@@ -29,13 +29,16 @@ async function PlayContent({ searchParams }: PlayPageProps) {
     if (params.rounds) search.set("rounds", params.rounds);
     if (params.passkey) search.set("passkey", params.passkey);
     if (params.room) search.set("room", params.room);
-    if (params.bots) search.set("bots", params.bots);
-    if (params.diff) search.set("diff", params.diff);
+    if (params.bots !== undefined) search.set("bots", params.bots);
+    if (params.diff !== undefined) search.set("diff", params.diff);
 
     const queryString = search.toString();
     const callbackURL = queryString ? `/play?${queryString}` : "/play";
     redirect(`/sign-in?callbackURL=${encodeURIComponent(callbackURL)}`);
   }
+
+  const parsedBotCount = params.bots !== undefined ? parseInt(params.bots, 10) : 2;
+  const validBotCount = isNaN(parsedBotCount) ? 0 : Math.max(0, Math.min(4, parsedBotCount));
 
   const initialConfig: RoomConfig = {
     roomId: params.room || "PRO-892",
@@ -45,8 +48,8 @@ async function PlayContent({ searchParams }: PlayPageProps) {
     maxChances: Number(params.chances) || 6,
     timeLimitSeconds: params.timer !== undefined ? Number(params.timer) : 60,
     totalRounds: Number(params.rounds) || 3,
-    botCount: params.bots !== undefined ? Number(params.bots) : 2,
-    botDifficulty: (params.diff as any) || "medium",
+    botCount: validBotCount,
+    botDifficulty: validBotCount === 0 ? "off" : (params.diff as any) || "medium",
     useWebRtc: true,
   };
 
