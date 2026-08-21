@@ -1,5 +1,5 @@
 {
-  "name": "rnd-nextjs-template",
+  "name": "Wordle-PRO",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -16,8 +16,8 @@
     "better-auth": "^1.6.23",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
-    "mysql2": "^3.22.5",
     "next": "16.2.4",
+    "postgres": "^3.4.9",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "web-push": "^3.6.7"

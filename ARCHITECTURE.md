@@ -1,6 +1,6 @@
 # Project architecture
 
-This document describes how **rnd-nextjs-template** is structured: runtime stack, dependencies, the Next.js App Router and `components` layout (frontend), and the domain-oriented layout under `lib` plus persistence (`database/`) used by server code.
+This document describes how **Wordle-PRO** is structured: runtime stack, dependencies, the Next.js App Router and `components` layout (frontend), and the domain-oriented layout under `lib` plus persistence (`database/`) used by server code.
 
 **Representative code samples** for each layer appear in [Full code samples by folder](#full-code-samples-by-folder).
 
@@ -112,7 +112,7 @@ Run with `bun run <script>` (e.g. `bun run db:migrate`).
 ## Repository layout (high level)
 
 ```
-rnd-nextjs-template/
+Wordle-PRO/
 ├── app/                    # Next.js App Router: pages, layout, global styles
 ├── components/             # UI: atomic design (atoms → molecules → organisms)
 ├── lib/

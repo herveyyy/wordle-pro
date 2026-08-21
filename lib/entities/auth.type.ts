@@ -15,6 +15,16 @@ export type SignUpInput = {
   callbackURL?: string;
 };
 
+export type SocialSignInInput = {
+  provider: "discord";
+  callbackURL?: string;
+};
+
+export type SocialSignInResponse = {
+  url: string;
+};
+
+
 export type AuthUser = {
   id: string;
   name: string;

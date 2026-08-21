@@ -1,7 +1,7 @@
 ---
-name: rnd-nextjs-template
+name: Wordle-PRO
 description: >-
-  Implements features in rnd-nextjs-template (Next.js 16, Better Auth, Drizzle,
+  Implements features in Wordle-PRO (Next.js 16, Better Auth, Drizzle,
   AAA actions, PWA, /landing, StoragePanel). Use when adding code, fixing layout,
   updating docs, or when the user mentions ARCHITECTURE, domain layer, server
   actions, IndexedDB, InstallLanding, or repetitive template mistakes.

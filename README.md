@@ -15,7 +15,7 @@ For the full structural reference, see [ARCHITECTURE.md](./ARCHITECTURE.md). UI 
   - [Reads vs writes](#reads-vs-writes--where-do-i-put-the-code)
   - [Server actions vs UI hooks](#server-actions-vs-ui-hooks)
   - [What is AAA in actions?](#what-is-aaa-in-actions)
-  - [Docker MySQL](#docker-mysql)
+  - [Docker PostgreSQL](#docker-postgresql)
   - [PWA & landing page](#pwa--landing-page)
   - [Local storage (IndexedDB)](#local-storage-indexeddb)
   - [Do I need app route actions.ts?](#do-i-need-approuteactionsts)
@@ -29,19 +29,19 @@ For the full structural reference, see [ARCHITECTURE.md](./ARCHITECTURE.md). UI 
 ### Prerequisites
 
 - **Bun** — install: `npm install -g bun`; upgrade: `bun upgrade` (this repo uses `bun.lock`)
-- **Docker** (recommended for MySQL) or local MySQL 8+
+- **Docker** (recommended for local PostgreSQL) or managed Postgres (e.g. Neon)
 
 ### Setup
 
 ```bash
 bun install
 cp example.env .env
-docker compose up -d          # MySQL on host port 3307
+docker compose up -d          # PostgreSQL on host port 5432
 bun run db:migrate
 bun run dev
 ```
 
-`DATABASE_URL` in `.env` defaults to `mysql://root:123@127.0.0.1:3307/rnd_template` (see [Docker MySQL](#docker-mysql)).
+`DATABASE_URL` in `.env` defaults to `postgresql://postgres:123@127.0.0.1:5432/rnd_template` (or your Neon URL; see [Docker PostgreSQL](#docker-postgresql)).
 
 After schema changes:
 
@@ -53,7 +53,7 @@ bun run db:migrate
 New sign-ups get role `dev` (schema default). Promote yourself after sign-up:
 
 ```sql
-UPDATE user SET role = 'admin' WHERE email = 'you@example.com';
+UPDATE "user" SET role = 'admin' WHERE email = 'you@example.com';
 ```
 
 ---
@@ -152,9 +152,9 @@ Full docs: [ARCHITECTURE.md — AAA template](./ARCHITECTURE.md#aaa-in-actions-i
 
 ---
 
-### Docker MySQL
+### Docker PostgreSQL
 
-`docker-compose.yml` runs **drizzle-mysql** on **host port 3307** (avoids conflict with a local MySQL on 3306).
+`docker-compose.yml` runs **drizzle-postgres** on **host port 5432**.
 
 ```bash
 docker compose up -d      # start
@@ -164,12 +164,12 @@ bun run db:migrate        # apply schema
 
 | Setting | Value |
 |---------|-------|
-| Container | `drizzle-mysql` |
-| Host port | `3307` → container `3306` |
+| Container | `drizzle-postgres` |
+| Host port | `5432` → container `5432` |
 | Database | `rnd_template` (auto-created) |
-| Root password | `123` (change in compose + `.env` for production) |
+| Password | `123` (change in compose + `.env` for production) |
 
-If the app shows `Failed to get session` or `Unknown database`, verify `.env` port matches Docker and MySQL is running: `docker ps`.
+If the app shows `Failed to get session` or `Connection refused`, verify `.env` connection string matches Docker / Neon and the database is accessible.
 
 ---
 

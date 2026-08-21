@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "RND Next.js Template",
-    short_name: "RND",
-    description: "Livro Systems RND Next.js template — Atomic Design, Drizzle, Better Auth",
+    name: "Wordle PRO",
+    short_name: "Wordle PRO",
+    description: "Wordle PRO — Word game built with Next.js, Atomic Design, and Drizzle ORM",
     start_url: "/",
     display: "standalone",
     background_color: "#fafafa",

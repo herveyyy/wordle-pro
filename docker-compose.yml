@@ -1,15 +1,17 @@
 services:
-  mysql:
-    image: mysql:latest
-    container_name: drizzle-mysql
+  postgres:
+    image: postgres:16-alpine
+    container_name: drizzle-postgres
     restart: unless-stopped
     ports:
-      - "3307:3306"
+      - "5432:5432"
     environment:
-      MYSQL_ROOT_PASSWORD: "123"
-      MYSQL_DATABASE: rnd_template
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: rnd_template
     volumes:
-      - drizzle_mysql_data:/var/lib/mysql
+      - drizzle_postgres_data:/var/lib/postgresql/data
 
 volumes:
-  drizzle_mysql_data:
+  drizzle_postgres_data:
+

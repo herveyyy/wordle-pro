@@ -7,10 +7,10 @@ import { getSession } from "@/lib/domain/services/auth.service";
 
 function HomeFallback() {
   return (
-    <div className="flex min-h-screen flex-1 flex-col items-center justify-center bg-surface font-(family-name:--font-inter)">
+    <div className="flex min-h-screen flex-1 flex-col items-center justify-center bg-surface">
       <main className="flex w-full max-w-3xl flex-1 flex-col items-center justify-center px-16 py-32 text-center">
         <h1 className="font-display mb-6 text-5xl font-semibold tracking-tight text-on-surface">
-          RND NextJS Template
+          Wordle PRO
         </h1>
         <p className="text-lg text-on-surface-muted">Loading...</p>
       </main>
@@ -24,13 +24,13 @@ async function HomeContent() {
   const secondaryLinkClass = useButtonStyles("secondary");
 
   return (
-    <div className="flex min-h-screen flex-1 flex-col items-center justify-center bg-surface font-(family-name:--font-inter)">
+    <div className="flex min-h-screen flex-1 flex-col items-center justify-center bg-surface">
       <main className="flex w-full max-w-3xl flex-1 flex-col items-center justify-center px-16 py-32 text-center">
         <h1 className="font-display mb-6 text-5xl font-semibold tracking-tight text-on-surface">
-          RND NextJS Template
+          Wordle PRO
         </h1>
         <p className="mb-4 max-w-md text-lg text-on-surface-muted">
-          Welcome to the Livro Systems Inc. Next.js template. Built with Atomic Design and Drizzle ORM.
+          Welcome to Wordle PRO. Built with Next.js, Atomic Design, Drizzle ORM, and Better Auth.
         </p>
         {session ? (
           <p className="mb-8 text-sm text-on-surface-muted">

@@ -1,23 +1,12 @@
 import type { Metadata } from "next";
-import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "RND Next.js Template",
-  description: "Livro Systems RND Next.js template with Atomic Design, Drizzle ORM, and Better Auth",
+  title: "Wordle PRO",
+  description: "Wordle PRO — Built with Next.js, Atomic Design, Drizzle ORM, and Better Auth",
   appleWebApp: {
     capable: true,
-    title: "RND",
+    title: "Wordle PRO",
   },
   icons: {
     icon: "/icon.svg",
@@ -31,8 +20,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${manrope.variable} ${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-(family-name:--font-inter)">{children}</body>
+    <html lang="en" className="h-full antialiased">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body className="min-h-full flex flex-col font-(family-name:--font-comic-relief)">
+        {children}
+      </body>
     </html>
   );
 }
+
