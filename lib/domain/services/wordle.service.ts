@@ -1,7 +1,13 @@
 import { generate } from "random-words";
+import * as randomWordsPkg from "random-words";
 import { TileStatus } from "@/lib/entities/wordle.type";
 
-// Built-in curated fallback word bank for instant load and offline resilience
+const rawWordList: string[] =
+  (randomWordsPkg as any).wordList ||
+  (randomWordsPkg as any).wordsList ||
+  [];
+
+// Built-in curated word bank for instant load and seed consistency
 const CURATED_WORDS: Record<number, string[]> = {
   4: [
     "ARCH", "BEAR", "CALM", "DAWN", "ECHO", "FIRE", "GLOW", "HERO",
@@ -9,6 +15,12 @@ const CURATED_WORDS: Record<number, string[]> = {
     "RUBY", "STAR", "TIDE", "VALE", "WAVE", "ZEST", "BOLT", "FROST",
     "LION", "MINT", "PURE", "SOUL", "VIBE", "WILD", "YARN", "ZINC",
     "MIST", "FLUX", "DARK", "BLUE", "COLD", "WARM", "GOLD", "JUMP",
+    "BIRD", "FISH", "TREE", "ROAD", "CITY", "BOOK", "DOOR", "WIND",
+    "RAIN", "SNOW", "SAND", "SHIP", "BOAT", "FOOD", "HAND", "FOOT",
+    "EYES", "NOSE", "HAIR", "FACE", "HEAD", "MIND", "TIME", "YEAR",
+    "DAYS", "WEEK", "HOUR", "GAME", "PLAY", "LOVE", "HOPE", "LIFE",
+    "ROCK", "DUST", "LEAF", "BARK", "ROOT", "STEM", "SEED", "CORN",
+    "RICE", "MEAT", "MILK", "SALT", "SOUP", "WINE", "BEER", "CAKE",
   ],
   5: [
     "REACT", "WORLD", "BRAIN", "CLOUD", "DREAM", "FLAME", "GHOST", "HONEY",
@@ -16,25 +28,64 @@ const CURATED_WORDS: Record<number, string[]> = {
     "QUEEN", "RIVER", "STORM", "TIGER", "URBAN", "VOICE", "WATER", "YOUTH",
     "ZEBRA", "SPARK", "PRIDE", "NOBLE", "LIGHT", "QUEST", "POWER", "SPACE",
     "SWIFT", "GLORY", "BLOOM", "CHARM", "DISCO", "FORCE", "HAVEN", "LUNAR",
+    "PLANT", "POSTER", "PLANET", "TRAIN", "HOUSE", "APPLE", "CRANE", "SLATE",
+    "AUDIO", "ADIEU", "MONEY", "MUSIC", "PIZZA", "BREAD", "CHAIR", "TABLE",
+    "BEACH", "RIVER", "EARTH", "HEART", "SUGAR", "FLOUR", "DRIVE", "STONE",
+    "CABLE", "RADIO", "CLOCK", "WATCH", "SHIRT", "PANTS", "SHOES", "SOCKS",
+    "PAPER", "RULER", "PAINT", "BRUSH", "SHINE", "FLASH", "BLAST", "SPEED",
+    "SMART", "BRAVE", "LUCKY", "HAPPY", "SWEET", "CLEAN", "FRESH", "GREEN",
+    "WHITE", "BLACK", "BROWN", "SHARP", "QUICK", "ROUND", "SOLID", "CLEAR",
+    "CROWD", "GROUP", "PARTY", "EVENT", "STAGE", "SCENE", "DANCE", "TRACK",
+    "SOUND", "NOISE", "TOUCH", "SMELL", "TASTE", "SIGHT", "COLOR", "SHADE",
+    "FRAME", "PANEL", "BLOCK", "BRICK", "TOWER", "BRIDGE", "RIDGE", "CLIFF",
   ],
   6: [
     "CASTLE", "DRAGON", "ENERGY", "FOREST", "GALAXY", "HARBOR", "ISLAND",
-    "JUNGLE", "KNIGHT", "LEGEND", "MIRROR", "NATURE", "PLANET",
+    "JUNGLE", "KNIGHT", "LEGEND", "MIRROR", "NATURE", "PLANET", "POSTER",
     "QUARTZ", "ROCKET", "SHADOW", "TEMPLE", "VALLEY", "WIZARD", "BEACON",
     "COSMIC", "FROZEN", "GOLDEN", "MYSTIC", "PHOENIX", "SILVER", "VORTEX",
+    "STREAM", "SUMMER", "WINTER", "SPRING", "AUTUMN", "BREEZE", "SUNSET",
+    "CANYON", "DESERT", "MEADOW", "GARDEN", "FLOWER", "STREAM", "SOURCE",
+    "PLAYER", "WINNER", "MASTER", "HEROIC", "ACTION", "CHANCE", "PUZZLE",
+    "RIDDLE", "SECRET", "HIDDEN", "ESCAPE", "TARGET", "FLIGHT", "SIGNAL",
+    "ENGINE", "SYSTEM", "MATRIX", "VECTOR", "SHIELD", "ARMOR", "WEAPON",
   ],
   7: [
     "CRYSTAL", "DYNAMIC", "ECLIPSE", "FEATHER", "GLACIER", "HORIZON",
-    "JOURNEY", "KINGDOM", "LANTERN", "MAJESTY", "ODYSSEY",
-    "PYRAMID", "QUANTUM", "RAINBOW", "SUNRISE", "THUNDER", "UNICORN",
-    "VICTORY", "WARRIOR", "BLOSSOM", "COURAGE", "DESTINY", "EMERALD",
+    "JOURNEY", "KINGDOM", "LANTERN", "MAJESTY", "ODYSSEY", "PYRAMID",
+    "QUANTUM", "RAINBOW", "SUNRISE", "THUNDER", "UNICORN", "VICTORY",
+    "WARRIOR", "BLOSSOM", "COURAGE", "DESTINY", "EMERALD", "FIREFLY",
+    "MIRACLE", "PHANTOM", "TREASURE", "VAMPYRE", "SPECTER", "COMMAND",
+    "BALANCE", "HARMONY", "JUSTICE", "FREEDOM", "LIBERTY", "MYSTERY",
   ],
   8: [
     "CHAMPION", "DOMINION", "ETERNITY", "FORTRESS", "GUARDIAN", "INFINITY",
     "LABYRINTH", "MIDNIGHT", "MOUNTAIN", "OVERLORD", "PARADISE", "RADIANCE",
     "SANCTUARY", "TITANIUM", "UNIVERSE", "VALIANCE", "WILDLIFE", "ZEALOUS",
+    "ABSOLUTE", "AIRCRAFT", "ALLIANCE", "ASTRONOM", "BLIZZARD", "CARDINAL",
+    "COLOSSAL", "CREATIVE", "DARKNESS", "DIAMONDS", "DISCOVERY", "ELEGANCE",
+    "FIREBALL", "LIGHTING", "PLATINUM", "STRATEGY", "SURPRISE", "TRIUMPHS",
   ],
 };
+
+// Global in-memory dictionary Set for instant O(1) synchronous lookups
+const DICTIONARY_SET = new Set<string>();
+
+// Populate from random-words word list
+if (typeof rawWordList !== "undefined" && Array.isArray(rawWordList)) {
+  for (const w of rawWordList) {
+    if (typeof w === "string" && w.length >= 4 && w.length <= 8) {
+      DICTIONARY_SET.add(w.toUpperCase());
+    }
+  }
+}
+
+// Populate from curated dictionaries
+for (const wordList of Object.values(CURATED_WORDS)) {
+  for (const w of wordList) {
+    DICTIONARY_SET.add(w.toUpperCase());
+  }
+}
 
 // Deterministic 32-bit integer hash from string seed
 function stringToSeed(str: string): number {
@@ -130,23 +181,16 @@ export function evaluateWordleGuess(guess: string, target: string): TileStatus[]
   return result;
 }
 
-// Instant synchronous dictionary validation (zero lag on Enter)
+// Strict instant synchronous dictionary check (only words in dictionary allowed)
 export function isValidWord(word: string): boolean {
   if (!word || typeof word !== "string") return false;
   const w = word.trim().toUpperCase();
   const len = w.length;
 
   if (len < 4 || len > 8) return false;
-  // Ensure only English alphabetic letters
   if (!/^[A-Z]+$/.test(w)) return false;
 
-  // Curated list match
-  if (CURATED_WORDS[len]?.includes(w)) {
-    return true;
-  }
-
-  // Any valid English letter sequence of configured length is accepted instantly
-  return true;
+  return DICTIONARY_SET.has(w);
 }
 
 // Fetch dictionary definition for round end recap
