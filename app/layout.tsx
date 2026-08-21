@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ThemeEditor } from "@/components/molecules/ThemeEditor/ThemeEditor";
 
 export const metadata: Metadata = {
   title: "Wordle PRO",
@@ -27,8 +28,10 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col font-(family-name:--font-comic-relief)">
         {children}
+        <ThemeEditor />
       </body>
     </html>
   );
 }
+
 
