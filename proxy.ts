@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromHeaders } from "@/lib/domain/services/auth.service";
 
 const authPaths = ["/sign-in", "/sign-up"];
-const publicPaths = ["/sign-in", "/sign-up", "/landing"];
+const publicPaths = ["/", "/landing", "/sign-in", "/sign-up"];
+
 
 function matchesPath(pathname: string, paths: string[]) {
   return paths.some((path) => pathname === path || pathname.startsWith(`${path}/`));

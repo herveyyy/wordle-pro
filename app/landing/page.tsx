@@ -6,8 +6,8 @@ import {
 } from "@/components/organisms/InstallLanding/InstallLanding";
 
 export const metadata: Metadata = {
-  title: "Install App | RND",
-  description: "Install the RND progressive web app on your device for fast, focused access.",
+  title: "Install App | Wordle PRO",
+  description: "Install Wordle PRO progressive web app on your device for fast, focused access.",
 };
 
 export default function LandingPage() {

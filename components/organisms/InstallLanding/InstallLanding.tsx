@@ -63,33 +63,32 @@ export function InstallLanding() {
           <div className="max-w-2xl space-y-8 xl:max-w-none">
             <div className="space-y-5">
               <p className="text-xs font-medium uppercase tracking-[0.25em] text-secondary">
-                Desktop progressive web app
+                Desktop & Mobile Progressive Web App
               </p>
               <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight text-on-surface sm:text-5xl lg:text-6xl xl:text-[4.25rem]">
-                Install RND on your desktop
+                Install Wordle PRO
               </h1>
               <p className="max-w-xl text-base leading-relaxed text-on-surface-muted lg:text-lg lg:leading-8">
-                A precise workspace for Livro service teams. Pin it to your taskbar or dock for
-                instant access — no app store, no browser tabs.
+                Instant, standalone multiplayer word guesser gaming experience. Pin to your home screen or dock for lightning fast rounds with zero browser distraction.
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-4 lg:gap-5">
               {isStandalone ? (
                 <Button variant="success" disabled>
-                  Installed on desktop
+                  Installed
                 </Button>
               ) : canInstall ? (
                 <Button onClick={installApp} className="px-8 py-3.5 text-base">
-                  Install to desktop
+                  Install App
                 </Button>
               ) : (
                 <Button variant="secondary" disabled className="px-8 py-3.5 text-base">
-                  {isIOS ? "Use Share → Add to Home Screen" : "Waiting for install prompt…"}
+                  {isIOS ? "Use Share → Add to Home Screen" : "Install Ready"}
                 </Button>
               )}
-              <Link href="/users" className={`${secondaryLinkClass} px-8 py-3.5 text-base`}>
-                Open dashboard
+              <Link href="/" className={`${secondaryLinkClass} px-8 py-3.5 text-base`}>
+                Open Game
               </Link>
             </div>
 
@@ -110,31 +109,31 @@ export function InstallLanding() {
 
             <dl className="hidden gap-8 border-t border-primary/10 pt-8 sm:grid sm:grid-cols-3 xl:grid">
               <div>
-                <dt className="text-xs uppercase tracking-wider text-on-surface-muted">Runtime</dt>
-                <dd className="mt-1 font-display text-lg font-semibold text-primary">Standalone</dd>
+                <dt className="text-xs uppercase tracking-wider text-on-surface-muted">Game Mode</dt>
+                <dd className="mt-1 font-display text-lg font-semibold text-primary">Multiplayer</dd>
               </div>
               <div>
-                <dt className="text-xs uppercase tracking-wider text-on-surface-muted">Stack</dt>
-                <dd className="mt-1 font-display text-lg font-semibold text-on-surface">Next.js 16</dd>
+                <dt className="text-xs uppercase tracking-wider text-on-surface-muted">Dictionary</dt>
+                <dd className="mt-1 font-display text-lg font-semibold text-on-surface">Wiki & Lexicon</dd>
               </div>
               <div>
-                <dt className="text-xs uppercase tracking-wider text-on-surface-muted">Auth</dt>
-                <dd className="mt-1 font-display text-lg font-semibold text-on-surface">Better Auth</dd>
+                <dt className="text-xs uppercase tracking-wider text-on-surface-muted">Identity</dt>
+                <dd className="mt-1 font-display text-lg font-semibold text-on-surface">Discord Auth</dd>
               </div>
             </dl>
           </div>
 
           <div className="relative xl:pl-4">
             <div className="futuristic-frame rounded-2xl bg-surface-container-low/60 p-6 backdrop-blur-sm lg:p-8">
-              <DesktopWindowFrame title="RND Template — Standalone">
+              <DesktopWindowFrame title="Wordle PRO — Standalone PWA">
                 <div className="flex h-full flex-col justify-between">
                   <div>
-                    <div className="mb-6 flex size-20 items-center justify-center rounded-2xl bg-surface-container-low ring-1 ring-primary/10">
+                    <div className="mb-6 flex size-20 items-center justify-center rounded-2xl bg-surface-container-low ring-1 border border-primary/20">
                       <img src="/icon.svg" alt="" className="size-12" width={48} height={48} />
                     </div>
-                    <h2 className="font-display text-2xl font-semibold text-primary">RND Template</h2>
+                    <h2 className="font-display text-2xl font-semibold text-primary">Wordle PRO</h2>
                     <p className="mt-2 text-base text-on-surface-muted">
-                      Atomic Design · Drizzle ORM · Better Auth
+                      Custom Rooms · 4-8 Letters · Discord Battles
                     </p>
                   </div>
                   <div className="mt-10 grid grid-cols-2 gap-6 border-t border-primary/10 pt-6">
