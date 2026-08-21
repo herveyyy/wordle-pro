@@ -7,9 +7,6 @@ import * as schema from "@/database/schema";
 export const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
     baseURL: process.env.BETTER_AUTH_URL,
-    emailAndPassword: {
-        enabled: true,
-    },
     socialProviders: {
         discord: {
             clientId: process.env.DISCORD_CLIENT_ID || "",
