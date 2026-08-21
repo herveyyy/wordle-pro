@@ -4,31 +4,11 @@ import Link from "next/link";
 import { Button } from "@/components/atoms/Button/Button";
 import { useButtonStyles } from "@/components/atoms/Button/button.hooks";
 import { StatusOrb } from "@/components/atoms/StatusOrb/StatusOrb";
-import { DesktopWindowFrame } from "@/components/molecules/DesktopWindowFrame/DesktopWindowFrame";
 import { FuturisticBackdrop } from "@/components/molecules/FuturisticBackdrop/FuturisticBackdrop";
-import { PwaPanel } from "@/components/organisms/PwaPanel/PwaPanel";
 import { usePwaPanel } from "@/components/organisms/PwaPanel/pwaPanel.hooks";
-import { StoragePanel } from "@/components/organisms/StoragePanel/StoragePanel";
-import { useStoragePanel } from "@/components/organisms/StoragePanel/storagePanel.hooks";
-
-const INSTALL_STEPS = [
-  {
-    title: "Open in a desktop browser",
-    body: "Use Chrome or Edge on Windows, macOS, or Linux for the full install experience.",
-  },
-  {
-    title: "Click Install",
-    body: "Accept the browser install prompt, or use the install icon in the address bar (⊕ or monitor).",
-  },
-  {
-    title: "Launch from desktop",
-    body: "Open RND from Start, Applications, or your dock — focused window, no browser chrome.",
-  },
-] as const;
 
 export function InstallLanding() {
   const pwa = usePwaPanel();
-  const storage = useStoragePanel();
   const { isStandalone, isIOS, canInstall, installOutcome, installApp } = pwa;
   const secondaryLinkClass = useButtonStyles("secondary");
 
@@ -42,175 +22,120 @@ export function InstallLanding() {
         : "Install available";
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-surface">
+    <div className="relative h-screen w-screen h-[100dvh] max-h-[100dvh] overflow-hidden bg-surface flex flex-col justify-between p-4 sm:p-6 lg:p-8 font-(family-name:--font-comic-relief) select-none">
       <FuturisticBackdrop />
 
-      <div className="relative z-10 mx-auto w-full max-w-[1360px] px-8 py-10 lg:px-16 lg:py-14 xl:py-16">
-        <header className="mb-12 flex items-center justify-between gap-6 border-b border-primary/10 pb-6 lg:mb-16">
-          <div className="flex items-center gap-8">
-            <Link
-              href="/"
-              className="text-sm font-medium text-on-surface-muted transition-colors hover:text-primary"
-            >
-              ← Home
+      {/* Header */}
+      <header className="relative z-10 mx-auto w-full max-w-5xl flex items-center justify-between border-b border-primary/10 pb-3">
+        <Link
+          href="/"
+          className="text-xs sm:text-sm font-bold text-on-surface-muted hover:text-primary transition-colors flex items-center gap-1.5"
+        >
+          <span>←</span> Back to Game
+        </Link>
+        <StatusOrb label={statusLabel} variant={statusVariant} />
+      </header>
+
+      {/* Main Content Stage */}
+      <main className="relative z-10 mx-auto w-full max-w-5xl flex-1 grid items-center gap-6 md:grid-cols-[1.1fr_0.9fr] py-4">
+        <div className="space-y-4 sm:space-y-5">
+          <div className="inline-flex items-center gap-2 rounded-full border border-secondary/20 bg-secondary/10 px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider text-secondary">
+            <span>📱 Desktop & Mobile PWA</span>
+          </div>
+
+          <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.08] text-on-surface">
+            Install <br />
+            <span className="text-primary underline decoration-secondary decoration-wavy decoration-2">
+              Wordle PRO
+            </span>
+          </h1>
+
+          <p className="max-w-lg text-xs sm:text-sm text-on-surface-muted leading-relaxed">
+            Play Wordle PRO directly from your desktop or phone home screen with zero browser tabs, instant load times, and custom room lobbies.
+          </p>
+
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            {isStandalone ? (
+              <Button variant="success" disabled className="px-6 py-2.5 text-xs font-bold">
+                ✓ Already Installed
+              </Button>
+            ) : canInstall ? (
+              <Button onClick={installApp} className="px-6 py-2.5 text-xs font-bold">
+                Install App Now →
+              </Button>
+            ) : (
+              <Button variant="secondary" disabled className="px-6 py-2.5 text-xs font-bold">
+                {isIOS ? "Share → Add to Home Screen" : "Ready in Browser"}
+              </Button>
+            )}
+            <Link href="/" className={`${secondaryLinkClass} px-5 py-2.5 text-xs font-bold`}>
+              Play in Browser
             </Link>
-            <span className="hidden text-sm text-on-surface-muted lg:inline">Install workspace</span>
-          </div>
-          <StatusOrb label={statusLabel} variant={statusVariant} />
-        </header>
-
-        <div className="grid items-center gap-12 xl:grid-cols-[1.25fr_0.95fr] xl:gap-16 2xl:gap-20">
-          <div className="max-w-2xl space-y-8 xl:max-w-none">
-            <div className="space-y-5">
-              <p className="text-xs font-medium uppercase tracking-[0.25em] text-secondary">
-                Desktop & Mobile Progressive Web App
-              </p>
-              <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight text-on-surface sm:text-5xl lg:text-6xl xl:text-[4.25rem]">
-                Install Wordle PRO
-              </h1>
-              <p className="max-w-xl text-base leading-relaxed text-on-surface-muted lg:text-lg lg:leading-8">
-                Instant, standalone multiplayer word guesser gaming experience. Pin to your home screen or dock for lightning fast rounds with zero browser distraction.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4 lg:gap-5">
-              {isStandalone ? (
-                <Button variant="success" disabled>
-                  Installed
-                </Button>
-              ) : canInstall ? (
-                <Button onClick={installApp} className="px-8 py-3.5 text-base">
-                  Install App
-                </Button>
-              ) : (
-                <Button variant="secondary" disabled className="px-8 py-3.5 text-base">
-                  {isIOS ? "Use Share → Add to Home Screen" : "Install Ready"}
-                </Button>
-              )}
-              <Link href="/" className={`${secondaryLinkClass} px-8 py-3.5 text-base`}>
-                Open Game
-              </Link>
-            </div>
-
-            {installOutcome === "dismissed" ? (
-              <p className="text-sm text-on-surface-muted">
-                Install dismissed — click the install icon in your address bar to try again.
-              </p>
-            ) : null}
-
-            {!isStandalone && isIOS ? (
-              <div className="futuristic-frame max-w-lg rounded-xl bg-surface-container-low/90 p-6 backdrop-blur-sm lg:hidden">
-                <h2 className="font-display text-lg font-semibold text-primary">On iPhone or iPad</h2>
-                <p className="mt-2 text-sm leading-relaxed text-on-surface-muted">
-                  Tap Share, then <strong className="text-on-surface">Add to Home Screen</strong>.
-                </p>
-              </div>
-            ) : null}
-
-            <dl className="hidden gap-8 border-t border-primary/10 pt-8 sm:grid sm:grid-cols-3 xl:grid">
-              <div>
-                <dt className="text-xs uppercase tracking-wider text-on-surface-muted">Game Mode</dt>
-                <dd className="mt-1 font-display text-lg font-semibold text-primary">Multiplayer</dd>
-              </div>
-              <div>
-                <dt className="text-xs uppercase tracking-wider text-on-surface-muted">Dictionary</dt>
-                <dd className="mt-1 font-display text-lg font-semibold text-on-surface">Wiki & Lexicon</dd>
-              </div>
-              <div>
-                <dt className="text-xs uppercase tracking-wider text-on-surface-muted">Identity</dt>
-                <dd className="mt-1 font-display text-lg font-semibold text-on-surface">Discord Auth</dd>
-              </div>
-            </dl>
           </div>
 
-          <div className="relative xl:pl-4">
-            <div className="futuristic-frame rounded-2xl bg-surface-container-low/60 p-6 backdrop-blur-sm lg:p-8">
-              <DesktopWindowFrame title="Wordle PRO — Standalone PWA">
-                <div className="flex h-full flex-col justify-between">
-                  <div>
-                    <div className="mb-6 flex size-20 items-center justify-center rounded-2xl bg-surface-container-low ring-1 border border-primary/20">
-                      <img src="/icon.svg" alt="" className="size-12" width={48} height={48} />
-                    </div>
-                    <h2 className="font-display text-2xl font-semibold text-primary">Wordle PRO</h2>
-                    <p className="mt-2 text-base text-on-surface-muted">
-                      Custom Rooms · 4-8 Letters · Discord Battles
-                    </p>
-                  </div>
-                  <div className="mt-10 grid grid-cols-2 gap-6 border-t border-primary/10 pt-6">
-                    <div>
-                      <p className="text-xs uppercase tracking-wider text-on-surface-muted">Window</p>
-                      <p className="mt-1 text-sm font-medium text-on-surface">Frameless PWA</p>
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-wider text-on-surface-muted">Start URL</p>
-                      <p className="mt-1 font-mono text-sm font-medium text-on-surface">/</p>
-                    </div>
-                  </div>
-                </div>
-              </DesktopWindowFrame>
+          {installOutcome === "dismissed" ? (
+            <p className="text-xs text-on-surface-muted">
+              Install prompt dismissed — you can install anytime via your browser address bar.
+            </p>
+          ) : null}
+
+          {isIOS ? (
+            <div className="rounded-2xl bg-surface-container-high/60 p-3 text-xs">
+              <strong className="text-primary block mb-0.5">iPhone / iPad Tip:</strong>
+              Tap the <span className="font-bold">Share</span> icon in Safari, then select <span className="font-bold text-on-surface">"Add to Home Screen"</span>.
+            </div>
+          ) : null}
+        </div>
+
+        {/* Feature Highlights Card */}
+        <div className="futuristic-frame rounded-3xl border border-primary/20 bg-surface-container-low/95 p-6 shadow-xl backdrop-blur-xl space-y-4">
+          <div className="flex items-center gap-3 border-b border-primary/10 pb-3">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-primary/15 font-display text-lg font-bold text-primary">
+              W
+            </div>
+            <div>
+              <h3 className="font-display text-sm font-bold text-on-surface">Wordle PRO Standalone</h3>
+              <span className="text-[11px] text-on-surface-muted">Frameless PWA Window</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div className="rounded-xl bg-surface-container-high/50 p-3">
+              <span className="text-on-surface-muted block text-[10px] uppercase font-bold">Performance</span>
+              <span className="font-bold text-primary">Instant Launch</span>
+            </div>
+            <div className="rounded-xl bg-surface-container-high/50 p-3">
+              <span className="text-on-surface-muted block text-[10px] uppercase font-bold">Identity</span>
+              <span className="font-bold text-secondary">Discord Linked</span>
+            </div>
+            <div className="rounded-xl bg-surface-container-high/50 p-3">
+              <span className="text-on-surface-muted block text-[10px] uppercase font-bold">Dictionary</span>
+              <span className="font-bold text-on-surface">Wiki Synchronized</span>
+            </div>
+            <div className="rounded-xl bg-surface-container-high/50 p-3">
+              <span className="text-on-surface-muted block text-[10px] uppercase font-bold">Rooms</span>
+              <span className="font-bold text-emerald-800 dark:text-emerald-400">4-8 Letter Puzzles</span>
             </div>
           </div>
         </div>
+      </main>
 
-        <section className="mt-20 lg:mt-28">
-          <div className="mb-12 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <h2 className="font-display text-3xl font-semibold text-on-surface lg:text-4xl">
-                How to install
-              </h2>
-              <p className="mt-2 max-w-2xl text-base text-on-surface-muted">
-                Three steps from browser tab to dedicated desktop app.
-              </p>
-            </div>
-            <div className="hidden h-px flex-1 bg-linear-to-r from-primary/20 to-transparent lg:ml-12 lg:block" aria-hidden />
-          </div>
-
-          <ol className="grid gap-6 lg:grid-cols-3 lg:gap-0">
-            {INSTALL_STEPS.map((step, index) => (
-              <li
-                key={step.title}
-                className="group relative lg:border-l lg:border-primary/15 lg:px-10 lg:first:border-l-0 lg:first:pl-0"
-              >
-                <div className="rounded-xl bg-surface-container-low/80 p-8 backdrop-blur-sm transition-colors hover:bg-surface-container-high/80 lg:rounded-none lg:bg-transparent lg:p-0 lg:backdrop-blur-none lg:hover:bg-transparent">
-                  <span className="font-display text-4xl font-semibold text-primary/25 lg:text-5xl">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <h3 className="mt-4 font-display text-xl font-semibold text-primary lg:mt-6">
-                    {step.title}
-                  </h3>
-                  <p className="mt-3 max-w-sm text-base leading-relaxed text-on-surface-muted">
-                    {step.body}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        <section className="mt-20 grid gap-8 lg:mt-28 xl:grid-cols-2 xl:gap-10">
-          <div className="futuristic-frame rounded-2xl bg-surface-container-low/90 p-8 backdrop-blur-sm lg:p-10">
-            <PwaPanel embedded controls={pwa} />
-          </div>
-          <div className="futuristic-frame rounded-2xl bg-surface-container-low/90 p-8 backdrop-blur-sm lg:p-10">
-            <StoragePanel embedded controls={storage} />
-          </div>
-        </section>
-      </div>
+      {/* Footer */}
+      <footer className="relative z-10 mx-auto w-full max-w-5xl flex items-center justify-between border-t border-primary/10 pt-3 text-[11px] text-on-surface-muted">
+        <span>© {new Date().getFullYear()} Wordle PRO</span>
+        <Link href="/play" className="hover:text-primary transition-colors font-bold">
+          Enter Game Lobby →
+        </Link>
+      </footer>
     </div>
   );
 }
 
 export function InstallLandingFallback() {
   return (
-    <div className="relative min-h-screen bg-surface">
+    <div className="relative h-screen w-screen bg-surface flex items-center justify-center">
       <FuturisticBackdrop />
-      <div className="relative z-10 mx-auto w-full max-w-[1360px] px-8 py-16 lg:px-16">
-        <div className="h-10 w-40 animate-pulse rounded-lg bg-surface-container-low" />
-        <div className="mt-16 grid gap-12 xl:grid-cols-2">
-          <div className="h-48 animate-pulse rounded-2xl bg-surface-container-low" />
-          <div className="h-72 animate-pulse rounded-2xl bg-surface-container-low" />
-        </div>
-      </div>
+      <div className="h-12 w-48 animate-pulse rounded-2xl bg-surface-container-high" />
     </div>
   );
 }

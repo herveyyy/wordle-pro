@@ -21,8 +21,13 @@ export function WordleGrid({
   currentLetterIndex,
   shakeRowIndex,
 }: WordleGridProps) {
+  const getGridGap = () => {
+    if (maxChances >= 8) return "gap-1";
+    return "gap-1 sm:gap-1.5";
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center gap-2 sm:gap-2.5 py-4">
+    <div className={`flex flex-col items-center justify-center ${getGridGap()} py-1 sm:py-2`}>
       {Array.from({ length: maxChances }).map((_, rowIndex) => {
         const row = guesses[rowIndex] || {
           letters: [],
@@ -38,6 +43,7 @@ export function WordleGrid({
             key={rowIndex}
             row={row}
             wordLength={wordLength}
+            maxChances={maxChances}
             isCurrentRow={isCurrentRow}
             currentLetterIndex={currentLetterIndex}
             isShaking={isShaking}

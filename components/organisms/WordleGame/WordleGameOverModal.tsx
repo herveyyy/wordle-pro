@@ -83,22 +83,31 @@ export function WordleGameOverModal({
         </div>
 
         {/* Players Standings */}
-        <div className="my-5 space-y-2 text-left">
-          <span className="text-xs font-bold uppercase tracking-wider text-on-surface-muted block mb-2">
+        <div className="my-4 space-y-2 text-left">
+          <span className="text-xs font-bold uppercase tracking-wider text-on-surface-muted block mb-1.5">
             Room Standings
           </span>
-          <div className="space-y-1.5 max-h-36 overflow-y-auto">
+          <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
             {sortedPlayers.map((p, index) => (
               <div
                 key={p.id}
-                className="flex items-center justify-between rounded-xl bg-surface-container-high/40 px-3.5 py-2 text-xs font-semibold text-on-surface"
+                className="flex items-center justify-between rounded-xl bg-surface-container-high/40 px-3 py-1.5 text-xs font-semibold text-on-surface"
               >
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-primary font-bold">#{index + 1}</span>
-                  <span>{p.name}</span>
+                  {p.avatar ? (
+                    <img
+                      src={p.avatar}
+                      alt={p.name}
+                      className="size-5 rounded-lg object-cover ring-1 ring-primary/30"
+                      width={20}
+                      height={20}
+                    />
+                  ) : null}
+                  <span className="truncate max-w-[140px]">{p.name}</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-secondary font-bold">{p.roundsWon} wins</span>
+                <div className="flex items-center gap-2.5">
+                  <span className="text-secondary font-bold">{p.roundsWon} 🏆</span>
                   <span className="font-extrabold text-primary">{p.score} pts</span>
                 </div>
               </div>

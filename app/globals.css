@@ -72,28 +72,16 @@ html[data-mode="oled"] {
   --shadow-bloom: 0 16px 40px rgb(0 0 0 / 70%);
 }
 
-@theme inline {
-  --color-surface: var(--surface);
-  --color-on-surface: var(--on-surface);
-  --color-on-surface-muted: var(--on-surface-muted);
-  --color-surface-container-low: var(--surface-container-low);
-  --color-surface-container-lowest: var(--surface-container-lowest);
-  --color-surface-container-high: var(--surface-container-high);
-  --color-surface-container-highest: var(--surface-container-highest);
-  --color-surface-bright: var(--surface-bright);
-  --color-surface-variant: var(--surface-variant);
-  --color-primary: var(--primary);
-  --color-primary-container: var(--primary-container);
-  --color-on-primary: var(--on-primary);
-  --color-secondary: var(--secondary);
-  --color-secondary-container: var(--secondary-container);
-  --color-on-secondary: var(--on-secondary);
-  --color-tertiary: var(--tertiary);
-  --color-outline-variant: var(--outline-variant);
-  --font-display: var(--font-comic-relief);
-  --font-body: var(--font-comic-relief);
-  --font-comic-relief: var(--font-comic-relief);
-  --shadow-bloom: var(--shadow-bloom);
+html,
+body {
+  height: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  width: 100%;
+  width: 100vw;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -101,7 +89,23 @@ body {
   color: var(--on-surface);
   font-family: var(--font-comic-relief);
   transition: background-color 0.3s ease, color 0.3s ease;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
+
+/* Touch optimization for iOS Safari */
+button,
+input,
+select,
+.game-touch-target {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
 
 html {
   color-scheme: light;
@@ -233,6 +237,59 @@ html {
 
 .pulsing-orb-3 {
   animation: orb-float-3 20s ease-in-out infinite, pulse-glow var(--pulse-duration, 4s) ease-in-out infinite 3s;
+}
+
+/* Wordle Micro-Animations */
+@keyframes tile-pop {
+  0% {
+    transform: scale(0.85);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes tile-flip {
+  0% {
+    transform: rotateX(0deg);
+  }
+  45% {
+    transform: rotateX(90deg);
+  }
+  55% {
+    transform: rotateX(90deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+@keyframes row-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20%, 60% {
+    transform: translateX(-6px);
+  }
+  40%, 80% {
+    transform: translateX(6px);
+  }
+}
+
+.animate-tile-pop {
+  animation: tile-pop 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.animate-tile-flip {
+  animation: tile-flip 0.4s ease-in-out forwards;
+  transform-style: preserve-3d;
+}
+
+.animate-row-shake {
+  animation: row-shake 0.35s ease-in-out forwards;
 }
 
 

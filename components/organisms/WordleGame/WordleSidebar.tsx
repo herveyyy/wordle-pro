@@ -23,19 +23,19 @@ export function WordleSidebar({
       case "present":
         return "bg-amber-500 shadow-xs";
       case "absent":
-        return "bg-slate-400 dark:bg-slate-700 opacity-60";
+        return "bg-slate-500/70 dark:bg-slate-700 opacity-60";
       default:
-        return "bg-surface-container-high/40 border border-primary/15";
+        return "bg-surface-container-high/40 border border-primary/20";
     }
   };
 
   return (
-    <aside className="futuristic-frame flex w-full flex-col gap-4 rounded-3xl border border-primary/20 bg-surface-container-low/95 p-4 shadow-xl backdrop-blur-xl lg:w-72 xl:w-80 shrink-0">
+    <aside className="futuristic-frame flex w-full h-full flex-col justify-between rounded-2xl sm:rounded-3xl border border-primary/20 bg-surface-container-low/95 p-3.5 sm:p-4 shadow-xl backdrop-blur-xl shrink-0 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-primary/10 pb-3">
+      <div className="flex items-center justify-between border-b border-primary/10 pb-2.5 shrink-0">
         <div className="flex items-center gap-2">
           <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-          <h3 className="font-display text-sm font-bold text-on-surface">
+          <h3 className="font-display text-xs sm:text-sm font-bold text-on-surface">
             Room Players ({players.length})
           </h3>
         </div>
@@ -44,29 +44,40 @@ export function WordleSidebar({
         </span>
       </div>
 
-      {/* Players List */}
-      <div className="flex flex-col gap-3 overflow-y-auto max-h-[75vh] pr-1">
+      {/* Players List with Smooth Scroll */}
+      <div className="flex-1 space-y-2.5 overflow-y-auto pr-1 my-2">
         {players.map((player) => {
           const isYou = player.id === currentPlayerId;
+          const cleanName = player.name.replace(/\s*\(You\)/gi, "").trim();
 
           return (
             <div
               key={player.id}
-              className={`rounded-2xl border p-3 transition-all ${
+              className={`rounded-2xl border p-2.5 sm:p-3 transition-all ${
                 isYou
-                  ? "border-primary/40 bg-primary/5 shadow-sm"
-                  : "border-primary/10 bg-surface-container-high/40"
+                  ? "border-primary/50 bg-primary/10 shadow-xs"
+                  : "border-primary/15 bg-surface-container-high/40"
               }`}
             >
               {/* Player Header */}
-              <div className="flex items-center justify-between gap-2 mb-2.5">
+              <div className="flex items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2 min-w-0">
-                  <div className="flex size-7 shrink-0 items-center justify-center rounded-xl bg-primary/15 font-display text-xs font-bold text-primary">
-                    {player.name[0].toUpperCase()}
-                  </div>
+                  {player.avatar ? (
+                    <img
+                      src={player.avatar}
+                      alt={cleanName}
+                      className="size-7 shrink-0 rounded-xl object-cover ring-1 ring-primary/30 shadow-xs"
+                      width={28}
+                      height={28}
+                    />
+                  ) : (
+                    <div className="flex size-7 shrink-0 items-center justify-center rounded-xl bg-primary/20 font-display text-xs font-bold text-primary">
+                      {cleanName[0]?.toUpperCase() || "P"}
+                    </div>
+                  )}
                   <div className="min-w-0">
                     <span className="block truncate text-xs font-bold text-on-surface">
-                      {player.name} {isYou ? "(You)" : ""}
+                      {cleanName} {isYou ? "(You)" : ""}
                     </span>
                     <span className="block text-[10px] text-on-surface-muted">
                       {player.hasSolved
@@ -88,13 +99,17 @@ export function WordleSidebar({
               </div>
 
               {/* Opponent & Player Mini Guesses Grid (Colors Only, NO LETTERS!) */}
-              <div className="flex flex-col items-center gap-1 rounded-xl bg-surface-container-highest/40 p-2">
+              <div className="flex flex-col items-center gap-0.5 sm:gap-1 rounded-xl bg-surface-container-highest/50 p-1.5">
                 {Array.from({ length: maxChances }).map((_, rIndex) => {
                   const rowGuess = player.guesses[rIndex];
                   const hasGuessed = Boolean(rowGuess);
+                  const miniSize =
+                    maxChances >= 8 || wordLength >= 8
+                      ? "size-2.5 sm:size-3 rounded-xs"
+                      : "size-3 sm:size-3.5 rounded-xs";
 
                   return (
-                    <div key={rIndex} className="flex gap-1">
+                    <div key={rIndex} className="flex gap-0.5 sm:gap-1">
                       {Array.from({ length: wordLength }).map((_, cIndex) => {
                         const status: TileStatus = hasGuessed
                           ? rowGuess[cIndex] || "absent"
@@ -103,7 +118,7 @@ export function WordleSidebar({
                         return (
                           <div
                             key={cIndex}
-                            className={`size-4 sm:size-4.5 rounded-md transition-all ${getMiniTileStyle(
+                            className={`${miniSize} transition-all ${getMiniTileStyle(
                               status
                             )}`}
                             title={
@@ -120,14 +135,14 @@ export function WordleSidebar({
               </div>
 
               {/* Status Banner */}
-              <div className="mt-2 text-center text-[10px] font-semibold">
+              <div className="mt-1.5 text-center text-[10px] font-semibold">
                 {player.hasSolved ? (
                   <span className="text-emerald-800 dark:text-emerald-400 font-bold">
                     ✓ Word Solved!
                   </span>
                 ) : (
                   <span className="text-on-surface-muted">
-                    {isYou ? "Your turn to guess" : "Waiting for next guess..."}
+                    {isYou ? "Your turn to guess" : "Waiting for guess..."}
                   </span>
                 )}
               </div>

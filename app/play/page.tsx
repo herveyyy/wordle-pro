@@ -12,6 +12,8 @@ type PlayPageProps = {
     rounds?: string;
     passkey?: string;
     room?: string;
+    bots?: string;
+    diff?: string;
   }>;
 };
 
@@ -27,6 +29,8 @@ async function PlayContent({ searchParams }: PlayPageProps) {
     if (params.rounds) search.set("rounds", params.rounds);
     if (params.passkey) search.set("passkey", params.passkey);
     if (params.room) search.set("room", params.room);
+    if (params.bots) search.set("bots", params.bots);
+    if (params.diff) search.set("diff", params.diff);
 
     const queryString = search.toString();
     const callbackURL = queryString ? `/play?${queryString}` : "/play";
@@ -39,13 +43,23 @@ async function PlayContent({ searchParams }: PlayPageProps) {
     isPrivate: Boolean(params.passkey),
     wordLength: Number(params.letters) || 5,
     maxChances: Number(params.chances) || 6,
-    timeLimitSeconds: params.timer ? Number(params.timer) : 60,
+    timeLimitSeconds: params.timer !== undefined ? Number(params.timer) : 60,
     totalRounds: Number(params.rounds) || 3,
+    botCount: params.bots !== undefined ? Number(params.bots) : 2,
+    botDifficulty: (params.diff as any) || "medium",
+    useWebRtc: true,
   };
 
   const playerName = session.user.name || "Player";
+  const playerAvatar = session.user.image || undefined;
 
-  return <WordleGame initialConfig={initialConfig} playerName={playerName} />;
+  return (
+    <WordleGame
+      initialConfig={initialConfig}
+      playerName={playerName}
+      playerAvatar={playerAvatar}
+    />
+  );
 }
 
 

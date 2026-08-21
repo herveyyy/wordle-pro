@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { FuturisticBackdrop } from "@/components/molecules/FuturisticBackdrop/FuturisticBackdrop";
 import { WordleSidebar } from "./WordleSidebar";
 import { WordleToolbar } from "./WordleToolbar";
@@ -14,12 +14,14 @@ import { RoomConfig } from "@/lib/entities/wordle.type";
 interface WordleGameProps {
   initialConfig?: RoomConfig;
   playerName?: string;
+  playerAvatar?: string;
   onExit?: () => void;
 }
 
 export function WordleGame({
   initialConfig,
   playerName = "Alex",
+  playerAvatar,
   onExit = () => {},
 }: WordleGameProps) {
   const {
@@ -42,7 +44,9 @@ export function WordleGame({
     nextRound,
     resetMatch,
     applyRoomConfig,
-  } = useWordleGame(initialConfig, playerName);
+  } = useWordleGame(initialConfig, playerName, playerAvatar);
+
+  const [isMobilePlayersOpen, setIsMobilePlayersOpen] = useState(false);
 
   const showGameOverModal =
     gameStatus === "round_won" ||
@@ -50,43 +54,47 @@ export function WordleGame({
     gameStatus === "match_finished";
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-surface py-4 px-3 sm:px-6 md:px-8 font-(family-name:--font-comic-relief)">
+    <div className="relative h-screen w-screen h-[100dvh] max-h-[100dvh] overflow-hidden bg-surface p-2 sm:p-4 md:p-6 font-(family-name:--font-comic-relief) flex flex-col justify-between select-none">
       {/* Dynamic Pulsing Light Background */}
       <FuturisticBackdrop />
 
-      {/* Main Game Arena */}
-      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-4">
-        {/* Top Toolbar */}
+      {/* Main Game Arena Container */}
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-between overflow-hidden gap-2 sm:gap-3">
+        {/* Top Toolbar Header */}
         <WordleToolbar
           config={config}
           currentRound={currentRound}
           timeLeft={timeLeft}
+          playersCount={players.length}
           onOpenSettings={() => setIsLobbyModalOpen(true)}
           onNewGame={resetMatch}
           onExit={onExit}
+          onTogglePlayers={() => setIsMobilePlayersOpen(true)}
         />
 
         {/* Invalid Word Toast Alert */}
         {invalidWordAlert ? (
-          <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 rounded-2xl bg-secondary px-6 py-2.5 text-xs font-bold text-on-secondary shadow-xl animate-in fade-in zoom-in-90 duration-150">
+          <div className="fixed top-16 sm:top-20 left-1/2 -translate-x-1/2 z-50 rounded-2xl bg-secondary px-5 py-2 text-xs font-bold text-on-secondary shadow-xl animate-in fade-in zoom-in-90 duration-150">
             ⚠️ {invalidWordAlert}
           </div>
         ) : null}
 
-        {/* Responsive Arena: Left Sidebar + Center Game Area */}
-        <div className="flex flex-col-reverse lg:flex-row items-stretch lg:items-start gap-5">
-          {/* Left Player Sidebar (Opponents & Guesses without Letters) */}
-          <WordleSidebar
-            players={players}
-            currentPlayerId="user-1"
-            wordLength={config.wordLength}
-            maxChances={config.maxChances}
-          />
+        {/* Game Stage Area */}
+        <div className="flex flex-1 items-stretch gap-4 overflow-hidden min-h-0">
+          {/* Left Player Sidebar (Desktop / Tablet lg+ view) */}
+          <div className="hidden lg:flex w-72 xl:w-80 shrink-0 h-full overflow-hidden">
+            <WordleSidebar
+              players={players}
+              currentPlayerId="user-1"
+              wordLength={config.wordLength}
+              maxChances={config.maxChances}
+            />
+          </div>
 
-          {/* Center Play Area */}
-          <main className="futuristic-frame flex flex-1 flex-col items-center justify-between rounded-3xl border border-primary/20 bg-surface-container-low/95 p-4 sm:p-6 shadow-xl backdrop-blur-xl min-h-[580px]">
+          {/* Center Play Area (Board + Keyboard) */}
+          <main className="futuristic-frame flex flex-1 flex-col items-center justify-between rounded-2xl sm:rounded-3xl border border-primary/20 bg-surface-container-low/95 p-3 sm:p-4 shadow-xl backdrop-blur-xl overflow-hidden h-full">
             {/* Wordle Letter Grid */}
-            <div className="w-full flex-1 flex items-center justify-center">
+            <div className="w-full flex-1 flex items-center justify-center my-auto">
               <WordleGrid
                 guesses={userGuesses}
                 wordLength={config.wordLength}
@@ -106,6 +114,26 @@ export function WordleGame({
           </main>
         </div>
       </div>
+
+      {/* Mobile Players Modal / Drawer (< lg screens) */}
+      {isMobilePlayersOpen ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md animate-in fade-in duration-150 lg:hidden">
+          <div className="relative w-full max-w-sm max-h-[85vh] overflow-y-auto">
+            <button
+              onClick={() => setIsMobilePlayersOpen(false)}
+              className="absolute top-3 right-3 z-20 flex size-7 items-center justify-center rounded-full bg-surface-container-high text-xs font-bold text-on-surface hover:bg-surface-container-highest"
+            >
+              ✕
+            </button>
+            <WordleSidebar
+              players={players}
+              currentPlayerId="user-1"
+              wordLength={config.wordLength}
+              maxChances={config.maxChances}
+            />
+          </div>
+        </div>
+      ) : null}
 
       {/* Round / Match Recap Modal */}
       {showGameOverModal ? (

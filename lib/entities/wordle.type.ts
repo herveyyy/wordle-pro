@@ -24,6 +24,8 @@ export interface PlayerStats {
   solvedTime?: number;
 }
 
+export type BotDifficulty = "easy" | "medium" | "pro" | "off";
+
 export interface RoomConfig {
   roomId: string;
   passkey?: string;
@@ -32,6 +34,9 @@ export interface RoomConfig {
   maxChances: number; // 4 to 10
   timeLimitSeconds: number; // 0 = unlimited, 30, 60, 90, 120
   totalRounds: number; // 1 to 10
+  botCount: number; // 0 (humans only via WebRTC) to 4
+  botDifficulty: BotDifficulty; // easy | medium | pro | off
+  useWebRtc: boolean; // P2P fair sync
 }
 
 export interface GameState {

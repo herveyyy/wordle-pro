@@ -22,6 +22,10 @@ export function WordleLobbyModal({
     currentConfig.timeLimitSeconds
   );
   const [totalRounds, setTotalRounds] = useState<number>(currentConfig.totalRounds);
+  const [botCount, setBotCount] = useState<number>(currentConfig.botCount ?? 2);
+  const [botDifficulty, setBotDifficulty] = useState<"easy" | "medium" | "pro" | "off">(
+    currentConfig.botDifficulty ?? "medium"
+  );
   const [isPrivate, setIsPrivate] = useState<boolean>(currentConfig.isPrivate);
   const [passkey, setPasskey] = useState<string>(currentConfig.passkey || "PRO777");
 
@@ -35,6 +39,8 @@ export function WordleLobbyModal({
       maxChances,
       timeLimitSeconds,
       totalRounds,
+      botCount,
+      botDifficulty,
       isPrivate,
       passkey: isPrivate ? passkey : undefined,
     });
@@ -168,7 +174,62 @@ export function WordleLobbyModal({
             </div>
           </div>
 
-          {/* 5. Passkey & Privacy */}
+          {/* 5. Bot Limits & AI Difficulty */}
+          <div className="space-y-2 rounded-2xl bg-surface-container-high/40 p-3.5">
+            <div className="flex items-center justify-between text-xs font-bold">
+              <span className="text-on-surface">🤖 Bot AI Competitors</span>
+              <span className="text-primary font-bold">
+                {botCount === 0 || botDifficulty === "off"
+                  ? "0 (P2P Humans Only)"
+                  : `${botCount} Bots (${botDifficulty.toUpperCase()})`}
+              </span>
+            </div>
+
+            {/* Bot Count */}
+            <div className="grid grid-cols-5 gap-1 pt-1">
+              {[0, 1, 2, 3, 4].map((count) => (
+                <button
+                  key={count}
+                  type="button"
+                  onClick={() => setBotCount(count)}
+                  className={`rounded-xl py-1.5 text-xs font-bold transition-all ${
+                    botCount === count
+                      ? "bg-primary text-on-primary shadow-xs"
+                      : "bg-surface-container-high text-on-surface-muted hover:text-primary"
+                  }`}
+                >
+                  {count === 0 ? "0 (Off)" : `${count} Bot${count > 1 ? "s" : ""}`}
+                </button>
+              ))}
+            </div>
+
+            {/* Bot Difficulty */}
+            {botCount > 0 ? (
+              <div className="grid grid-cols-4 gap-1 pt-1">
+                {[
+                  { id: "easy", label: "Easy" },
+                  { id: "medium", label: "Medium" },
+                  { id: "pro", label: "Pro AI" },
+                  { id: "off", label: "Disable" },
+                ].map((diff) => (
+                  <button
+                    key={diff.id}
+                    type="button"
+                    onClick={() => setBotDifficulty(diff.id as any)}
+                    className={`rounded-xl py-1.5 text-xs font-bold transition-all ${
+                      botDifficulty === diff.id
+                        ? "bg-secondary text-on-secondary shadow-xs"
+                        : "bg-surface-container-high text-on-surface-muted hover:text-secondary"
+                    }`}
+                  >
+                    {diff.label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          {/* 6. Passkey & Privacy */}
           <div className="rounded-2xl bg-surface-container-high/40 p-3.5 space-y-3">
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-on-surface">Passkey Lock</span>
