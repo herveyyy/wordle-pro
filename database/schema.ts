@@ -5,6 +5,7 @@ import {
   text,
   timestamp,
   boolean,
+  integer,
   index,
 } from "drizzle-orm/pg-core";
 
@@ -80,4 +81,31 @@ export const verification = pgTable(
   },
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
+
+export const room = pgTable(
+  "room",
+  {
+    id: varchar("id", { length: 64 }).primaryKey(),
+    wordLength: integer("word_length").notNull().default(5),
+    maxChances: integer("max_chances").notNull().default(6),
+    timeLimitSeconds: integer("time_limit_seconds").notNull().default(60),
+    totalRounds: integer("total_rounds").notNull().default(3),
+    botCount: integer("bot_count").notNull().default(2),
+    botDifficulty: varchar("bot_difficulty", { length: 32 }).notNull().default("medium"),
+    isPrivate: boolean("is_private").notNull().default(false),
+    passkey: varchar("passkey", { length: 32 }),
+    words: text("words").notNull(), // JSON string array of generated words per round
+    hostId: varchar("host_id", { length: 36 }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [index("room_hostId_idx").on(table.hostId)]
+);
+
+export type RoomRow = typeof room.$inferSelect;
+export type RoomInsert = typeof room.$inferInsert;
+
 

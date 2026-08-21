@@ -38,7 +38,8 @@ const BOT_NAMES = ["CyberBot_X", "Nova_Word", "Matrix_AI", "Synapse_Bot"];
 export function useWordleGame(
   initialConfig: RoomConfig = DEFAULT_CONFIG,
   playerName: string = "Alex",
-  playerAvatar?: string
+  playerAvatar?: string,
+  initialWords?: string[]
 ) {
   const [config, setConfig] = useState<RoomConfig>(initialConfig);
   const [currentRound, setCurrentRound] = useState<number>(1);
@@ -160,11 +161,15 @@ export function useWordleGame(
     };
   }, [config.roomId, config.useWebRtc, playerName, playerAvatar]);
 
-  // Initialize a round with a synchronized target word
+  // Initialize a round with the exact server-side room word or seeded target word
   const initRound = useCallback(
     async (roundNum: number, currentCfg: RoomConfig) => {
-      const word = await getRandomWord(currentCfg.wordLength, currentCfg.roomId, roundNum);
-      setTargetWord(word);
+      let word = initialWords?.[roundNum - 1];
+      if (!word || word.length !== currentCfg.wordLength) {
+        word = await getRandomWord(currentCfg.wordLength, currentCfg.roomId, roundNum);
+      }
+      const cleanWord = word.toUpperCase();
+      setTargetWord(cleanWord);
       setTargetDefinition(undefined);
       setCurrentRound(roundNum);
       setCurrentGuessIndex(0);

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/domain/services/auth.service";
+import { getOrCreateRoom } from "@/lib/domain/services/room.service";
 import { WordleGame } from "@/components/organisms/WordleGame/WordleGame";
 import { RoomConfig } from "@/lib/entities/wordle.type";
 
@@ -40,7 +41,7 @@ async function PlayContent({ searchParams }: PlayPageProps) {
   const parsedBotCount = params.bots !== undefined ? parseInt(params.bots, 10) : 2;
   const validBotCount = isNaN(parsedBotCount) ? 0 : Math.max(0, Math.min(4, parsedBotCount));
 
-  const initialConfig: RoomConfig = {
+  const requestedConfig = {
     roomId: params.room || "PRO-892",
     passkey: params.passkey || "PRO777",
     isPrivate: Boolean(params.passkey),
@@ -49,7 +50,23 @@ async function PlayContent({ searchParams }: PlayPageProps) {
     timeLimitSeconds: params.timer !== undefined ? Number(params.timer) : 60,
     totalRounds: Number(params.rounds) || 3,
     botCount: validBotCount,
-    botDifficulty: validBotCount === 0 ? "off" : (params.diff as any) || "medium",
+    botDifficulty: (validBotCount === 0 ? "off" : (params.diff as any) || "medium") as any,
+    hostId: session.user.id,
+  };
+
+  // Load from DB (or generate via KushCreates API and save to DB)
+  const { room: dbRoom, words: roomWords } = await getOrCreateRoom(requestedConfig);
+
+  const initialConfig: RoomConfig = {
+    roomId: dbRoom.id,
+    passkey: dbRoom.passkey || undefined,
+    isPrivate: dbRoom.isPrivate,
+    wordLength: dbRoom.wordLength,
+    maxChances: dbRoom.maxChances,
+    timeLimitSeconds: dbRoom.timeLimitSeconds,
+    totalRounds: dbRoom.totalRounds,
+    botCount: dbRoom.botCount,
+    botDifficulty: dbRoom.botDifficulty,
     useWebRtc: true,
   };
 
@@ -59,6 +76,7 @@ async function PlayContent({ searchParams }: PlayPageProps) {
   return (
     <WordleGame
       initialConfig={initialConfig}
+      initialWords={roomWords}
       playerName={playerName}
       playerAvatar={playerAvatar}
     />

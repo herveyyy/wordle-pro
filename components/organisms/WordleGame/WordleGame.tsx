@@ -13,6 +13,7 @@ import { RoomConfig } from "@/lib/entities/wordle.type";
 
 interface WordleGameProps {
   initialConfig?: RoomConfig;
+  initialWords?: string[];
   playerName?: string;
   playerAvatar?: string;
   onExit?: () => void;
@@ -20,6 +21,7 @@ interface WordleGameProps {
 
 export function WordleGame({
   initialConfig,
+  initialWords,
   playerName = "Alex",
   playerAvatar,
   onExit = () => {},
@@ -44,7 +46,7 @@ export function WordleGame({
     nextRound,
     resetMatch,
     applyRoomConfig,
-  } = useWordleGame(initialConfig, playerName, playerAvatar);
+  } = useWordleGame(initialConfig, playerName, playerAvatar, initialWords);
 
   const [isMobilePlayersOpen, setIsMobilePlayersOpen] = useState(false);
 

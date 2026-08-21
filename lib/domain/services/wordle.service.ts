@@ -7,7 +7,7 @@ const rawWordList: string[] =
   (randomWordsPkg as any).wordsList ||
   [];
 
-// Built-in curated word bank for instant load and seed consistency
+// Built-in curated fallback word bank for instant offline resilience
 const CURATED_WORDS: Record<number, string[]> = {
   4: [
     "ARCH", "BEAR", "CALM", "DAWN", "ECHO", "FIRE", "GLOW", "HERO",
@@ -68,8 +68,8 @@ const CURATED_WORDS: Record<number, string[]> = {
   ],
 };
 
-// Global in-memory dictionary Set for instant O(1) synchronous lookups
-const DICTIONARY_SET = new Set<string>();
+// Global in-memory dictionary Set for instant O(1) synchronous word validation
+export const DICTIONARY_SET = new Set<string>();
 
 // Populate from random-words word list
 if (typeof rawWordList !== "undefined" && Array.isArray(rawWordList)) {
@@ -108,28 +108,69 @@ function mulberry32(seed: number) {
   };
 }
 
+/**
+ * Fetch a list of unique words for a room matching total rounds from KushCreates API
+ * https://random-words-api.kushcreates.com/api?language=en&length=5
+ */
+export async function fetchWordsForRoom(
+  wordLength: number = 5,
+  totalRounds: number = 3
+): Promise<string[]> {
+  try {
+    const res = await fetch(
+      `https://random-words-api.kushcreates.com/api?language=en&length=${wordLength}`,
+      { next: { revalidate: 300 } } // Cache for 5 minutes
+    );
+
+    if (res.ok) {
+      const body = await res.json();
+      const rawData = Array.isArray(body?.data) ? body.data : Array.isArray(body) ? body : [];
+
+      const candidateWords: string[] = [];
+
+      for (const item of rawData) {
+        const rawWord = typeof item === "string" ? item : item?.word;
+        if (typeof rawWord === "string") {
+          const clean = rawWord.trim().toUpperCase();
+          // Ensure exact length and purely A-Z letters (no punctuation, hyphens, colons)
+          if (clean.length === wordLength && /^[A-Z]+$/.test(clean)) {
+            candidateWords.push(clean);
+            DICTIONARY_SET.add(clean);
+          }
+        }
+      }
+
+      if (candidateWords.length > 0) {
+        // Shuffle candidates and pick totalRounds
+        const shuffled = [...candidateWords].sort(() => Math.random() - 0.5);
+        const selected = Array.from(new Set(shuffled)).slice(0, totalRounds);
+
+        if (selected.length === totalRounds) {
+          return selected;
+        }
+        if (selected.length > 0) {
+          // Fill remaining from candidates
+          while (selected.length < totalRounds) {
+            selected.push(candidateWords[Math.floor(Math.random() * candidateWords.length)]);
+          }
+          return selected;
+        }
+      }
+    }
+  } catch (error) {
+    console.warn("KushCreates API fetch failed, falling back to local word bank:", error);
+  }
+
+  // Fallback to local curated word bank
+  const fallbackList = CURATED_WORDS[wordLength] || CURATED_WORDS[5];
+  const shuffledFallback = [...fallbackList].sort(() => Math.random() - 0.5);
+  return shuffledFallback.slice(0, totalRounds);
+}
+
 // Deterministic Seeded Word Generator for Room & Round Synchronization
 export function getRoomWord(roomId: string, round: number, length: number = 5): string {
   const seedKey = `wordle_pro_room_${roomId.toUpperCase()}_round_${round}_len_${length}`;
 
-  try {
-    // Generate word using random-words seed
-    const result = generate({
-      exactly: 1,
-      minLength: length,
-      maxLength: length,
-      seed: seedKey,
-    });
-
-    const word = (Array.isArray(result) ? result[0] : result)?.toUpperCase();
-    if (word && word.length === length && /^[A-Z]+$/.test(word)) {
-      return word;
-    }
-  } catch {
-    // fallback to deterministic seeded selection
-  }
-
-  // Fallback to deterministic seeded selection
   const fallbackList = CURATED_WORDS[length] || CURATED_WORDS[5];
   const seedNum = stringToSeed(seedKey);
   const rng = mulberry32(seedNum);
@@ -138,7 +179,7 @@ export function getRoomWord(roomId: string, round: number, length: number = 5): 
   return fallbackList[randomIndex] || fallbackList[0];
 }
 
-// Alias for random word (calls seeded generator with room seed or fallback)
+// Alias for random word
 export async function getRandomWord(length: number = 5, roomId?: string, round: number = 1): Promise<string> {
   const effectiveRoomId = roomId || `QUICK_${Math.floor(Math.random() * 10000)}`;
   return getRoomWord(effectiveRoomId, round, length);
@@ -181,7 +222,7 @@ export function evaluateWordleGuess(guess: string, target: string): TileStatus[]
   return result;
 }
 
-// Strict instant synchronous dictionary check (only words in dictionary allowed)
+// Strict instant synchronous dictionary check (only valid words allowed)
 export function isValidWord(word: string): boolean {
   if (!word || typeof word !== "string") return false;
   const w = word.trim().toUpperCase();
