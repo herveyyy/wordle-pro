@@ -5,6 +5,13 @@ import { RoomConfig } from "@/lib/entities/wordle.type";
 import { useThemeEditor } from "@/components/molecules/ThemeEditor/themeEditor.hooks";
 import { THEME_PRESETS, ThemePreset, ThemeMode, GlowIntensity, PulseSpeed } from "@/components/molecules/ThemeEditor/themeEditor.types";
 
+export function generateRandomPasskey(): string {
+  const words = ["PRO", "WORD", "VIP", "CHAMP", "GUESS", "SOLO", "DUEL", "ACE", "STAR", "GRID", "NEO", "CYBER"];
+  const prefix = words[Math.floor(Math.random() * words.length)];
+  const num = Math.floor(100 + Math.random() * 900);
+  return `${prefix}-${num}`;
+}
+
 interface WordleLobbyModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -32,7 +39,9 @@ export function WordleLobbyModal({
     currentConfig.botDifficulty ?? "medium"
   );
   const [isPrivate, setIsPrivate] = useState<boolean>(currentConfig.isPrivate);
-  const [passkey, setPasskey] = useState<string>(currentConfig.passkey || "PRO777");
+  const [passkey, setPasskey] = useState<string>(
+    currentConfig.passkey || generateRandomPasskey()
+  );
 
   // Theme Studio hooks
   const {
@@ -47,6 +56,17 @@ export function WordleLobbyModal({
 
   if (!isOpen) return null;
 
+  const togglePrivate = () => {
+    if (!isPrivate) {
+      setIsPrivate(true);
+      if (!passkey) {
+        setPasskey(generateRandomPasskey());
+      }
+    } else {
+      setIsPrivate(false);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onApplyConfig({
@@ -58,22 +78,22 @@ export function WordleLobbyModal({
       botCount,
       botDifficulty,
       isPrivate,
-      passkey: isPrivate ? passkey : undefined,
+      passkey: isPrivate ? (passkey.trim().toUpperCase() || generateRandomPasskey()) : undefined,
     });
     onClose();
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-3 sm:p-4 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="neo-card w-full max-w-lg bg-white dark:bg-slate-900 border-3 border-black dark:border-white shadow-[8px_8px_0px_#000000] dark:shadow-[8px_8px_0px_#ffffff] p-5 sm:p-7 max-h-[90vh] flex flex-col">
+      <div className="neo-card w-full max-w-lg p-5 sm:p-7 max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="mb-4 flex items-center justify-between border-b-3 border-black dark:border-white pb-3 shrink-0">
+        <div className="mb-4 flex items-center justify-between border-b-2.5 border-(--border-color) pb-3 shrink-0">
           <div>
-            <h3 className="font-display text-xl sm:text-2xl font-black text-black dark:text-white">
+            <h3 className="neo-title text-xl sm:text-2xl font-black">
               Game & Room Settings
             </h3>
-            <p className="text-xs font-extrabold text-slate-800 dark:text-slate-200 mt-0.5">
-              Configure battle rules, bot AI, and visual colors
+            <p className="neo-subtitle text-xs font-bold mt-0.5">
+              Configure battle rules, bot AI, and passkeys
             </p>
           </div>
           <button
@@ -108,13 +128,13 @@ export function WordleLobbyModal({
         </div>
 
         {/* Content Tabs */}
-        <div className="flex-1 overflow-y-auto pr-1 space-y-4">
+        <div className="flex-1 overflow-y-auto pr-1 space-y-3.5">
           {activeTab === "match" ? (
             <form onSubmit={handleSubmit} className="space-y-3.5">
               {/* 1. Word Length */}
-              <div className="space-y-1.5 rounded-2xl border-2.5 border-black dark:border-white bg-yellow-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
-                <div className="flex justify-between text-xs font-black text-black dark:text-white">
-                  <span>🔤 Word Length</span>
+              <div className="neo-subcard p-3 space-y-1.5">
+                <div className="flex justify-between items-center text-xs font-black">
+                  <span className="neo-title">🔤 Word Length</span>
                   <span className="neo-badge bg-emerald-300 text-black text-[11px] py-0.5">{wordLength} Letters</span>
                 </div>
                 <div className="grid grid-cols-5 gap-1.5 pt-1">
@@ -134,9 +154,9 @@ export function WordleLobbyModal({
               </div>
 
               {/* 2. Max Chances */}
-              <div className="space-y-1.5 rounded-2xl border-2.5 border-black dark:border-white bg-pink-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
-                <div className="flex justify-between text-xs font-black text-black dark:text-white">
-                  <span>🎯 Guess Chances</span>
+              <div className="neo-subcard p-3 space-y-1.5">
+                <div className="flex justify-between items-center text-xs font-black">
+                  <span className="neo-title">🎯 Guess Chances</span>
                   <span className="neo-badge bg-pink-300 text-black text-[11px] py-0.5">{maxChances} Tries</span>
                 </div>
                 <div className="grid grid-cols-4 gap-1.5 pt-1">
@@ -156,9 +176,9 @@ export function WordleLobbyModal({
               </div>
 
               {/* 3. Turn Time Limit */}
-              <div className="space-y-1.5 rounded-2xl border-2.5 border-black dark:border-white bg-cyan-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
-                <div className="flex justify-between text-xs font-black text-black dark:text-white">
-                  <span>⏱️ Turn Timer</span>
+              <div className="neo-subcard p-3 space-y-1.5">
+                <div className="flex justify-between items-center text-xs font-black">
+                  <span className="neo-title">⏱️ Turn Timer</span>
                   <span className="neo-badge bg-cyan-300 text-black text-[11px] py-0.5">
                     {timeLimitSeconds === 0 ? "Unlimited" : `${timeLimitSeconds}s`}
                   </span>
@@ -185,9 +205,9 @@ export function WordleLobbyModal({
               </div>
 
               {/* 4. Total Rounds */}
-              <div className="space-y-1.5 rounded-2xl border-2.5 border-black dark:border-white bg-purple-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
-                <div className="flex justify-between text-xs font-black text-black dark:text-white">
-                  <span>🏆 Match Rounds</span>
+              <div className="neo-subcard p-3 space-y-1.5">
+                <div className="flex justify-between items-center text-xs font-black">
+                  <span className="neo-title">🏆 Match Rounds</span>
                   <span className="neo-badge bg-purple-300 text-black text-[11px] py-0.5">
                     {totalRounds === 1 ? "1 Round" : `Best of ${totalRounds}`}
                   </span>
@@ -209,9 +229,9 @@ export function WordleLobbyModal({
               </div>
 
               {/* 5. Bot Limits & AI Difficulty */}
-              <div className="space-y-2 rounded-2xl border-2.5 border-black dark:border-white bg-amber-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
-                <div className="flex items-center justify-between text-xs font-black text-black dark:text-white">
-                  <span>🤖 Bot AI Competitors</span>
+              <div className="neo-subcard p-3 space-y-2">
+                <div className="flex items-center justify-between text-xs font-black">
+                  <span className="neo-title">🤖 Bot AI Competitors</span>
                   <span className="neo-badge bg-amber-300 text-black text-[11px] py-0.5">
                     {botCount === 0 || botDifficulty === "off"
                       ? "0 (P2P Humans Only)"
@@ -257,31 +277,44 @@ export function WordleLobbyModal({
                 ) : null}
               </div>
 
-              {/* 6. Passkey & Privacy */}
-              <div className="rounded-2xl border-2.5 border-black dark:border-white bg-slate-100 dark:bg-slate-800 p-3 space-y-2 shadow-[3px_3px_0px_#000]">
-                <div className="flex items-center justify-between text-xs font-black text-black dark:text-white">
-                  <span>🔒 Passkey Lock</span>
+              {/* 6. Passkey & Privacy Customizer */}
+              <div className="neo-subcard p-3 space-y-2.5">
+                <div className="flex items-center justify-between text-xs font-black">
+                  <span className="neo-title">🔒 Room Passkey Protection</span>
                   <button
                     type="button"
-                    onClick={() => setIsPrivate(!isPrivate)}
+                    onClick={togglePrivate}
                     className={`neo-btn-pill px-3.5 py-1.5 text-xs font-black ${
                       isPrivate ? "neo-btn-pill-active" : ""
                     }`}
                   >
-                    {isPrivate ? "🔒 Enabled" : "🌐 Public"}
+                    {isPrivate ? "🔒 Passkey Required" : "🌐 Open / Public"}
                   </button>
                 </div>
 
                 {isPrivate ? (
-                  <div className="flex items-center gap-2 text-xs font-black text-black dark:text-white pt-1">
-                    <span>KEY:</span>
-                    <input
-                      type="text"
-                      value={passkey}
-                      onChange={(e) => setPasskey(e.target.value.toUpperCase())}
-                      className="rounded-xl border-2 border-black bg-white px-3 py-1.5 font-mono font-black uppercase text-black focus:outline-none shadow-[2px_2px_0px_#000]"
-                      maxLength={8}
-                    />
+                  <div className="space-y-1.5 pt-1">
+                    <label className="neo-subtitle text-[11px] font-bold block">
+                      Custom Passkey (Type your own or roll a random one):
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={passkey}
+                        onChange={(e) => setPasskey(e.target.value.toUpperCase())}
+                        placeholder="e.g. SECRET99"
+                        className="flex-1 rounded-xl border-2 border-(--border-color) bg-white dark:bg-slate-800 px-3 py-2 font-mono font-black uppercase text-black dark:text-white placeholder:text-slate-400 focus:outline-none shadow-[2px_2px_0px_#000]"
+                        maxLength={12}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setPasskey(generateRandomPasskey())}
+                        className="neo-btn-secondary px-3.5 py-2 text-xs font-black flex items-center gap-1.5 shadow-[2px_2px_0px_#000] whitespace-nowrap"
+                        title="Generate a random passkey"
+                      >
+                        <span>🎲 Roll Random</span>
+                      </button>
+                    </div>
                   </div>
                 ) : null}
               </div>
@@ -298,8 +331,8 @@ export function WordleLobbyModal({
             /* Visual Theme Studio inside Settings */
             <div className="space-y-3.5">
               {/* Mode */}
-              <div className="space-y-1.5 rounded-2xl border-2.5 border-black dark:border-white bg-slate-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
-                <label className="text-xs font-black uppercase text-black dark:text-white block">
+              <div className="neo-subcard p-3 space-y-1.5">
+                <label className="neo-title text-xs font-black uppercase block">
                   Display Mode
                 </label>
                 <div className="grid grid-cols-3 gap-2 pt-1">
@@ -323,8 +356,8 @@ export function WordleLobbyModal({
               </div>
 
               {/* Presets */}
-              <div className="space-y-1.5 rounded-2xl border-2.5 border-black dark:border-white bg-slate-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
-                <label className="text-xs font-black uppercase text-black dark:text-white block">
+              <div className="neo-subcard p-3 space-y-1.5">
+                <label className="neo-title text-xs font-black uppercase block">
                   Vibrant Presets
                 </label>
                 <div className="grid grid-cols-1 gap-1.5 pt-1">
@@ -361,13 +394,13 @@ export function WordleLobbyModal({
               </div>
 
               {/* Custom Colors */}
-              <div className="space-y-1.5 rounded-2xl border-2.5 border-black dark:border-white bg-slate-100 dark:bg-slate-800 p-3 shadow-[3px_3px_0px_#000]">
-                <label className="text-xs font-black uppercase text-black dark:text-white block">
+              <div className="neo-subcard p-3 space-y-1.5">
+                <label className="neo-title text-xs font-black uppercase block">
                   Custom Papercut Colors
                 </label>
                 <div className="grid grid-cols-2 gap-2 pt-1">
-                  <div className="rounded-xl border-2 border-black bg-white p-2.5 text-black shadow-[2px_2px_0px_#000]">
-                    <span className="text-[10px] font-bold block mb-1">Primary Color</span>
+                  <div className="rounded-xl border-2 border-(--border-color) bg-white dark:bg-slate-800 p-2.5 shadow-[2px_2px_0px_#000]">
+                    <span className="neo-subtitle text-[10px] font-bold block mb-1">Primary Color</span>
                     <input
                       type="color"
                       value={themeConfig.customPrimary || THEME_PRESETS[themeConfig.preset].primary}
@@ -377,12 +410,12 @@ export function WordleLobbyModal({
                           themeConfig.customSecondary || THEME_PRESETS[themeConfig.preset].secondary
                         )
                       }
-                      className="size-7 cursor-pointer rounded-lg border-2 border-black p-0"
+                      className="size-7 cursor-pointer rounded-lg border-2 border-(--border-color) p-0"
                     />
                   </div>
 
-                  <div className="rounded-xl border-2 border-black bg-white p-2.5 text-black shadow-[2px_2px_0px_#000]">
-                    <span className="text-[10px] font-bold block mb-1">Accent Color</span>
+                  <div className="rounded-xl border-2 border-(--border-color) bg-white dark:bg-slate-800 p-2.5 shadow-[2px_2px_0px_#000]">
+                    <span className="neo-subtitle text-[10px] font-bold block mb-1">Accent Color</span>
                     <input
                       type="color"
                       value={themeConfig.customSecondary || THEME_PRESETS[themeConfig.preset].secondary}
@@ -392,7 +425,7 @@ export function WordleLobbyModal({
                           e.target.value
                         )
                       }
-                      className="size-7 cursor-pointer rounded-lg border-2 border-black p-0"
+                      className="size-7 cursor-pointer rounded-lg border-2 border-(--border-color) p-0"
                     />
                   </div>
                 </div>

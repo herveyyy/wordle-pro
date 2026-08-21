@@ -41,9 +41,12 @@ async function PlayContent({ searchParams }: PlayPageProps) {
   const parsedBotCount = params.bots !== undefined ? parseInt(params.bots, 10) : 2;
   const validBotCount = isNaN(parsedBotCount) ? 0 : Math.max(0, Math.min(4, parsedBotCount));
 
+  const generatedNewRoomId = `PRO-${Math.floor(100 + Math.random() * 900)}`;
+  const targetRoomId = (params.room && params.room.trim().toUpperCase()) || generatedNewRoomId;
+
   const requestedConfig = {
-    roomId: params.room || "PRO-892",
-    passkey: params.passkey || "PRO777",
+    roomId: targetRoomId,
+    passkey: params.passkey ? params.passkey.trim().toUpperCase() : undefined,
     isPrivate: Boolean(params.passkey),
     wordLength: Number(params.letters) || 5,
     maxChances: Number(params.chances) || 6,
@@ -54,7 +57,7 @@ async function PlayContent({ searchParams }: PlayPageProps) {
     hostId: session.user.id,
   };
 
-  // Load from DB (or generate via KushCreates API and save to DB)
+  // Load from DB (or generate via KushCreates/Dictionary and save to DB)
   const { room: dbRoom, words: roomWords } = await getOrCreateRoom(requestedConfig);
 
   const initialConfig: RoomConfig = {

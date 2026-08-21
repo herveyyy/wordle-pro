@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { generateRandomPasskey } from "@/components/organisms/WordleGame/WordleLobbyModal";
 
 export function WordleRoomCustomizer({ isAuthenticated }: { isAuthenticated?: boolean }) {
   const [letters, setLetters] = useState<number>(5);
@@ -11,32 +12,43 @@ export function WordleRoomCustomizer({ isAuthenticated }: { isAuthenticated?: bo
   const [bots, setBots] = useState<number>(2);
   const [botDiff, setBotDiff] = useState<string>("medium");
   const [isPrivate, setIsPrivate] = useState<boolean>(true);
-  const [passkey, setPasskey] = useState<string>("PRO777");
+  const [passkey, setPasskey] = useState<string>(() => generateRandomPasskey());
+
+  const togglePrivate = () => {
+    if (!isPrivate) {
+      setIsPrivate(true);
+      if (!passkey) {
+        setPasskey(generateRandomPasskey());
+      }
+    } else {
+      setIsPrivate(false);
+    }
+  };
 
   return (
-    <div className="comic-card relative w-full overflow-hidden rounded-3xl bg-surface-container-low/98 p-5 sm:p-7 shadow-2xl backdrop-blur-xl">
+    <div className="neo-card relative w-full overflow-hidden p-5 sm:p-7">
       {/* Header Banner */}
-      <div className="mb-5 flex flex-col gap-2 border-b-2 border-primary/20 pb-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-5 flex flex-col gap-2 border-b-2.5 border-(--border-color) pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <span className="inline-block rounded-lg bg-secondary/20 px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wider text-secondary">
+          <span className="neo-badge bg-yellow-300 text-black text-xs font-black rotate-[-1deg]">
             🎮 Room Builder Engine
           </span>
-          <h3 className="font-display text-xl font-extrabold text-on-surface sm:text-2xl mt-1">
+          <h3 className="neo-title text-xl sm:text-2xl font-black mt-1">
             Custom Match Rules
           </h3>
         </div>
-        <div className="flex items-center gap-2 rounded-full border-2 border-emerald-500/40 bg-emerald-500/15 px-3.5 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 shadow-xs">
-          <span className="size-2.5 rounded-full bg-emerald-500 animate-ping" />
+        <div className="neo-badge bg-emerald-300 text-black text-xs font-black">
+          <span className="size-2 rounded-full bg-emerald-600 animate-ping inline-block mr-1" />
           <span>WebRTC P2P Sync</span>
         </div>
       </div>
 
       <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
         {/* 1. Letter Length */}
-        <div className="space-y-2 rounded-2xl border-2 border-primary/20 bg-surface-container-high/60 p-3 shadow-sm">
-          <div className="flex items-center justify-between text-xs font-bold">
-            <span className="text-on-surface">🔤 Word Length</span>
-            <span className="rounded-lg bg-primary/20 px-2 py-0.5 text-primary font-extrabold">
+        <div className="neo-subcard p-3 space-y-2">
+          <div className="flex items-center justify-between text-xs font-black">
+            <span className="neo-title">🔤 Word Length</span>
+            <span className="neo-badge bg-emerald-300 text-black text-[11px] py-0.5">
               {letters} Letters
             </span>
           </div>
@@ -46,8 +58,9 @@ export function WordleRoomCustomizer({ isAuthenticated }: { isAuthenticated?: bo
                 key={count}
                 type="button"
                 onClick={() => setLetters(count)}
-                className={`comic-btn-pill rounded-xl py-2 text-xs font-bold ${letters === count ? "comic-btn-pill-active" : ""
-                  }`}
+                className={`neo-btn-pill py-2 text-xs font-black ${
+                  letters === count ? "neo-btn-pill-active" : ""
+                }`}
               >
                 {count}
               </button>
@@ -56,10 +69,10 @@ export function WordleRoomCustomizer({ isAuthenticated }: { isAuthenticated?: bo
         </div>
 
         {/* 2. Turn Time Limit */}
-        <div className="space-y-2 rounded-2xl border-2 border-secondary/20 bg-surface-container-high/60 p-3 shadow-sm">
-          <div className="flex items-center justify-between text-xs font-bold">
-            <span className="text-on-surface">⏱️ Time Limit</span>
-            <span className="rounded-lg bg-secondary/20 px-2 py-0.5 text-secondary font-extrabold">
+        <div className="neo-subcard p-3 space-y-2">
+          <div className="flex items-center justify-between text-xs font-black">
+            <span className="neo-title">⏱️ Time Limit</span>
+            <span className="neo-badge bg-cyan-300 text-black text-[11px] py-0.5">
               {timer}
             </span>
           </div>
@@ -69,8 +82,9 @@ export function WordleRoomCustomizer({ isAuthenticated }: { isAuthenticated?: bo
                 key={t}
                 type="button"
                 onClick={() => setTimer(t)}
-                className={`comic-btn-pill rounded-xl py-2 text-xs font-bold ${timer === t ? "comic-btn-pill-active" : ""
-                  }`}
+                className={`neo-btn-pill py-2 text-xs font-black ${
+                  timer === t ? "neo-btn-pill-active" : ""
+                }`}
               >
                 {t}
               </button>
@@ -79,10 +93,10 @@ export function WordleRoomCustomizer({ isAuthenticated }: { isAuthenticated?: bo
         </div>
 
         {/* 3. Guesses / Chances */}
-        <div className="space-y-2 rounded-2xl border-2 border-primary/20 bg-surface-container-high/60 p-3 shadow-sm">
-          <div className="flex items-center justify-between text-xs font-bold">
-            <span className="text-on-surface">🎯 Guess Chances</span>
-            <span className="rounded-lg bg-primary/20 px-2 py-0.5 text-primary font-extrabold">
+        <div className="neo-subcard p-3 space-y-2">
+          <div className="flex items-center justify-between text-xs font-black">
+            <span className="neo-title">🎯 Guess Chances</span>
+            <span className="neo-badge bg-pink-300 text-black text-[11px] py-0.5">
               {chances} Tries
             </span>
           </div>
@@ -92,8 +106,9 @@ export function WordleRoomCustomizer({ isAuthenticated }: { isAuthenticated?: bo
                 key={c}
                 type="button"
                 onClick={() => setChances(c)}
-                className={`comic-btn-pill rounded-xl py-2 text-xs font-bold ${chances === c ? "comic-btn-pill-active" : ""
-                  }`}
+                className={`neo-btn-pill py-2 text-xs font-black ${
+                  chances === c ? "neo-btn-pill-active" : ""
+                }`}
               >
                 {c}
               </button>
@@ -102,10 +117,10 @@ export function WordleRoomCustomizer({ isAuthenticated }: { isAuthenticated?: bo
         </div>
 
         {/* 4. Match Rounds */}
-        <div className="space-y-2 rounded-2xl border-2 border-purple-500/20 bg-surface-container-high/60 p-3 shadow-sm">
-          <div className="flex items-center justify-between text-xs font-bold">
-            <span className="text-on-surface">🏆 Match Length</span>
-            <span className="rounded-lg bg-purple-500/20 px-2 py-0.5 text-purple-600 dark:text-purple-400 font-extrabold">
+        <div className="neo-subcard p-3 space-y-2">
+          <div className="flex items-center justify-between text-xs font-black">
+            <span className="neo-title">🏆 Match Length</span>
+            <span className="neo-badge bg-purple-300 text-black text-[11px] py-0.5">
               {rounds === 1 ? "1 Round" : `Best of ${rounds}`}
             </span>
           </div>
@@ -115,8 +130,9 @@ export function WordleRoomCustomizer({ isAuthenticated }: { isAuthenticated?: bo
                 key={r}
                 type="button"
                 onClick={() => setRounds(r)}
-                className={`comic-btn-pill rounded-xl py-2 text-xs font-bold ${rounds === r ? "comic-btn-pill-active" : ""
-                  }`}
+                className={`neo-btn-pill py-2 text-xs font-black ${
+                  rounds === r ? "neo-btn-pill-active" : ""
+                }`}
               >
                 {r}
               </button>
@@ -125,10 +141,10 @@ export function WordleRoomCustomizer({ isAuthenticated }: { isAuthenticated?: bo
         </div>
 
         {/* 5. Bot Competitors Options */}
-        <div className="space-y-2 rounded-2xl border-2 border-rose-500/20 bg-surface-container-high/60 p-3 shadow-sm sm:col-span-2">
-          <div className="flex items-center justify-between text-xs font-bold">
-            <span className="text-on-surface">🤖 Bot AI Competitors</span>
-            <span className="rounded-lg bg-rose-500/20 px-2 py-0.5 text-rose-600 dark:text-rose-400 font-extrabold">
+        <div className="neo-subcard p-3 space-y-2 sm:col-span-2">
+          <div className="flex items-center justify-between text-xs font-black">
+            <span className="neo-title">🤖 Bot AI Competitors</span>
+            <span className="neo-badge bg-amber-300 text-black text-[11px] py-0.5">
               {bots === 0 ? "0 (Humans Only)" : `${bots} Bots (${botDiff.toUpperCase()})`}
             </span>
           </div>
@@ -138,8 +154,9 @@ export function WordleRoomCustomizer({ isAuthenticated }: { isAuthenticated?: bo
                 key={b}
                 type="button"
                 onClick={() => setBots(b)}
-                className={`comic-btn-pill rounded-xl py-2 text-xs font-bold ${bots === b ? "comic-btn-pill-active" : ""
-                  }`}
+                className={`neo-btn-pill py-2 text-xs font-black ${
+                  bots === b ? "neo-btn-pill-active" : ""
+                }`}
               >
                 {b === 0 ? "0 (Off)" : `${b} Bot${b > 1 ? "s" : ""}`}
               </button>
@@ -148,35 +165,46 @@ export function WordleRoomCustomizer({ isAuthenticated }: { isAuthenticated?: bo
         </div>
       </div>
 
-      {/* Passkey & Launch CTA */}
-      <div className="mt-5 flex flex-col gap-3 rounded-2xl border-2 border-primary/20 bg-surface-container-high/40 p-3.5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2">
+      {/* Passkey Customizer & Launch CTA */}
+      <div className="mt-5 flex flex-col gap-3 neo-subcard p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            onClick={() => setIsPrivate(!isPrivate)}
-            className={`comic-btn-pill flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold ${isPrivate ? "comic-btn-pill-active" : ""
-              }`}
+            onClick={togglePrivate}
+            className={`neo-btn-pill px-3.5 py-2 text-xs font-black ${
+              isPrivate ? "neo-btn-pill-active" : ""
+            }`}
           >
-            {isPrivate ? "🔒 Passkey Locked" : "🌐 Public Room"}
+            {isPrivate ? "🔒 Passkey Protected" : "🌐 Public Room"}
           </button>
+
           {isPrivate ? (
-            <div className="flex items-center gap-1.5 rounded-xl border-2 border-secondary/40 bg-surface-container-lowest px-3 py-1 text-xs font-bold">
-              <span className="text-secondary text-[11px]">KEY:</span>
+            <div className="flex items-center gap-2">
               <input
                 type="text"
                 value={passkey}
                 onChange={(e) => setPasskey(e.target.value.toUpperCase())}
-                className="w-20 font-mono font-extrabold text-secondary focus:outline-none uppercase text-xs"
-                maxLength={8}
+                placeholder="e.g. SECRET123"
+                className="w-32 rounded-xl border-2 border-(--border-color) bg-white dark:bg-slate-800 px-3 py-1.5 font-mono font-black uppercase text-black dark:text-white text-xs focus:outline-none shadow-[2px_2px_0px_#000]"
+                maxLength={12}
               />
+              <button
+                type="button"
+                onClick={() => setPasskey(generateRandomPasskey())}
+                className="neo-btn-secondary px-3 py-1.5 text-xs font-black flex items-center gap-1 shadow-[2px_2px_0px_#000] whitespace-nowrap"
+                title="Generate random passkey"
+              >
+                <span>🎲 Roll Random</span>
+              </button>
             </div>
           ) : null}
         </div>
 
         {(() => {
           const numericTimer = timer === "∞" ? 0 : parseInt(timer, 10);
-          const playUrl = `/play?letters=${letters}&chances=${chances}&timer=${numericTimer}&rounds=${rounds}&bots=${bots}&diff=${botDiff}${isPrivate && passkey ? `&passkey=${encodeURIComponent(passkey)}` : ""
-            }`;
+          const playUrl = `/play?letters=${letters}&chances=${chances}&timer=${numericTimer}&rounds=${rounds}&bots=${bots}&diff=${botDiff}${
+            isPrivate && passkey ? `&passkey=${encodeURIComponent(passkey)}` : ""
+          }`;
 
           const targetHref = isAuthenticated
             ? playUrl
@@ -185,7 +213,7 @@ export function WordleRoomCustomizer({ isAuthenticated }: { isAuthenticated?: bo
           return (
             <Link
               href={targetHref}
-              className="comic-btn-primary flex items-center justify-center gap-2 rounded-2xl px-7 py-3 text-xs sm:text-sm font-extrabold"
+              className="neo-btn-primary flex items-center justify-center gap-2 px-7 py-3 text-xs sm:text-sm font-black shadow-[3px_3px_0px_#000]"
             >
               {isAuthenticated ? "🚀 Launch Room With Rules →" : "🔒 Sign in with Discord →"}
             </Link>

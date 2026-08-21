@@ -25,17 +25,23 @@
   /* Font */
   --font-comic-relief: "Comic Relief", system-ui, sans-serif;
 
-  /* Papercut / Colored Brutalism Light Canvas */
-  --surface: #fefce8; /* Soft warm paper tone */
+  /* Papercut Theme Tokens — Light Mode Defaults */
+  --surface: #fefce8;
   --on-surface: #000000;
+  --card-bg: #ffffff;
+  --card-text: #000000;
+  --subcard-bg: #f8fafc;
+  --border-color: #000000;
+  --shadow-color: #000000;
+  --text-muted: #334155;
 
   /* Card & Surface Layers */
   --surface-container-low: #ffffff;
   --surface-container-lowest: #ffffff;
-  --surface-container-high: #fef08a; /* Light pastel yellow */
-  --surface-container-highest: #fed7aa; /* Light pastel orange */
+  --surface-container-high: #f8fafc;
+  --surface-container-highest: #f1f5f9;
   --surface-bright: #ffffff;
-  --surface-variant: #bae6fd;
+  --surface-variant: #e2e8f0;
 
   /* Brutalist Saturated Color Tokens */
   --primary: #10b981;
@@ -50,21 +56,27 @@
   --neo-border: #000000;
   --neo-shadow: #000000;
   --outline-variant: #000000;
-  --on-surface-muted: #374151;
+  --on-surface-muted: #334155;
 
   /* Glow Engine */
   --glow-1: #22c55e;
   --glow-2: #f59e0b;
   --glow-3: #a855f7;
-  --glow-opacity: 0.35;
+  --glow-opacity: 0.2;
   --pulse-duration: 4s;
 }
 
 html.dark,
 html[data-mode="dark"] {
   color-scheme: dark;
-  --surface: #0f172a; /* Deep midnight canvas */
+  --surface: #0f172a;
   --on-surface: #ffffff;
+  --card-bg: #0f172a;
+  --card-text: #ffffff;
+  --subcard-bg: #1e293b;
+  --border-color: #ffffff;
+  --shadow-color: #000000;
+  --text-muted: #94a3b8;
 
   --surface-container-low: #1e293b;
   --surface-container-lowest: #0f172a;
@@ -83,6 +95,12 @@ html[data-mode="oled"] {
   color-scheme: dark;
   --surface: #000000;
   --on-surface: #ffffff;
+  --card-bg: #000000;
+  --card-text: #ffffff;
+  --subcard-bg: #111111;
+  --border-color: #ffffff;
+  --shadow-color: #000000;
+  --text-muted: #a1a1aa;
 
   --surface-container-low: #111111;
   --surface-container-lowest: #000000;
@@ -142,119 +160,141 @@ select,
 /* Papercut Card Base */
 .neo-card {
   position: relative;
-  background-color: var(--surface-container-low);
-  border: 3px solid var(--neo-border, #000000);
+  background-color: var(--card-bg, #ffffff) !important;
+  color: var(--card-text, #000000) !important;
+  border: 3px solid var(--border-color, #000000) !important;
   border-radius: 1.25rem;
-  box-shadow: 5px 5px 0px var(--neo-shadow, #000000);
-  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 6px 6px 0px var(--shadow-color, #000000) !important;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+/* Papercut Sub-card Box */
+.neo-subcard {
+  position: relative;
+  background-color: var(--subcard-bg, #f8fafc) !important;
+  color: var(--card-text, #000000) !important;
+  border: 2.5px solid var(--border-color, #000000) !important;
+  border-radius: 1rem;
+  box-shadow: 3px 3px 0px var(--shadow-color, #000000) !important;
+}
+
+/* High Contrast Title & Subtitle */
+.neo-title {
+  color: var(--card-text, #000000) !important;
+  font-family: var(--font-comic-relief), system-ui, sans-serif;
+  font-weight: 900;
+}
+
+.neo-subtitle {
+  color: var(--text-muted, #334155) !important;
+  font-weight: 700;
 }
 
 /* Interactive Papercut Button — Primary (Vibrant Emerald / Green) */
 .neo-btn-primary {
-  background-color: #22c55e;
-  color: #000000;
-  border: 3px solid #000000;
+  background-color: #22c55e !important;
+  color: #000000 !important;
+  border: 3px solid #000000 !important;
   border-radius: 1rem;
-  font-weight: 800;
-  box-shadow: 4px 4px 0px #000000;
+  font-weight: 900;
+  box-shadow: 4px 4px 0px #000000 !important;
   transition: all 0.1s ease;
 }
 .neo-btn-primary:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px #000000;
-  background-color: #4ade80;
+  box-shadow: 6px 6px 0px #000000 !important;
+  background-color: #4ade80 !important;
 }
 .neo-btn-primary:active {
   transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px #000000;
+  box-shadow: 2px 2px 0px #000000 !important;
 }
 
 /* Interactive Papercut Button — Secondary (Vibrant Yellow / Gold) */
 .neo-btn-secondary {
-  background-color: #facc15;
-  color: #000000;
-  border: 3px solid #000000;
+  background-color: #facc15 !important;
+  color: #000000 !important;
+  border: 3px solid #000000 !important;
   border-radius: 1rem;
-  font-weight: 800;
-  box-shadow: 4px 4px 0px #000000;
+  font-weight: 900;
+  box-shadow: 4px 4px 0px #000000 !important;
   transition: all 0.1s ease;
 }
 .neo-btn-secondary:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px #000000;
-  background-color: #fde047;
+  box-shadow: 6px 6px 0px #000000 !important;
+  background-color: #fde047 !important;
 }
 .neo-btn-secondary:active {
   transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px #000000;
+  box-shadow: 2px 2px 0px #000000 !important;
 }
 
 /* Interactive Papercut Button — Cyan Accent */
 .neo-btn-cyan {
-  background-color: #38bdf8;
-  color: #000000;
-  border: 3px solid #000000;
+  background-color: #38bdf8 !important;
+  color: #000000 !important;
+  border: 3px solid #000000 !important;
   border-radius: 1rem;
-  font-weight: 800;
-  box-shadow: 4px 4px 0px #000000;
+  font-weight: 900;
+  box-shadow: 4px 4px 0px #000000 !important;
   transition: all 0.1s ease;
 }
 .neo-btn-cyan:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px #000000;
-  background-color: #7dd3fc;
+  box-shadow: 6px 6px 0px #000000 !important;
+  background-color: #7dd3fc !important;
 }
 .neo-btn-cyan:active {
   transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px #000000;
+  box-shadow: 2px 2px 0px #000000 !important;
 }
 
 /* Interactive Papercut Button — Pink / Rose Accent */
 .neo-btn-pink {
-  background-color: #f472b6;
-  color: #000000;
-  border: 3px solid #000000;
+  background-color: #f472b6 !important;
+  color: #000000 !important;
+  border: 3px solid #000000 !important;
   border-radius: 1rem;
-  font-weight: 800;
-  box-shadow: 4px 4px 0px #000000;
+  font-weight: 900;
+  box-shadow: 4px 4px 0px #000000 !important;
   transition: all 0.1s ease;
 }
 .neo-btn-pink:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px #000000;
-  background-color: #f9a8d4;
+  box-shadow: 6px 6px 0px #000000 !important;
+  background-color: #f9a8d4 !important;
 }
 .neo-btn-pink:active {
   transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px #000000;
+  box-shadow: 2px 2px 0px #000000 !important;
 }
 
 /* Papercut Pill Selector Option */
 .neo-btn-pill {
-  background-color: var(--surface-container-high);
-  color: var(--on-surface);
-  border: 2.5px solid var(--neo-border, #000000);
+  background-color: var(--subcard-bg, #f8fafc) !important;
+  color: var(--card-text, #000000) !important;
+  border: 2.5px solid var(--border-color, #000000) !important;
   border-radius: 0.85rem;
-  box-shadow: 3px 3px 0px var(--neo-shadow, #000000);
+  box-shadow: 3px 3px 0px var(--shadow-color, #000000) !important;
   font-weight: 800;
   transition: all 0.1s ease;
 }
 .neo-btn-pill:hover {
   transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px var(--neo-shadow, #000000);
-  background-color: var(--surface-container-highest);
+  box-shadow: 4px 4px 0px var(--shadow-color, #000000) !important;
 }
 .neo-btn-pill:active {
   transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px var(--neo-shadow, #000000);
+  box-shadow: 1px 1px 0px var(--shadow-color, #000000) !important;
 }
 
 .neo-btn-pill-active {
   background-color: #22c55e !important;
   color: #000000 !important;
   border-color: #000000 !important;
-  box-shadow: 4px 4px 0px #000000 !important;
-  transform: translate(-1px, -1px) scale(1.03);
+  box-shadow: 3.5px 3.5px 0px #000000 !important;
+  transform: scale(1.02);
 }
 
 /* Papercut Sticker Badge */

@@ -9,6 +9,7 @@ interface WordleToolbarProps {
   currentRound: number;
   timeLeft: number;
   playersCount?: number;
+  isLobby?: boolean;
   onOpenSettings: () => void;
   onNewGame: () => void;
   onExit: () => void;
@@ -20,6 +21,7 @@ export function WordleToolbar({
   currentRound,
   timeLeft,
   playersCount = 3,
+  isLobby = false,
   onOpenSettings,
   onNewGame,
   onExit,
@@ -61,30 +63,38 @@ export function WordleToolbar({
 
       {/* Middle: Game Specs & Round Stats */}
       <div className="flex items-center gap-1.5 sm:gap-2">
-        {/* Round Badge */}
-        <div className="neo-badge bg-yellow-300 text-black text-xs font-extrabold">
-          <span>R:</span>
-          <span>
-            {currentRound}/{config.totalRounds}
-          </span>
-        </div>
+        {isLobby ? (
+          <div className="neo-badge bg-yellow-300 text-black text-xs font-black">
+            <span>⏳ LOBBY WAITING</span>
+          </div>
+        ) : (
+          <>
+            {/* Round Badge */}
+            <div className="neo-badge bg-yellow-300 text-black text-xs font-extrabold">
+              <span>R:</span>
+              <span>
+                {currentRound}/{config.totalRounds}
+              </span>
+            </div>
 
-        {/* Word Length (Desktop/Tablet) */}
-        <div className="hidden md:flex neo-badge bg-pink-300 text-black text-xs font-extrabold">
-          <span>🔤 {config.wordLength}L</span>
-        </div>
+            {/* Word Length (Desktop/Tablet) */}
+            <div className="hidden md:flex neo-badge bg-pink-300 text-black text-xs font-extrabold">
+              <span>🔤 {config.wordLength}L</span>
+            </div>
 
-        {/* Countdown Timer */}
-        <div
-          className={`neo-badge text-xs font-mono font-extrabold transition-all ${
-            isLowTime
-              ? "bg-red-500 text-white animate-pulse shadow-[2px_2px_0px_#000000]"
-              : "bg-white dark:bg-slate-800 text-black dark:text-white"
-          }`}
-        >
-          <span>⏱️</span>
-          <span>{formatTime(timeLeft)}</span>
-        </div>
+            {/* Countdown Timer */}
+            <div
+              className={`neo-badge text-xs font-mono font-extrabold transition-all ${
+                isLowTime
+                  ? "bg-red-500 text-white animate-pulse shadow-[2px_2px_0px_#000000]"
+                  : "bg-white dark:bg-slate-800 text-black dark:text-white"
+              }`}
+            >
+              <span>⏱️</span>
+              <span>{formatTime(timeLeft)}</span>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Right: Actions */}

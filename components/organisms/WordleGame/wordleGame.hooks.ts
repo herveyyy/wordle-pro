@@ -206,7 +206,7 @@ export function useWordleGame(
         }))
       );
     },
-    []
+    [initialWords]
   );
 
   // Start fresh game / setup initial board in lobby state on mount

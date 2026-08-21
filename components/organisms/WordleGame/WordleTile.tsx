@@ -31,7 +31,7 @@ export function WordleTile({
       case "absent":
         return "bg-slate-300 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border-3 border-black shadow-[3px_3px_0px_#000000] dark:border-white dark:shadow-[3px_3px_0px_#ffffff]";
       case "tbd":
-        return "bg-yellow-200 dark:bg-yellow-400 text-black border-3 border-black shadow-[4px_4px_0px_#000000] dark:border-white dark:shadow-[4px_4px_0px_#ffffff] animate-tile-pop scale-105";
+        return "bg-white dark:bg-slate-800 text-black dark:text-white border-3 border-black dark:border-white shadow-[3px_3px_0px_#000000] dark:shadow-[3px_3px_0px_#ffffff] animate-tile-pop scale-105";
       case "empty":
       default:
         return isCurrent

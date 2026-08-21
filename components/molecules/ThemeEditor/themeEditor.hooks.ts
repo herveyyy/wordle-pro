@@ -54,6 +54,12 @@ export function useThemeEditor() {
       root.classList.add("dark");
       root.style.setProperty("--surface", "#0f172a");
       root.style.setProperty("--on-surface", "#ffffff");
+      root.style.setProperty("--card-bg", "#0f172a");
+      root.style.setProperty("--card-text", "#ffffff");
+      root.style.setProperty("--subcard-bg", "#1e293b");
+      root.style.setProperty("--border-color", "#ffffff");
+      root.style.setProperty("--shadow-color", "#000000");
+      root.style.setProperty("--text-muted", "#94a3b8");
       root.style.setProperty("--surface-container-low", "#1e293b");
       root.style.setProperty("--surface-container-lowest", "#0f172a");
       root.style.setProperty("--surface-container-high", "#334155");
@@ -65,6 +71,12 @@ export function useThemeEditor() {
       root.classList.add("dark");
       root.style.setProperty("--surface", "#000000");
       root.style.setProperty("--on-surface", "#ffffff");
+      root.style.setProperty("--card-bg", "#000000");
+      root.style.setProperty("--card-text", "#ffffff");
+      root.style.setProperty("--subcard-bg", "#111111");
+      root.style.setProperty("--border-color", "#ffffff");
+      root.style.setProperty("--shadow-color", "#000000");
+      root.style.setProperty("--text-muted", "#a1a1aa");
       root.style.setProperty("--surface-container-low", "#111111");
       root.style.setProperty("--surface-container-lowest", "#000000");
       root.style.setProperty("--surface-container-high", "#222222");
@@ -76,13 +88,19 @@ export function useThemeEditor() {
       root.classList.remove("dark");
       root.style.setProperty("--surface", "#fefce8");
       root.style.setProperty("--on-surface", "#000000");
+      root.style.setProperty("--card-bg", "#ffffff");
+      root.style.setProperty("--card-text", "#000000");
+      root.style.setProperty("--subcard-bg", "#f8fafc");
+      root.style.setProperty("--border-color", "#000000");
+      root.style.setProperty("--shadow-color", "#000000");
+      root.style.setProperty("--text-muted", "#334155");
       root.style.setProperty("--surface-container-low", "#ffffff");
       root.style.setProperty("--surface-container-lowest", "#ffffff");
-      root.style.setProperty("--surface-container-high", "#fef08a");
-      root.style.setProperty("--surface-container-highest", "#fed7aa");
-      root.style.setProperty("--on-surface-muted", "#374151");
+      root.style.setProperty("--surface-container-high", "#f8fafc");
+      root.style.setProperty("--surface-container-highest", "#f1f5f9");
+      root.style.setProperty("--on-surface-muted", "#334155");
       root.style.setProperty("--neo-border", "#000000");
-      root.style.setProperty("--glow-opacity", theme.glowIntensity === "high" ? "0.35" : theme.glowIntensity === "low" ? "0.1" : "0.2");
+      root.style.setProperty("--glow-opacity", theme.glowIntensity === "high" ? "0.3" : theme.glowIntensity === "low" ? "0.1" : "0.2");
     }
 
     const preset = THEME_PRESETS[theme.preset];

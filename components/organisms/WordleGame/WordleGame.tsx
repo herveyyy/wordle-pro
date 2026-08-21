@@ -70,6 +70,7 @@ export function WordleGame({
           currentRound={currentRound}
           timeLeft={timeLeft}
           playersCount={players.length}
+          isLobby={gameStatus === "lobby"}
           onOpenSettings={() => setIsLobbyModalOpen(true)}
           onNewGame={resetMatch}
           onExit={onExit}
