@@ -50,10 +50,39 @@ export function useThemeEditor() {
     root.setAttribute("data-glow", theme.glowIntensity);
     root.setAttribute("data-speed", theme.pulseSpeed);
 
-    if (theme.mode === "dark" || theme.mode === "oled") {
+    if (theme.mode === "dark") {
       root.classList.add("dark");
+      root.style.setProperty("--surface", "#0f172a");
+      root.style.setProperty("--on-surface", "#ffffff");
+      root.style.setProperty("--surface-container-low", "#1e293b");
+      root.style.setProperty("--surface-container-lowest", "#0f172a");
+      root.style.setProperty("--surface-container-high", "#334155");
+      root.style.setProperty("--surface-container-highest", "#475569");
+      root.style.setProperty("--on-surface-muted", "#cbd5e1");
+      root.style.setProperty("--neo-border", "#ffffff");
+      root.style.setProperty("--glow-opacity", theme.glowIntensity === "high" ? "0.9" : theme.glowIntensity === "low" ? "0.3" : "0.6");
+    } else if (theme.mode === "oled") {
+      root.classList.add("dark");
+      root.style.setProperty("--surface", "#000000");
+      root.style.setProperty("--on-surface", "#ffffff");
+      root.style.setProperty("--surface-container-low", "#111111");
+      root.style.setProperty("--surface-container-lowest", "#000000");
+      root.style.setProperty("--surface-container-high", "#222222");
+      root.style.setProperty("--surface-container-highest", "#333333");
+      root.style.setProperty("--on-surface-muted", "#d4d4d8");
+      root.style.setProperty("--neo-border", "#ffffff");
+      root.style.setProperty("--glow-opacity", theme.glowIntensity === "high" ? "0.9" : theme.glowIntensity === "low" ? "0.3" : "0.6");
     } else {
       root.classList.remove("dark");
+      root.style.setProperty("--surface", "#fefce8");
+      root.style.setProperty("--on-surface", "#000000");
+      root.style.setProperty("--surface-container-low", "#ffffff");
+      root.style.setProperty("--surface-container-lowest", "#ffffff");
+      root.style.setProperty("--surface-container-high", "#fef08a");
+      root.style.setProperty("--surface-container-highest", "#fed7aa");
+      root.style.setProperty("--on-surface-muted", "#374151");
+      root.style.setProperty("--neo-border", "#000000");
+      root.style.setProperty("--glow-opacity", theme.glowIntensity === "high" ? "0.35" : theme.glowIntensity === "low" ? "0.1" : "0.2");
     }
 
     const preset = THEME_PRESETS[theme.preset];
@@ -66,14 +95,6 @@ export function useThemeEditor() {
     root.style.setProperty("--secondary", secondary);
     root.style.setProperty("--glow-1", preset.glow1);
     root.style.setProperty("--glow-2", preset.glow2);
-
-    // Glow intensity opacity multiplier
-    const glowOpacities: Record<GlowIntensity, string> = {
-      low: "0.25",
-      medium: "0.55",
-      high: "0.9",
-    };
-    root.style.setProperty("--glow-opacity", glowOpacities[theme.glowIntensity]);
 
     // Pulse duration
     const pulseDurations: Record<PulseSpeed, string> = {

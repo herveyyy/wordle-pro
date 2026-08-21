@@ -6,35 +6,31 @@ export function WordleHeroPreview() {
   const [activeTab, setActiveTab] = useState<"game" | "room">("game");
 
   return (
-    <div className="comic-card relative w-full overflow-hidden rounded-3xl bg-surface-container-low/98 p-5 sm:p-7 shadow-2xl backdrop-blur-xl md:p-8">
+    <div className="neo-card relative w-full overflow-hidden bg-white dark:bg-slate-900 border-3 border-black dark:border-white shadow-[6px_6px_0px_#000000] dark:shadow-[6px_6px_0px_#ffffff] p-5 sm:p-7">
       {/* Header Bar */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-primary/10 pb-4">
-        <div className="flex items-center gap-3">
-          <span className="flex size-3 rounded-full bg-red-400" />
-          <span className="flex size-3 rounded-full bg-yellow-400" />
-          <span className="flex size-3 rounded-full bg-emerald-400" />
-          <div className="ml-2 flex items-center gap-2 rounded-lg bg-surface-container-high px-3 py-1 text-xs font-semibold text-primary">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b-2 border-black dark:border-white pb-3">
+        <div className="flex items-center gap-2">
+          <span className="size-3.5 rounded-full border-2 border-black bg-red-400 shadow-xs" />
+          <span className="size-3.5 rounded-full border-2 border-black bg-yellow-400 shadow-xs" />
+          <span className="size-3.5 rounded-full border-2 border-black bg-emerald-400 shadow-xs" />
+          <div className="ml-2 neo-badge bg-yellow-300 text-black text-xs font-extrabold py-0.5">
             <span>🔒 Room #WORDLE-902</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={() => setActiveTab("game")}
-            className={`rounded-xl px-3 py-1 text-xs font-semibold transition-all ${
-              activeTab === "game"
-                ? "bg-primary text-on-primary shadow-sm"
-                : "bg-surface-container-high text-on-surface-muted hover:text-primary"
+            className={`neo-btn-pill px-3 py-1 text-xs font-extrabold ${
+              activeTab === "game" ? "neo-btn-pill-active" : ""
             }`}
           >
             Live Battle
           </button>
           <button
             onClick={() => setActiveTab("room")}
-            className={`rounded-xl px-3 py-1 text-xs font-semibold transition-all ${
-              activeTab === "room"
-                ? "bg-primary text-on-primary shadow-sm"
-                : "bg-surface-container-high text-on-surface-muted hover:text-primary"
+            className={`neo-btn-pill px-3 py-1 text-xs font-extrabold ${
+              activeTab === "room" ? "neo-btn-pill-active" : ""
             }`}
           >
             Room Settings
@@ -43,27 +39,27 @@ export function WordleHeroPreview() {
       </div>
 
       {activeTab === "game" ? (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Game Status Bar */}
-          <div className="grid grid-cols-3 gap-2 rounded-2xl bg-surface-container-highest/60 p-3 text-center text-xs font-medium text-on-surface sm:text-sm">
+          <div className="grid grid-cols-3 gap-2 rounded-2xl border-2 border-black dark:border-white bg-slate-50 dark:bg-slate-800 p-2.5 text-center text-xs font-extrabold text-black dark:text-white shadow-[2px_2px_0px_#000]">
             <div>
-              <span className="text-on-surface-muted">Round:</span>{" "}
-              <strong className="text-primary font-bold">2 / 3</strong>
+              <span className="text-slate-500 dark:text-slate-400 font-bold">Round:</span>{" "}
+              <span className="neo-badge bg-emerald-300 text-black text-[10px] py-0.5 ml-1">2 / 3</span>
             </div>
             <div>
-              <span className="text-on-surface-muted">Length:</span>{" "}
-              <strong className="text-secondary font-bold">6 Letters</strong>
+              <span className="text-slate-500 dark:text-slate-400 font-bold">Length:</span>{" "}
+              <span className="neo-badge bg-cyan-300 text-black text-[10px] py-0.5 ml-1">6 Letters</span>
             </div>
             <div>
-              <span className="text-on-surface-muted">Time Left:</span>{" "}
-              <strong className="text-emerald-600 font-bold">00:38</strong>
+              <span className="text-slate-500 dark:text-slate-400 font-bold">Timer:</span>{" "}
+              <span className="neo-badge bg-amber-300 text-black text-[10px] py-0.5 ml-1">00:38</span>
             </div>
           </div>
 
           {/* Letter Tiles Grid */}
-          <div className="flex flex-col items-center gap-2.5 py-2">
+          <div className="flex flex-col items-center gap-2 py-2">
             {/* Row 1 - Previous guess */}
-            <div className="flex gap-2 sm:gap-2.5">
+            <div className="flex gap-2">
               {[
                 { letter: "P", status: "correct" },
                 { letter: "L", status: "present" },
@@ -74,12 +70,12 @@ export function WordleHeroPreview() {
               ].map((tile, i) => (
                 <div
                   key={i}
-                  className={`flex size-11 items-center justify-center rounded-xl font-display text-xl font-bold uppercase transition-all duration-300 sm:size-13 sm:text-2xl shadow-sm ${
+                  className={`flex size-10 sm:size-12 items-center justify-center rounded-xl font-display text-lg sm:text-xl font-extrabold uppercase border-2 border-black shadow-[2.5px_2.5px_0px_#000000] text-black ${
                     tile.status === "correct"
-                      ? "bg-emerald-500 text-white shadow-emerald-500/30 scale-105"
+                      ? "bg-emerald-400"
                       : tile.status === "present"
-                        ? "bg-amber-500 text-white shadow-amber-500/30"
-                        : "bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-200"
+                        ? "bg-amber-300"
+                        : "bg-slate-200"
                   }`}
                 >
                   {tile.letter}
@@ -88,7 +84,7 @@ export function WordleHeroPreview() {
             </div>
 
             {/* Row 2 - Winning Guess */}
-            <div className="flex gap-2 sm:gap-2.5">
+            <div className="flex gap-2">
               {[
                 { letter: "P", status: "correct" },
                 { letter: "O", status: "correct" },
@@ -99,8 +95,8 @@ export function WordleHeroPreview() {
               ].map((tile, i) => (
                 <div
                   key={i}
-                  className="flex size-11 items-center justify-center rounded-xl bg-emerald-500 font-display text-xl font-bold uppercase text-white shadow-md shadow-emerald-500/40 transition-all duration-300 sm:size-13 sm:text-2xl animate-bounce"
-                  style={{ animationDelay: `${i * 90}ms`, animationIterationCount: 2 }}
+                  className="flex size-10 sm:size-12 items-center justify-center rounded-xl bg-emerald-400 font-display text-lg sm:text-xl font-extrabold uppercase text-black border-2 border-black shadow-[3px_3px_0px_#000000] animate-bounce"
+                  style={{ animationDelay: `${i * 80}ms`, animationIterationCount: 2 }}
                 >
                   {tile.letter}
                 </div>
@@ -108,58 +104,58 @@ export function WordleHeroPreview() {
             </div>
 
             {/* Row 3 - Empty slot */}
-            <div className="flex gap-2 sm:gap-2.5 opacity-60">
+            <div className="flex gap-2 opacity-50">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="flex size-11 items-center justify-center rounded-xl border-2 border-dashed border-primary/30 bg-surface-container-high/40 sm:size-13"
+                  className="flex size-10 sm:size-12 items-center justify-center rounded-xl border-2 border-black bg-white dark:bg-slate-800 shadow-[2px_2px_0px_#000000]"
                 />
               ))}
             </div>
           </div>
 
           {/* Player Live Scoreboard */}
-          <div className="flex items-center justify-between rounded-2xl bg-surface-container-highest/40 px-4 py-3 text-xs sm:text-sm">
+          <div className="flex items-center justify-between rounded-2xl border-2 border-black dark:border-white bg-yellow-50 dark:bg-slate-800 px-3.5 py-2 text-xs font-extrabold text-black dark:text-white shadow-[2px_2px_0px_#000]">
             <div className="flex items-center gap-2">
-              <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-semibold text-on-surface">Alex (You)</span>
-              <span className="rounded bg-emerald-100 px-2 py-0.5 font-bold text-emerald-800 text-[11px]">
+              <span className="size-2.5 rounded-full bg-emerald-500 border border-black animate-pulse" />
+              <span>Alex (You)</span>
+              <span className="neo-badge bg-emerald-300 text-black text-[10px] py-0.5">
                 SOLVED +100pts
               </span>
             </div>
-            <div className="flex items-center gap-2 text-on-surface-muted">
+            <div className="text-slate-600 dark:text-slate-400 font-bold">
               <span>Opponent: Guess 3/6...</span>
             </div>
           </div>
         </div>
       ) : (
         /* Room Settings Tab */
-        <div className="space-y-4 py-2 text-sm">
-          <div className="rounded-2xl bg-surface-container-highest/50 p-4">
-            <h4 className="font-display font-semibold text-primary">Custom Room Rules</h4>
-            <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
-              <div className="rounded-xl bg-surface-container-low p-2.5">
-                <span className="text-on-surface-muted block">Word Length</span>
-                <strong className="text-sm text-on-surface">4 — 8 Letters</strong>
+        <div className="space-y-3 py-1 text-xs">
+          <div className="rounded-2xl border-2 border-black dark:border-white bg-slate-50 dark:bg-slate-800 p-3.5 shadow-[2px_2px_0px_#000]">
+            <h4 className="font-display font-extrabold text-black dark:text-white text-sm">Custom Match Rules</h4>
+            <div className="mt-2.5 grid grid-cols-2 gap-2">
+              <div className="rounded-xl border-2 border-black bg-white p-2 text-black shadow-[2px_2px_0px_#000]">
+                <span className="text-slate-600 font-bold block text-[10px]">Word Length</span>
+                <strong className="text-xs">4 — 8 Letters</strong>
               </div>
-              <div className="rounded-xl bg-surface-container-low p-2.5">
-                <span className="text-on-surface-muted block">Guess Chances</span>
-                <strong className="text-sm text-on-surface">6 Guesses</strong>
+              <div className="rounded-xl border-2 border-black bg-white p-2 text-black shadow-[2px_2px_0px_#000]">
+                <span className="text-slate-600 font-bold block text-[10px]">Guess Chances</span>
+                <strong className="text-xs">6 Guesses</strong>
               </div>
-              <div className="rounded-xl bg-surface-container-low p-2.5">
-                <span className="text-on-surface-muted block">Turn Time Limit</span>
-                <strong className="text-sm text-on-surface">60 Seconds</strong>
+              <div className="rounded-xl border-2 border-black bg-white p-2 text-black shadow-[2px_2px_0px_#000]">
+                <span className="text-slate-600 font-bold block text-[10px]">Turn Time Limit</span>
+                <strong className="text-xs">60 Seconds</strong>
               </div>
-              <div className="rounded-xl bg-surface-container-low p-2.5">
-                <span className="text-on-surface-muted block">Rounds per Match</span>
-                <strong className="text-sm text-on-surface">Best of 3</strong>
+              <div className="rounded-xl border-2 border-black bg-white p-2 text-black shadow-[2px_2px_0px_#000]">
+                <span className="text-slate-600 font-bold block text-[10px]">Rounds per Match</span>
+                <strong className="text-xs">Best of 3</strong>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-between rounded-2xl bg-primary/10 px-4 py-3 text-xs text-primary font-semibold">
-            <span>✨ Powered by Open Dictionary API</span>
-            <span className="rounded-full bg-primary px-2.5 py-1 text-[11px] text-white">
+          <div className="flex items-center justify-between rounded-2xl border-2 border-black bg-emerald-100 p-2.5 text-xs text-black font-extrabold shadow-[2px_2px_0px_#000]">
+            <span>✨ KushCreates Dictionary API</span>
+            <span className="neo-badge bg-emerald-400 text-black text-[10px] py-0.5">
               100,000+ Words
             </span>
           </div>
